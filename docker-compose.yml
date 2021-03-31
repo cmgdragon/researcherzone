@@ -1,0 +1,15 @@
+version: "3"
+services: 
+  deno_server:
+    container_name: deno
+    restart: always
+    build: . #donde está el Dockerfile
+    ports:
+      - "8001:8000" #el primero es el que expone fuera del contenedor, el segundo es el del contenedor
+    env_file:
+      - ./.env
+    environment:
+      MONGODB_USER: "${MONGODB_USER}"
+      MONGODB_PASSWORD: "${MONGODB_PASSWORD}"
+      MONGODB_DATABASE: "${MONGODB_DATABASE}"
+      MONGODB_HOST: "${MONGODB_HOST}"

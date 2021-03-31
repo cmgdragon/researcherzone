@@ -1,0 +1,5 @@
+deno_modules
+.env
+node_modules
+.parcel-cache
+dist
