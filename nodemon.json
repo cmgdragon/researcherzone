@@ -1,7 +1,0 @@
-{
-    "execMap": {
-        "js": "deno run --allow-net",
-        "ts": "deno run --allow-net"
-    },
-    "ext": "js,json,ts"
-}
