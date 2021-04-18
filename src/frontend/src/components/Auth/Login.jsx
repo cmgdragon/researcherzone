@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { BrowserRouter, Link } from 'react-router-dom';
 
 const Login = () => {
 
@@ -30,25 +31,25 @@ const Login = () => {
     }
 
     return (
-        <div class="row">
+        <div className="row">
         
-        <form class="col s12" onSubmit={login}>
-        <pre class="red-text">{error}</pre>
-          <div class="row">
-            <div class="input-field col s12">
+        <form className="col s12" onSubmit={login}>
+        <pre className="red-text">{error}</pre>
+          <div className="row">
+            <div className="input-field col s12">
               <input id="email" type="email" />
-              <label for="email">Email</label>
+              <label htmlFor="email">Email</label>
             </div>
           </div>
-          <div class="row">
-            <div class="input-field col s12">
+          <div className="row">
+            <div className="input-field col s12">
               <input id="password" type="password" />
-              <label for="password">Password</label>
+              <label htmlFor="password">Password</label>
             </div>
           </div>
-        <button id="send-form" class="btn waves-effect waves-light blue accent-4" type="submit" name="action"
+        <button id="send-form" className="btn waves-effect waves-light blue accent-4" type="submit" name="action"
          >Login
-            <i class="material-icons right">login</i>
+            <i className="material-icons right">login</i>
         </button>
         </form>
       </div>

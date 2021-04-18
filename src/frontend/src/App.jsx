@@ -1,24 +1,20 @@
 import React, { useEffect, useContext, useState } from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
-import Login from './components/Login.jsx';
-import Register from './components/Register.jsx';
-import Profile from './components/Profile.jsx';
+import Auth from './components/Auth/Auth.jsx';
 import { UserContext } from './context/userContext.jsx';
 
 const App = () => {
 
-    const tokenInfo = useContext(UserContext);
-    //const [user, setUser] = useState(undefined);
-    /*useEffect(() => {
-            
-    }, [user]);*/
+  const user = useContext(UserContext);
+  //const [user, setUser] = useState(undefined);
+  useEffect(() => {
+    console.log(user)
+  }, []); 
 
-    return (
-        <>
-        {tokenInfo ? <Profile user={tokenInfo} /> : <Login />}
-         
-      </>
-    )
+  return (
+    <>
+      {user ? <Profile user={user} /> : <Auth /> }
+    </>
+  )
 }
 
 export default App;

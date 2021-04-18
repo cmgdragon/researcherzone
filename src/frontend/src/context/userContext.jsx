@@ -1,4 +1,4 @@
-import React, {useState, useEffect, createContext} from "react";
+import React, { useState, useEffect, createContext } from "react";
 import getTokenInfo from '../api/getTokenInfo.js';
 
 export const UserContext = createContext(false);
@@ -10,12 +10,11 @@ const UserTokenContext = (props) => {
     useEffect(() => {
 
         try {
-            const userInfo = getTokenInfo().then(response => response);
-            setUser(userInfo);
+            getTokenInfo().then(userInfo => setUser(userInfo));
         } catch (error) {
             console.error(error);
         }
-        
+
     }, []);
 
     return (
