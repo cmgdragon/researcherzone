@@ -2,6 +2,6 @@
     "compilerOptions": {
       "strict": false,
       "strictPropertyInitialization": false,
-      "jsx": "react",
+      "jsx": "react"
     }
   }

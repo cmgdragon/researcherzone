@@ -1,4 +1,4 @@
-import { Bson, MongoClient } from "../imports.ts";
+import { Bson, MongoClient } from "deno-mongo";
 import User from './models/User.ts';
 
 const client = new MongoClient();

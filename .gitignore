@@ -3,3 +3,4 @@ deno_modules
 node_modules
 .parcel-cache
 dist
+src/frontend/src/okta_config.js
