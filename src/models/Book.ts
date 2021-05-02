@@ -2,9 +2,15 @@ import IProfileDocument from './interfaces/IProfileDocument.ts';
 import ICitableDocument from './interfaces/ICitableDocument.ts';
 
 export class Book implements IProfileDocument, ICitableDocument {
+    order: number;
     generate_citation: Function;
+    _id?: string;
+    category: string;
+    user: string;
     id: string;
+    type: string = 'book';
     can_be_cited: boolean;
+    volume: number;
     authors: Array<string>;
     title: string;
     edition: string;
@@ -15,18 +21,9 @@ export class Book implements IProfileDocument, ICitableDocument {
 }
 
 export class BookChapter extends Book {
-    volume: number;
     number: number;
     start_page: number;
     end_page: number;
     chapter_title: string;
     coordinator: string;
-}
-
-export class BookVolume extends Book {
-    volume: number;
-    volume_number: number;
-    page_numbers: number;
-    chapter_title: string;
-    doi: string;
 }

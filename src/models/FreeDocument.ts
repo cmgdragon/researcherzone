@@ -1,8 +1,11 @@
 import IProfileDocument from "./interfaces/IProfileDocument.ts";
 
 class FreeDocument implements IProfileDocument {
-    id: string;
+    _id?: string;
+    type: string;
     can_be_cited: boolean;
+    category: string;
+    user: string;
     html: string;
 }
 

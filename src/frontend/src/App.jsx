@@ -1,18 +1,16 @@
-import React, { useEffect, useContext, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import Auth from './components/Auth/Auth.jsx';
 import { UserContext } from './context/userContext.jsx';
+import Profile from './components/Profile/index.jsx';
 
 const App = () => {
 
-  const user = useContext(UserContext);
-  //const [user, setUser] = useState(undefined);
-  useEffect(() => {
-    console.log(user)
-  }, []); 
+  const userInfo = useContext(UserContext);
+ // useEffect(() => console.log(userInfo), [userInfo])
 
   return (
     <>
-      {user ? <Profile user={user} /> : <Auth /> }
+      {userInfo.user ? <Profile user={userInfo} /> : <Auth /> }
     </>
   )
 }

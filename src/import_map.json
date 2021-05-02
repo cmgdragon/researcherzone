@@ -5,12 +5,13 @@
     "react-dom": "https://esm.sh/react-dom@17.0.2?dev",
     "oak": "https://deno.land/x/oak/mod.ts",
     "react-dom/server": "https://esm.sh/react-dom@17.0.2/server?dev",
-    "react-router-dom": "https://esm.sh/react-router-dom@5.2.0?dev",
+    "react-router-dom": "https://esm.sh/react-router-dom@5.2.0",
     "deno-mongo": "https://deno.land/x/mongo@v0.22.0/mod.ts",
     "dotenv": "https://deno.land/x/dotenv/mod.ts",
     "sha256": "https://deno.land/x/sha256@v1.0.2/mod.ts",
     "djwt": "https://deno.land/x/djwt@v2.2/mod.ts",
-    "cookie": "https://esm.sh/cookie@0.4.1"
+    "cookie": "https://esm.sh/cookie@0.4.1",
+    "browser-image-compression": "https://esm.sh/browser-image-compression@1.0.14"
   },
   "scopes": {}
 }

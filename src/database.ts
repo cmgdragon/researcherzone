@@ -1,5 +1,6 @@
 import { Bson, MongoClient } from "deno-mongo";
 import User from './models/User.ts';
+import IProfileDocument from './models/interfaces/IProfileDocument.ts';
 
 const client = new MongoClient();
 
@@ -21,3 +22,4 @@ await client.connect({
 
 const db = client.database(Deno.env.get('MONGODB_DATABASE') as string);
 export const db_users = db.collection<User>("users");
+export const db_documents = db.collection<any>("documents");

@@ -7,3 +7,4 @@ await client.connect("mongodb://127.0.0.1");
 
 const db = client.database("local");
 export const db_users = db.collection<User>("users");
+export const db_documents = db.collection<any>("documents");

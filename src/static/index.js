@@ -1730,7 +1730,7 @@ var require_react = __commonJS1((exports, module)=>{
 });
 var __star = __toModule1(require_react());
 var import_react = __toModule1(require_react());
-var { useState , useCallback , useContext , useReducer , version , StrictMode , Profiler , Component , createFactory , lazy , useImperativeHandle , useRef , Children , PureComponent , createRef , forwardRef , useEffect , Fragment , __SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED , useDebugValue , useLayoutEffect , useMemo , memo , Suspense , cloneElement , createElement , createContext , isValidElement  } = __star;
+var { useImperativeHandle , forwardRef , useCallback , Suspense , createContext , createRef , lazy , useEffect , StrictMode , Profiler , useContext , createElement , memo , useLayoutEffect , useReducer , useState , Fragment , PureComponent , useMemo , useRef , Component , cloneElement , version , __SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED , isValidElement , useDebugValue , Children , createFactory  } = __star;
 var export_default1 = import_react.default;
 var __create2 = Object.create;
 var __defProp2 = Object.defineProperty;
@@ -21711,19 +21711,19 @@ class User {
     profile_slot_2 = '';
     categories = [];
     image = '';
+    optional_image = '';
     people_following = [];
     people_followers = [];
-    profile_documents = [];
     bibliographies = [];
     social_media = [];
-    constructor(user){
-        this.email = user.email;
-        this.name = user.name;
-        this.surname = user.surname;
-        this.pwd = sha256(user.pwd, "utf8", "hex");
+    constructor(user1){
+        this.email = user1.email;
+        this.name = user1.name;
+        this.surname = user1.surname;
+        this.pwd = sha256(user1.pwd, "utf8", "hex");
     }
 }
-const Register = ()=>{
+const Register = ({ changeRoute  })=>{
     const [inputs, setInputs] = useState({
         email: '',
         name: '',
@@ -21734,9 +21734,9 @@ const Register = ()=>{
         email: '',
         name: '',
         password: '',
-        password2: ''
+        password2: '',
+        form: ''
     });
-    const [isValid, setValid] = useState(false);
     const validate = ({ target  })=>{
         setInputs({
             ...inputs,
@@ -21744,7 +21744,7 @@ const Register = ()=>{
         });
         if (target.id === 'name') {
             if (target.value.length < 3) {
-                target.classNameList.add('invalid');
+                target.classList.add('invalid');
                 setError({
                     ...errors,
                     [target.id]: 'Too short! Min. 3 chars.'
@@ -21755,10 +21755,10 @@ const Register = ()=>{
                 ...errors,
                 [target.id]: '✓'
             });
-            target.classNameList.remove('invalid');
+            target.classList.remove('invalid');
         } else if (target.id === 'password') {
             if (target.value.length < 8) {
-                target.classNameList.add('invalid');
+                target.classList.add('invalid');
                 setError({
                     ...errors,
                     [target.id]: 'Too short! Min. 8 chars.'
@@ -21769,10 +21769,10 @@ const Register = ()=>{
                 ...errors,
                 [target.id]: '✓'
             });
-            target.classNameList.remove('invalid');
+            target.classList.remove('invalid');
         } else if (target.id === 'password2') {
             if (target.value !== document.getElementById('password').value) {
-                target.classNameList.add('invalid');
+                target.classList.add('invalid');
                 setError({
                     ...errors,
                     [target.id]: 'Passwords must match!'
@@ -21783,10 +21783,10 @@ const Register = ()=>{
                 ...errors,
                 [target.id]: '✓'
             });
-            target.classNameList.remove('invalid');
+            target.classList.remove('invalid');
         } else if (target.id === 'email') {
             if (!/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(target.value)) {
-                target.classNameList.add('invalid');
+                target.classList.add('invalid');
                 setError({
                     ...errors,
                     [target.id]: 'Invalid email'
@@ -21797,15 +21797,8 @@ const Register = ()=>{
                 ...errors,
                 [target.id]: '✓'
             });
-            target.classNameList.remove('invalid');
+            target.classList.remove('invalid');
         }
-    };
-    const isValidForm = ()=>{
-        for (const input of Object.values(errors)){
-            console.log(input);
-            if (input !== '') return;
-        }
-        setValid(true);
     };
     const register = async (event)=>{
         event.preventDefault();
@@ -21827,18 +21820,30 @@ const Register = ()=>{
             ].find((input)=>input.id === 'password'
             ).value
         });
-        const response = await fetch('/register', {
+        const request = await fetch('/register', {
             method: 'post',
             headers: {
                 'Content-Type': "application/json"
             },
             body: JSON.stringify(newUser)
         });
-        console.log(await response.json());
+        const response = await request.json();
+        switch(response.status){
+            case 200:
+                changeRoute('login');
+                break;
+            case 409:
+                setError({
+                    ...errors,
+                    form: response.message
+                });
+        }
     };
     return export_default1.createElement("div", {
         className: "row"
-    }, export_default1.createElement("form", {
+    }, export_default1.createElement("span", {
+        className: "red-text"
+    }, errors.form), export_default1.createElement("form", {
         className: "col s12",
         onSubmit: register
     }, export_default1.createElement("div", {
@@ -21931,7 +21936,7 @@ const Login = ()=>{
         console.log(response);
         switch(response.status){
             case 200:
-                console.log(response.user);
+                window.location.reload();
                 break;
             default:
                 setError(response.message);
@@ -21973,14 +21978,14 @@ const Login = ()=>{
 };
 const Auth = ()=>{
     const [router, setRouter] = useState('login');
-    const changeRoute = (route)=>{
-        setRouter(route);
-        console.log(router);
-    };
-    return export_default1.createElement(export_default1.Fragment, null, router === 'login' ? export_default1.createElement(export_default1.Fragment, null, " ", export_default1.createElement(Login, null), " ", export_default1.createElement("span", {
-        onClick: ()=>changeRoute('login')
-    }, "Register"), " ") : export_default1.createElement(export_default1.Fragment, null, export_default1.createElement(Register, null), " ", export_default1.createElement("span", {
+    const changeRoute = (route)=>setRouter(route)
+    ;
+    return export_default1.createElement(export_default1.Fragment, null, router == 'login' ? export_default1.createElement(export_default1.Fragment, null, export_default1.createElement(Login, null), " ", export_default1.createElement("span", {
         onClick: ()=>changeRoute('register')
+    }, "Register"), " ") : export_default1.createElement(export_default1.Fragment, null, export_default1.createElement(Register, {
+        changeRoute: changeRoute
+    }), " ", export_default1.createElement("span", {
+        onClick: ()=>changeRoute('login')
     }, "Log in")));
 };
 const getTokenInfo = async ()=>{
@@ -21990,8 +21995,11 @@ const getTokenInfo = async ()=>{
                 'Content-Type': 'application/json'
             }
         });
-        const { user: user1  } = await request.json();
-        return user1;
+        const { user: user1 , documents  } = await request.json();
+        return {
+            user: user1,
+            documents
+        };
     } catch (error) {
         return false;
     }
@@ -22011,13 +22019,3338 @@ const UserTokenContext = (props)=>{
         value: user1
     }, props.children);
 };
-const App = ()=>{
-    const user1 = useContext(UserContext);
+const updateUser = async (newUser)=>fetch('/updateuser', {
+        method: 'put',
+        headers: {
+            'Content-Type': "application/json"
+        },
+        body: JSON.stringify(newUser)
+    })
+;
+function Nn(r, a, s) {
+    return a in r ? Object.defineProperty(r, a, {
+        value: s,
+        enumerable: !0,
+        configurable: !0,
+        writable: !0
+    }) : r[a] = s, r;
+}
+function hn(r, a) {
+    var s = Object.keys(r);
+    if (Object.getOwnPropertySymbols) {
+        var t = Object.getOwnPropertySymbols(r);
+        a && (t = t.filter(function(n) {
+            return Object.getOwnPropertyDescriptor(r, n).enumerable;
+        })), s.push.apply(s, t);
+    }
+    return s;
+}
+function An(r) {
+    for(var a = 1; a < arguments.length; a++){
+        var s = arguments[a] != null ? arguments[a] : {
+        };
+        a % 2 ? hn(Object(s), !0).forEach(function(t) {
+            Nn(r, t, s[t]);
+        }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(r, Object.getOwnPropertyDescriptors(s)) : hn(Object(s)).forEach(function(t) {
+            Object.defineProperty(r, t, Object.getOwnPropertyDescriptor(s, t));
+        });
+    }
+    return r;
+}
+function J(r, a) {
+    return En(r) || In(r, a) || Hn(r, a) || Bn();
+}
+function En(r) {
+    if (Array.isArray(r)) return r;
+}
+function In(r, a) {
+    if (typeof Symbol != "undefined" && Symbol.iterator in Object(r)) {
+        var s = [], t = !0, n = !1, e = void 0;
+        try {
+            for(var i1, o = r[Symbol.iterator](); !(t = (i1 = o.next()).done) && (s.push(i1.value), !a || s.length !== a); t = !0);
+        } catch (l1) {
+            n = !0, e = l1;
+        } finally{
+            try {
+                t || o.return == null || o.return();
+            } finally{
+                if (n) throw e;
+            }
+        }
+        return s;
+    }
+}
+function Hn(r, a) {
+    if (r) {
+        if (typeof r == "string") return mn(r, a);
+        var s = Object.prototype.toString.call(r).slice(8, -1);
+        return s === "Object" && r.constructor && (s = r.constructor.name), s === "Map" || s === "Set" ? Array.from(r) : s === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(s) ? mn(r, a) : void 0;
+    }
+}
+function mn(r, a) {
+    (a == null || a > r.length) && (a = r.length);
+    for(var s = 0, t = new Array(a); s < a; s++)t[s] = r[s];
+    return t;
+}
+function Bn() {
+    throw new TypeError(`Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.`);
+}
+function Cn(r) {
+    var a = {
+        exports: {
+        }
+    };
+    return r(a, a.exports), a.exports;
+}
+var W = Cn(function(r) {
+    var a, s, t = {
+    };
+    r.exports = t, t.parse = function(n, e) {
+        for(var i2 = t.bin.readUshort, o = t.bin.readUint, l1 = 0, c = {
+        }, A = new Uint8Array(n), h = A.length - 4; o(A, h) != 101010256;)h--;
+        l1 = h, l1 += 4;
+        var u = i2(A, l1 += 4), d = (i2(A, l1 += 2), o(A, l1 += 2)), m = o(A, l1 += 4);
+        l1 += 4, l1 = m;
+        for(var g = 0; g < u; g++){
+            o(A, l1), l1 += 4, l1 += 4, l1 += 4, o(A, l1 += 4), d = o(A, l1 += 4);
+            var v = o(A, l1 += 4), I = i2(A, l1 += 4), E = i2(A, l1 + 2), p = i2(A, l1 + 4);
+            l1 += 6;
+            var H = o(A, l1 += 8);
+            l1 += 4, l1 += I + E + p, t._readLocal(A, H, c, d, v, e);
+        }
+        return c;
+    }, t._readLocal = function(n, e, i2, o, l1, c) {
+        var A = t.bin.readUshort, h = t.bin.readUint, u = (h(n, e), A(n, e += 4), A(n, e += 2), A(n, e += 2));
+        h(n, e += 2), h(n, e += 4), e += 4;
+        var d = A(n, e += 8), m = A(n, e += 2);
+        e += 2;
+        var g = t.bin.readUTF8(n, e, d);
+        if (e += d, e += m, c) i2[g] = {
+            size: l1,
+            csize: o
+        };
+        else {
+            var v = new Uint8Array(n.buffer, e);
+            if (u == 0) i2[g] = new Uint8Array(v.buffer.slice(e, e + o));
+            else {
+                if (u != 8) throw "unknown compression method: " + u;
+                var I = new Uint8Array(l1);
+                t.inflateRaw(v, I), i2[g] = I;
+            }
+        }
+    }, t.inflateRaw = function(n, e) {
+        return t.F.inflate(n, e);
+    }, t.inflate = function(n, e) {
+        return n[0], n[1], t.inflateRaw(new Uint8Array(n.buffer, n.byteOffset + 2, n.length - 6), e);
+    }, t.deflate = function(n, e) {
+        e == null && (e = {
+            level: 6
+        });
+        var i2 = 0, o = new Uint8Array(50 + Math.floor(1.1 * n.length));
+        o[i2] = 120, o[i2 + 1] = 156, i2 += 2, i2 = t.F.deflateRaw(n, o, i2, e.level);
+        var l1 = t.adler(n, 0, n.length);
+        return o[i2 + 0] = l1 >>> 24 & 255, o[i2 + 1] = l1 >>> 16 & 255, o[i2 + 2] = l1 >>> 8 & 255, o[i2 + 3] = l1 >>> 0 & 255, new Uint8Array(o.buffer, 0, i2 + 4);
+    }, t.deflateRaw = function(n, e) {
+        e == null && (e = {
+            level: 6
+        });
+        var i2 = new Uint8Array(50 + Math.floor(1.1 * n.length)), o = t.F.deflateRaw(n, i2, o, e.level);
+        return new Uint8Array(i2.buffer, 0, o);
+    }, t.encode = function(n, e) {
+        e == null && (e = !1);
+        var i2 = 0, o = t.bin.writeUint, l1 = t.bin.writeUshort, c = {
+        };
+        for(var A in n){
+            var h = !t._noNeed(A) && !e, u = n[A], d = t.crc.crc(u, 0, u.length);
+            c[A] = {
+                cpr: h,
+                usize: u.length,
+                crc: d,
+                file: h ? t.deflateRaw(u) : u
+            };
+        }
+        for(var A in c)i2 += c[A].file.length + 30 + 46 + 2 * t.bin.sizeUTF8(A);
+        i2 += 22;
+        var m = new Uint8Array(i2), g = 0, v = [];
+        for(var A in c){
+            var I = c[A];
+            v.push(g), g = t._writeHeader(m, g, A, I, 0);
+        }
+        var E = 0, p = g;
+        for(var A in c)I = c[A], v.push(g), g = t._writeHeader(m, g, A, I, 1, v[E++]);
+        var H = g - p;
+        return o(m, g, 101010256), g += 4, l1(m, g += 4, E), l1(m, g += 2, E), o(m, g += 2, H), o(m, g += 4, p), g += 4, g += 2, m.buffer;
+    }, t._noNeed = function(n) {
+        var e = n.split(".").pop().toLowerCase();
+        return "png,jpg,jpeg,zip".indexOf(e) != -1;
+    }, t._writeHeader = function(n, e, i2, o, l1, c) {
+        var A = t.bin.writeUint, h = t.bin.writeUshort, u = o.file;
+        return A(n, e, l1 == 0 ? 67324752 : 33639248), e += 4, l1 == 1 && (e += 2), h(n, e, 20), h(n, e += 2, 0), h(n, e += 2, o.cpr ? 8 : 0), A(n, e += 2, 0), A(n, e += 4, o.crc), A(n, e += 4, u.length), A(n, e += 4, o.usize), h(n, e += 4, t.bin.sizeUTF8(i2)), h(n, e += 2, 0), e += 2, l1 == 1 && (e += 2, e += 2, A(n, e += 6, c), e += 4), e += t.bin.writeUTF8(n, e, i2), l1 == 0 && (n.set(u, e), e += u.length), e;
+    }, t.crc = {
+        table: (function() {
+            for(var n = new Uint32Array(256), e = 0; e < 256; e++){
+                for(var i2 = e, o = 0; o < 8; o++)1 & i2 ? i2 = 3988292384 ^ i2 >>> 1 : i2 >>>= 1;
+                n[e] = i2;
+            }
+            return n;
+        })(),
+        update: function(n, e, i3, o) {
+            for(var l1 = 0; l1 < o; l1++)n = t.crc.table[255 & (n ^ e[i3 + l1])] ^ n >>> 8;
+            return n;
+        },
+        crc: function(n, e, i3) {
+            return 4294967295 ^ t.crc.update(4294967295, n, e, i3);
+        }
+    }, t.adler = function(n, e, i3) {
+        for(var o = 1, l1 = 0, c = e, A = e + i3; c < A;){
+            for(var h = Math.min(c + 5552, A); c < h;)l1 += o += n[c++];
+            o %= 65521, l1 %= 65521;
+        }
+        return l1 << 16 | o;
+    }, t.bin = {
+        readUshort: function(n, e) {
+            return n[e] | n[e + 1] << 8;
+        },
+        writeUshort: function(n, e, i3) {
+            n[e] = 255 & i3, n[e + 1] = i3 >> 8 & 255;
+        },
+        readUint: function(n, e) {
+            return 16777216 * n[e + 3] + (n[e + 2] << 16 | n[e + 1] << 8 | n[e]);
+        },
+        writeUint: function(n, e, i3) {
+            n[e] = 255 & i3, n[e + 1] = i3 >> 8 & 255, n[e + 2] = i3 >> 16 & 255, n[e + 3] = i3 >> 24 & 255;
+        },
+        readASCII: function(n, e, i3) {
+            for(var o = "", l1 = 0; l1 < i3; l1++)o += String.fromCharCode(n[e + l1]);
+            return o;
+        },
+        writeASCII: function(n, e, i3) {
+            for(var o = 0; o < i3.length; o++)n[e + o] = i3.charCodeAt(o);
+        },
+        pad: function(n) {
+            return n.length < 2 ? "0" + n : n;
+        },
+        readUTF8: function(n, e, i3) {
+            for(var o, l1 = "", c = 0; c < i3; c++)l1 += "%" + t.bin.pad(n[e + c].toString(16));
+            try {
+                o = decodeURIComponent(l1);
+            } catch (A) {
+                return t.bin.readASCII(n, e, i3);
+            }
+            return o;
+        },
+        writeUTF8: function(n, e, i3) {
+            for(var o = i3.length, l1 = 0, c = 0; c < o; c++){
+                var A = i3.charCodeAt(c);
+                if ((4294967168 & A) == 0) n[e + l1] = A, l1++;
+                else if ((4294965248 & A) == 0) n[e + l1] = 192 | A >> 6, n[e + l1 + 1] = 128 | A >> 0 & 63, l1 += 2;
+                else if ((4294901760 & A) == 0) n[e + l1] = 224 | A >> 12, n[e + l1 + 1] = 128 | A >> 6 & 63, n[e + l1 + 2] = 128 | A >> 0 & 63, l1 += 3;
+                else {
+                    if ((4292870144 & A) != 0) throw "e";
+                    n[e + l1] = 240 | A >> 18, n[e + l1 + 1] = 128 | A >> 12 & 63, n[e + l1 + 2] = 128 | A >> 6 & 63, n[e + l1 + 3] = 128 | A >> 0 & 63, l1 += 4;
+                }
+            }
+            return l1;
+        },
+        sizeUTF8: function(n) {
+            for(var e = n.length, i3 = 0, o = 0; o < e; o++){
+                var l1 = n.charCodeAt(o);
+                if ((4294967168 & l1) == 0) i3++;
+                else if ((4294965248 & l1) == 0) i3 += 2;
+                else if ((4294901760 & l1) == 0) i3 += 3;
+                else {
+                    if ((4292870144 & l1) != 0) throw "e";
+                    i3 += 4;
+                }
+            }
+            return i3;
+        }
+    }, t.F = {
+    }, t.F.deflateRaw = function(n, e, i3, o) {
+        var l2 = [
+            [
+                0,
+                0,
+                0,
+                0,
+                0
+            ],
+            [
+                4,
+                4,
+                8,
+                4,
+                0
+            ],
+            [
+                4,
+                5,
+                16,
+                8,
+                0
+            ],
+            [
+                4,
+                6,
+                16,
+                16,
+                0
+            ],
+            [
+                4,
+                10,
+                16,
+                32,
+                0
+            ],
+            [
+                8,
+                16,
+                32,
+                32,
+                0
+            ],
+            [
+                8,
+                16,
+                128,
+                128,
+                0
+            ],
+            [
+                8,
+                32,
+                128,
+                256,
+                0
+            ],
+            [
+                32,
+                128,
+                258,
+                1024,
+                1
+            ],
+            [
+                32,
+                258,
+                258,
+                4096,
+                1
+            ]
+        ][o], c = t.F.U, A = t.F._goodIndex, h = (t.F._hash, t.F._putsE), u = 0, d = i3 << 3, m = 0, g = n.length;
+        if (o == 0) {
+            for(; u < g;)h(e, d, u + (C = Math.min(65535, g - u)) == g ? 1 : 0), d = t.F._copyExact(n, u, C, e, d + 8), u += C;
+            return d >>> 3;
+        }
+        var v = c.lits, I = c.strt, E = c.prev, p = 0, H = 0, _ = 0, b = 0, U = 0, F = 0;
+        for(g > 2 && (I[F = t.F._hash(n, 0)] = 0), u = 0; u < g; u++){
+            if (U = F, u + 1 < g - 2) {
+                F = t.F._hash(n, u + 1);
+                var y = u + 1 & 32767;
+                E[y] = I[F], I[F] = y;
+            }
+            if (m <= u) {
+                (p > 14000 || H > 26697) && g - u > 100 && (m < u && (v[p] = u - m, p += 2, m = u), d = t.F._writeBlock(u == g - 1 || m == g ? 1 : 0, v, p, b, n, _, u - _, e, d), p = H = b = 0, _ = u);
+                var N = 0;
+                u < g - 2 && (N = t.F._bestMatch(n, u, E, U, Math.min(l2[2], g - u), l2[3]));
+                var C = N >>> 16, B = 65535 & N;
+                if (N != 0) {
+                    B = 65535 & N;
+                    var P = A(C = N >>> 16, c.of0);
+                    c.lhst[257 + P]++;
+                    var Q = A(B, c.df0);
+                    c.dhst[Q]++, b += c.exb[P] + c.dxb[Q], v[p] = C << 23 | u - m, v[p + 1] = B << 16 | P << 8 | Q, p += 2, m = u + C;
+                } else c.lhst[n[u]]++;
+                H++;
+            }
+        }
+        for(_ == u && n.length != 0 || (m < u && (v[p] = u - m, p += 2, m = u), d = t.F._writeBlock(1, v, p, b, n, _, u - _, e, d), p = 0, H = 0, p = H = b = 0, _ = u); (7 & d) != 0;)d++;
+        return d >>> 3;
+    }, t.F._bestMatch = function(n, e, i3, o, l2, c) {
+        var A = 32767 & e, h = i3[A], u = A - h + 32768 & 32767;
+        if (h == A || o != t.F._hash(n, e - u)) return 0;
+        for(var d = 0, m = 0, g = Math.min(32767, e); u <= g && (--c) != 0 && h != A;){
+            if (d == 0 || n[e + d] == n[e + d - u]) {
+                var v = t.F._howLong(n, e, u);
+                if (v > d) {
+                    if (m = u, (d = v) >= l2) break;
+                    u + 2 < v && (v = u + 2);
+                    for(var I = 0, E = 0; E < v - 2; E++){
+                        var p = e - u + E + 32768 & 32767, H = p - i3[p] + 32768 & 32767;
+                        H > I && (I = H, h = p);
+                    }
+                }
+            }
+            u += (A = h) - (h = i3[A]) + 32768 & 32767;
+        }
+        return d << 16 | m;
+    }, t.F._howLong = function(n, e, i3) {
+        if (n[e] != n[e - i3] || n[e + 1] != n[e + 1 - i3] || n[e + 2] != n[e + 2 - i3]) return 0;
+        var o = e, l2 = Math.min(n.length, e + 258);
+        for(e += 3; e < l2 && n[e] == n[e - i3];)e++;
+        return e - o;
+    }, t.F._hash = function(n, e) {
+        return (n[e] << 8 | n[e + 1]) + (n[e + 2] << 4) & 65535;
+    }, t.saved = 0, t.F._writeBlock = function(n, e, i3, o, l2, c, A, h, u) {
+        var d, m, g, v, I, E, p, H, _, b = t.F.U, U = t.F._putsF, F = t.F._putsE;
+        b.lhst[256]++, m = (d = t.F.getTrees())[0], g = d[1], v = d[2], I = d[3], E = d[4], p = d[5], H = d[6], _ = d[7];
+        var y = 32 + ((u + 3 & 7) == 0 ? 0 : 8 - (u + 3 & 7)) + (A << 3), N = o + t.F.contSize(b.fltree, b.lhst) + t.F.contSize(b.fdtree, b.dhst), C = o + t.F.contSize(b.ltree, b.lhst) + t.F.contSize(b.dtree, b.dhst);
+        C += 14 + 3 * p + t.F.contSize(b.itree, b.ihst) + (2 * b.ihst[16] + 3 * b.ihst[17] + 7 * b.ihst[18]);
+        for(var B = 0; B < 286; B++)b.lhst[B] = 0;
+        for(B = 0; B < 30; B++)b.dhst[B] = 0;
+        for(B = 0; B < 19; B++)b.ihst[B] = 0;
+        var P = y < N && y < C ? 0 : N < C ? 1 : 2;
+        if (U(h, u, n), U(h, u + 1, P), u += 3, P == 0) {
+            for(; (7 & u) != 0;)u++;
+            u = t.F._copyExact(l2, c, A, h, u);
+        } else {
+            var Q, R;
+            if (P == 1 && (Q = b.fltree, R = b.fdtree), P == 2) {
+                t.F.makeCodes(b.ltree, m), t.F.revCodes(b.ltree, m), t.F.makeCodes(b.dtree, g), t.F.revCodes(b.dtree, g), t.F.makeCodes(b.itree, v), t.F.revCodes(b.itree, v), Q = b.ltree, R = b.dtree, F(h, u, I - 257), F(h, u += 5, E - 1), F(h, u += 5, p - 4), u += 4;
+                for(var M = 0; M < p; M++)F(h, u + 3 * M, b.itree[1 + (b.ordr[M] << 1)]);
+                u += 3 * p, u = t.F._codeTiny(H, b.itree, h, u), u = t.F._codeTiny(_, b.itree, h, u);
+            }
+            for(var x = c, z = 0; z < i3; z += 2){
+                for(var D = e[z], V = D >>> 23, q = x + (8388607 & D); x < q;)u = t.F._writeLit(l2[x++], Q, h, u);
+                if (V != 0) {
+                    var j = e[z + 1], L = j >> 16, O = j >> 8 & 255, k = 255 & j;
+                    F(h, u = t.F._writeLit(257 + O, Q, h, u), V - b.of0[O]), u += b.exb[O], U(h, u = t.F._writeLit(k, R, h, u), L - b.df0[k]), u += b.dxb[k], x += V;
+                }
+            }
+            u = t.F._writeLit(256, Q, h, u);
+        }
+        return u;
+    }, t.F._copyExact = function(n, e, i3, o, l2) {
+        var c = l2 >>> 3;
+        return o[c] = i3, o[c + 1] = i3 >>> 8, o[c + 2] = 255 - o[c], o[c + 3] = 255 - o[c + 1], c += 4, o.set(new Uint8Array(n.buffer, e, i3), c), l2 + (i3 + 4 << 3);
+    }, t.F.getTrees = function() {
+        for(var n = t.F.U, e = t.F._hufTree(n.lhst, n.ltree, 15), i3 = t.F._hufTree(n.dhst, n.dtree, 15), o = [], l2 = t.F._lenCodes(n.ltree, o), c = [], A = t.F._lenCodes(n.dtree, c), h = 0; h < o.length; h += 2)n.ihst[o[h]]++;
+        for(h = 0; h < c.length; h += 2)n.ihst[c[h]]++;
+        for(var u = t.F._hufTree(n.ihst, n.itree, 7), d = 19; d > 4 && n.itree[1 + (n.ordr[d - 1] << 1)] == 0;)d--;
+        return [
+            e,
+            i3,
+            u,
+            l2,
+            A,
+            d,
+            o,
+            c
+        ];
+    }, t.F.getSecond = function(n) {
+        for(var e = [], i3 = 0; i3 < n.length; i3 += 2)e.push(n[i3 + 1]);
+        return e;
+    }, t.F.nonZero = function(n) {
+        for(var e = "", i3 = 0; i3 < n.length; i3 += 2)n[i3 + 1] != 0 && (e += (i3 >> 1) + ",");
+        return e;
+    }, t.F.contSize = function(n, e) {
+        for(var i3 = 0, o = 0; o < e.length; o++)i3 += e[o] * n[1 + (o << 1)];
+        return i3;
+    }, t.F._codeTiny = function(n, e, i3, o) {
+        for(var l2 = 0; l2 < n.length; l2 += 2){
+            var c = n[l2], A = n[l2 + 1];
+            o = t.F._writeLit(c, e, i3, o);
+            var h = c == 16 ? 2 : c == 17 ? 3 : 7;
+            c > 15 && (t.F._putsE(i3, o, A, h), o += h);
+        }
+        return o;
+    }, t.F._lenCodes = function(n, e) {
+        for(var i3 = n.length; i3 != 2 && n[i3 - 1] == 0;)i3 -= 2;
+        for(var o = 0; o < i3; o += 2){
+            var l2 = n[o + 1], c = o + 3 < i3 ? n[o + 3] : -1, A = o + 5 < i3 ? n[o + 5] : -1, h = o == 0 ? -1 : n[o - 1];
+            if (l2 == 0 && c == l2 && A == l2) {
+                for(var u = o + 5; u + 2 < i3 && n[u + 2] == l2;)u += 2;
+                (d = Math.min(u + 1 - o >>> 1, 138)) < 11 ? e.push(17, d - 3) : e.push(18, d - 11), o += 2 * d - 2;
+            } else if (l2 == h && c == l2 && A == l2) {
+                for(u = o + 5; u + 2 < i3 && n[u + 2] == l2;)u += 2;
+                var d = Math.min(u + 1 - o >>> 1, 6);
+                e.push(16, d - 3), o += 2 * d - 2;
+            } else e.push(l2, 0);
+        }
+        return i3 >>> 1;
+    }, t.F._hufTree = function(n, e, i3) {
+        var o = [], l3 = n.length, c = e.length, A = 0;
+        for(A = 0; A < c; A += 2)e[A] = 0, e[A + 1] = 0;
+        for(A = 0; A < l3; A++)n[A] != 0 && o.push({
+            lit: A,
+            f: n[A]
+        });
+        var h = o.length, u = o.slice(0);
+        if (h == 0) return 0;
+        if (h == 1) {
+            var d = o[0].lit;
+            return u = d == 0 ? 1 : 0, e[1 + (d << 1)] = 1, e[1 + (u << 1)] = 1, 1;
+        }
+        o.sort(function(H, _) {
+            return H.f - _.f;
+        });
+        var m = o[0], g = o[1], v = 0, I = 1, E = 2;
+        for(o[0] = {
+            lit: -1,
+            f: m.f + g.f,
+            l: m,
+            r: g,
+            d: 0
+        }; I != h - 1;)m = v != I && (E == h || o[v].f < o[E].f) ? o[v++] : o[E++], g = v != I && (E == h || o[v].f < o[E].f) ? o[v++] : o[E++], o[I++] = {
+            lit: -1,
+            f: m.f + g.f,
+            l: m,
+            r: g
+        };
+        var p = t.F.setDepth(o[I - 1], 0);
+        for(p > i3 && (t.F.restrictDepth(u, i3, p), p = i3), A = 0; A < h; A++)e[1 + (u[A].lit << 1)] = u[A].d;
+        return p;
+    }, t.F.setDepth = function(n, e) {
+        return n.lit != -1 ? (n.d = e, e) : Math.max(t.F.setDepth(n.l, e + 1), t.F.setDepth(n.r, e + 1));
+    }, t.F.restrictDepth = function(n, e, i3) {
+        var o = 0, l3 = 1 << i3 - e, c = 0;
+        for(n.sort(function(h, u) {
+            return u.d == h.d ? h.f - u.f : u.d - h.d;
+        }), o = 0; o < n.length && n[o].d > e; o++){
+            var A = n[o].d;
+            n[o].d = e, c += l3 - (1 << i3 - A);
+        }
+        for(c >>>= i3 - e; c > 0;)(A = n[o].d) < e ? (n[o].d++, c -= 1 << e - A - 1) : o++;
+        for(; o >= 0; o--)n[o].d == e && c < 0 && (n[o].d--, c++);
+        c != 0 && console.log("debt left");
+    }, t.F._goodIndex = function(n, e) {
+        var i3 = 0;
+        return e[16 | i3] <= n && (i3 |= 16), e[8 | i3] <= n && (i3 |= 8), e[4 | i3] <= n && (i3 |= 4), e[2 | i3] <= n && (i3 |= 2), e[1 | i3] <= n && (i3 |= 1), i3;
+    }, t.F._writeLit = function(n, e, i3, o) {
+        return t.F._putsF(i3, o, e[n << 1]), o + e[1 + (n << 1)];
+    }, t.F.inflate = function(n, e) {
+        var i3 = Uint8Array;
+        if (n[0] == 3 && n[1] == 0) return e || new i3(0);
+        var o = t.F, l3 = o._bitsF, c = o._bitsE, A = o._decodeTiny, h = o.makeCodes, u = o.codes2map, d = o._get17, m = o.U, g = e == null;
+        g && (e = new i3(n.length >>> 2 << 3));
+        for(var v, I, E = 0, p = 0, H = 0, _ = 0, b = 0, U = 0, F = 0, y = 0, N = 0; E == 0;)if (E = l3(n, N, 1), p = l3(n, N + 1, 2), N += 3, p != 0) {
+            if (g && (e = t.F._check(e, y + (1 << 17))), p == 1 && (v = m.flmap, I = m.fdmap, U = 511, F = 31), p == 2) {
+                H = c(n, N, 5) + 257, _ = c(n, N + 5, 5) + 1, b = c(n, N + 10, 4) + 4, N += 14;
+                for(var C = 0; C < 38; C += 2)m.itree[C] = 0, m.itree[C + 1] = 0;
+                var B = 1;
+                for(C = 0; C < b; C++){
+                    var P = c(n, N + 3 * C, 3);
+                    m.itree[1 + (m.ordr[C] << 1)] = P, P > B && (B = P);
+                }
+                N += 3 * b, h(m.itree, B), u(m.itree, B, m.imap), v = m.lmap, I = m.dmap, N = A(m.imap, (1 << B) - 1, H + _, n, N, m.ttree);
+                var Q = o._copyOut(m.ttree, 0, H, m.ltree);
+                U = (1 << Q) - 1;
+                var R = o._copyOut(m.ttree, H, _, m.dtree);
+                F = (1 << R) - 1, h(m.ltree, Q), u(m.ltree, Q, v), h(m.dtree, R), u(m.dtree, R, I);
+            }
+            for(;;){
+                var M = v[d(n, N) & U];
+                N += 15 & M;
+                var x = M >>> 4;
+                if (x >>> 8 == 0) e[y++] = x;
+                else {
+                    if (x == 256) break;
+                    var z = y + x - 254;
+                    if (x > 264) {
+                        var D = m.ldef[x - 257];
+                        z = y + (D >>> 3) + c(n, N, 7 & D), N += 7 & D;
+                    }
+                    var V = I[d(n, N) & F];
+                    N += 15 & V;
+                    var q = V >>> 4, j = m.ddef[q], L = (j >>> 4) + l3(n, N, 15 & j);
+                    for(N += 15 & j, g && (e = t.F._check(e, y + (1 << 17))); y < z;)e[y] = e[(y++) - L], e[y] = e[(y++) - L], e[y] = e[(y++) - L], e[y] = e[(y++) - L];
+                    y = z;
+                }
+            }
+        } else {
+            (7 & N) != 0 && (N += 8 - (7 & N));
+            var O = 4 + (N >>> 3), k = n[O - 4] | n[O - 3] << 8;
+            g && (e = t.F._check(e, y + k)), e.set(new i3(n.buffer, n.byteOffset + O, k), y), N = O + k << 3, y += k;
+        }
+        return e.length == y ? e : e.slice(0, y);
+    }, t.F._check = function(n, e) {
+        var i3 = n.length;
+        if (e <= i3) return n;
+        var o = new Uint8Array(Math.max(i3 << 1, e));
+        return o.set(n, 0), o;
+    }, t.F._decodeTiny = function(n, e, i3, o, l3, c) {
+        for(var A = t.F._bitsE, h = t.F._get17, u = 0; u < i3;){
+            var d = n[h(o, l3) & e];
+            l3 += 15 & d;
+            var m = d >>> 4;
+            if (m <= 15) c[u] = m, u++;
+            else {
+                var g = 0, v = 0;
+                m == 16 ? (v = 3 + A(o, l3, 2), l3 += 2, g = c[u - 1]) : m == 17 ? (v = 3 + A(o, l3, 3), l3 += 3) : m == 18 && (v = 11 + A(o, l3, 7), l3 += 7);
+                for(var I = u + v; u < I;)c[u] = g, u++;
+            }
+        }
+        return l3;
+    }, t.F._copyOut = function(n, e, i3, o) {
+        for(var l3 = 0, c = 0, A = o.length >>> 1; c < i3;){
+            var h = n[c + e];
+            o[c << 1] = 0, o[1 + (c << 1)] = h, h > l3 && (l3 = h), c++;
+        }
+        for(; c < A;)o[c << 1] = 0, o[1 + (c << 1)] = 0, c++;
+        return l3;
+    }, t.F.makeCodes = function(n, e) {
+        for(var i3, o, l3, c, A = t.F.U, h = n.length, u = A.bl_count, d = 0; d <= e; d++)u[d] = 0;
+        for(d = 1; d < h; d += 2)u[n[d]]++;
+        var m = A.next_code;
+        for(i3 = 0, u[0] = 0, o = 1; o <= e; o++)i3 = i3 + u[o - 1] << 1, m[o] = i3;
+        for(l3 = 0; l3 < h; l3 += 2)(c = n[l3 + 1]) != 0 && (n[l3] = m[c], m[c]++);
+    }, t.F.codes2map = function(n, e, i3) {
+        for(var o = n.length, l3 = t.F.U.rev15, c = 0; c < o; c += 2)if (n[c + 1] != 0) for(var A = c >> 1, h = n[c + 1], u = A << 4 | h, d = e - h, m = n[c] << d, g = m + (1 << d); m != g;)i3[l3[m] >>> 15 - e] = u, m++;
+    }, t.F.revCodes = function(n, e) {
+        for(var i3 = t.F.U.rev15, o = 15 - e, l3 = 0; l3 < n.length; l3 += 2){
+            var c = n[l3] << e - n[l3 + 1];
+            n[l3] = i3[c] >>> o;
+        }
+    }, t.F._putsE = function(n, e, i3) {
+        i3 <<= 7 & e;
+        var o = e >>> 3;
+        n[o] |= i3, n[o + 1] |= i3 >>> 8;
+    }, t.F._putsF = function(n, e, i3) {
+        i3 <<= 7 & e;
+        var o = e >>> 3;
+        n[o] |= i3, n[o + 1] |= i3 >>> 8, n[o + 2] |= i3 >>> 16;
+    }, t.F._bitsE = function(n, e, i3) {
+        return (n[e >>> 3] | n[1 + (e >>> 3)] << 8) >>> (7 & e) & (1 << i3) - 1;
+    }, t.F._bitsF = function(n, e, i3) {
+        return (n[e >>> 3] | n[1 + (e >>> 3)] << 8 | n[2 + (e >>> 3)] << 16) >>> (7 & e) & (1 << i3) - 1;
+    }, t.F._get17 = function(n, e) {
+        return (n[e >>> 3] | n[1 + (e >>> 3)] << 8 | n[2 + (e >>> 3)] << 16) >>> (7 & e);
+    }, t.F._get25 = function(n, e) {
+        return (n[e >>> 3] | n[1 + (e >>> 3)] << 8 | n[2 + (e >>> 3)] << 16 | n[3 + (e >>> 3)] << 24) >>> (7 & e);
+    }, t.F.U = (a = Uint16Array, s = Uint32Array, {
+        next_code: new a(16),
+        bl_count: new a(16),
+        ordr: [
+            16,
+            17,
+            18,
+            0,
+            8,
+            7,
+            9,
+            6,
+            10,
+            5,
+            11,
+            4,
+            12,
+            3,
+            13,
+            2,
+            14,
+            1,
+            15
+        ],
+        of0: [
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            13,
+            15,
+            17,
+            19,
+            23,
+            27,
+            31,
+            35,
+            43,
+            51,
+            59,
+            67,
+            83,
+            99,
+            115,
+            131,
+            163,
+            195,
+            227,
+            258,
+            999,
+            999,
+            999
+        ],
+        exb: [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            1,
+            1,
+            1,
+            2,
+            2,
+            2,
+            2,
+            3,
+            3,
+            3,
+            3,
+            4,
+            4,
+            4,
+            4,
+            5,
+            5,
+            5,
+            5,
+            0,
+            0,
+            0,
+            0
+        ],
+        ldef: new a(32),
+        df0: [
+            1,
+            2,
+            3,
+            4,
+            5,
+            7,
+            9,
+            13,
+            17,
+            25,
+            33,
+            49,
+            65,
+            97,
+            129,
+            193,
+            257,
+            385,
+            513,
+            769,
+            1025,
+            1537,
+            2049,
+            3073,
+            4097,
+            6145,
+            8193,
+            12289,
+            16385,
+            24577,
+            65535,
+            65535
+        ],
+        dxb: [
+            0,
+            0,
+            0,
+            0,
+            1,
+            1,
+            2,
+            2,
+            3,
+            3,
+            4,
+            4,
+            5,
+            5,
+            6,
+            6,
+            7,
+            7,
+            8,
+            8,
+            9,
+            9,
+            10,
+            10,
+            11,
+            11,
+            12,
+            12,
+            13,
+            13,
+            0,
+            0
+        ],
+        ddef: new s(32),
+        flmap: new a(512),
+        fltree: [],
+        fdmap: new a(32),
+        fdtree: [],
+        lmap: new a(32768),
+        ltree: [],
+        ttree: [],
+        dmap: new a(32768),
+        dtree: [],
+        imap: new a(512),
+        itree: [],
+        rev15: new a(32768),
+        lhst: new s(286),
+        dhst: new s(30),
+        ihst: new s(19),
+        lits: new s(15000),
+        strt: new a(65536),
+        prev: new a(32768)
+    }), (function() {
+        for(var n = t.F.U, e = 0; e < 32768; e++){
+            var i3 = e;
+            i3 = (4278255360 & (i3 = (4042322160 & (i3 = (3435973836 & (i3 = (2863311530 & i3) >>> 1 | (1431655765 & i3) << 1)) >>> 2 | (858993459 & i3) << 2)) >>> 4 | (252645135 & i3) << 4)) >>> 8 | (16711935 & i3) << 8, n.rev15[e] = (i3 >>> 16 | i3 << 16) >>> 17;
+        }
+        function o(l3, c, A) {
+            for(; (c--) != 0;)l3.push(0, A);
+        }
+        for(e = 0; e < 32; e++)n.ldef[e] = n.of0[e] << 3 | n.exb[e], n.ddef[e] = n.df0[e] << 4 | n.dxb[e];
+        o(n.fltree, 144, 8), o(n.fltree, 112, 9), o(n.fltree, 24, 7), o(n.fltree, 8, 8), t.F.makeCodes(n.fltree, 9), t.F.codes2map(n.fltree, 9, n.flmap), t.F.revCodes(n.fltree, 9), o(n.fdtree, 32, 5), t.F.makeCodes(n.fdtree, 5), t.F.codes2map(n.fdtree, 5, n.fdmap), t.F.revCodes(n.fdtree, 5), o(n.itree, 19, 0), o(n.ltree, 286, 0), o(n.dtree, 30, 0), o(n.ttree, 320, 0);
+    })();
+}), Qn = Object.freeze(Object.assign(Object.create(null), W, {
+    default: W
+})), w = {
+}, G, X, T;
+w.toRGBA8 = function(r) {
+    var a = r.width, s = r.height;
+    if (r.tabs.acTL == null) return [
+        w.toRGBA8.decodeImage(r.data, a, s, r).buffer
+    ];
+    var t = [];
+    r.frames[0].data == null && (r.frames[0].data = r.data);
+    for(var n = a * s * 4, e = new Uint8Array(n), i4 = new Uint8Array(n), o = new Uint8Array(n), l3 = 0; l3 < r.frames.length; l3++){
+        var c = r.frames[l3], A = c.rect.x, h = c.rect.y, u = c.rect.width, d = c.rect.height, m = w.toRGBA8.decodeImage(c.data, u, d, r);
+        if (l3 != 0) for(var g = 0; g < n; g++)o[g] = e[g];
+        if (c.blend == 0 ? w._copyTile(m, u, d, e, a, s, A, h, 0) : c.blend == 1 && w._copyTile(m, u, d, e, a, s, A, h, 1), t.push(e.buffer.slice(0)), c.dispose != 0) {
+            if (c.dispose == 1) w._copyTile(i4, u, d, e, a, s, A, h, 0);
+            else if (c.dispose == 2) for(g = 0; g < n; g++)e[g] = o[g];
+        }
+    }
+    return t;
+}, w.toRGBA8.decodeImage = function(r, a, s, t) {
+    var n = a * s, e = w.decode._getBPP(t), i4 = Math.ceil(a * e / 8), o = new Uint8Array(4 * n), l3 = new Uint32Array(o.buffer), c = t.ctype, A = t.depth, h = w._bin.readUshort;
+    if (c == 6) {
+        var u = n << 2;
+        if (A == 8) for(var d = 0; d < u; d += 4)o[d] = r[d], o[d + 1] = r[d + 1], o[d + 2] = r[d + 2], o[d + 3] = r[d + 3];
+        if (A == 16) for(d = 0; d < u; d++)o[d] = r[d << 1];
+    } else if (c == 2) {
+        var m = t.tabs.tRNS;
+        if (m == null) {
+            if (A == 8) for(d = 0; d < n; d++){
+                var g = 3 * d;
+                l3[d] = 255 << 24 | r[g + 2] << 16 | r[g + 1] << 8 | r[g];
+            }
+            if (A == 16) for(d = 0; d < n; d++)g = 6 * d, l3[d] = 255 << 24 | r[g + 4] << 16 | r[g + 2] << 8 | r[g];
+        } else {
+            var v = m[0], I = m[1], E = m[2];
+            if (A == 8) for(d = 0; d < n; d++){
+                var p = d << 2;
+                g = 3 * d, l3[d] = 255 << 24 | r[g + 2] << 16 | r[g + 1] << 8 | r[g], r[g] == v && r[g + 1] == I && r[g + 2] == E && (o[p + 3] = 0);
+            }
+            if (A == 16) for(d = 0; d < n; d++)p = d << 2, g = 6 * d, l3[d] = 255 << 24 | r[g + 4] << 16 | r[g + 2] << 8 | r[g], h(r, g) == v && h(r, g + 2) == I && h(r, g + 4) == E && (o[p + 3] = 0);
+        }
+    } else if (c == 3) {
+        var H = t.tabs.PLTE, _ = t.tabs.tRNS, b = _ ? _.length : 0;
+        if (A == 1) for(var U = 0; U < s; U++){
+            var F = U * i4, y = U * a;
+            for(d = 0; d < a; d++){
+                p = y + d << 2;
+                var N = 3 * (C = r[F + (d >> 3)] >> 7 - ((7 & d) << 0) & 1);
+                o[p] = H[N], o[p + 1] = H[N + 1], o[p + 2] = H[N + 2], o[p + 3] = C < b ? _[C] : 255;
+            }
+        }
+        if (A == 2) for(U = 0; U < s; U++)for(F = U * i4, y = U * a, d = 0; d < a; d++)p = y + d << 2, N = 3 * (C = r[F + (d >> 2)] >> 6 - ((3 & d) << 1) & 3), o[p] = H[N], o[p + 1] = H[N + 1], o[p + 2] = H[N + 2], o[p + 3] = C < b ? _[C] : 255;
+        if (A == 4) for(U = 0; U < s; U++)for(F = U * i4, y = U * a, d = 0; d < a; d++)p = y + d << 2, N = 3 * (C = r[F + (d >> 1)] >> 4 - ((1 & d) << 2) & 15), o[p] = H[N], o[p + 1] = H[N + 1], o[p + 2] = H[N + 2], o[p + 3] = C < b ? _[C] : 255;
+        if (A == 8) for(d = 0; d < n; d++){
+            var C;
+            p = d << 2, N = 3 * (C = r[d]), o[p] = H[N], o[p + 1] = H[N + 1], o[p + 2] = H[N + 2], o[p + 3] = C < b ? _[C] : 255;
+        }
+    } else if (c == 4) {
+        if (A == 8) for(d = 0; d < n; d++){
+            p = d << 2;
+            var B = r[P = d << 1];
+            o[p] = B, o[p + 1] = B, o[p + 2] = B, o[p + 3] = r[P + 1];
+        }
+        if (A == 16) for(d = 0; d < n; d++){
+            var P;
+            p = d << 2, B = r[P = d << 2], o[p] = B, o[p + 1] = B, o[p + 2] = B, o[p + 3] = r[P + 2];
+        }
+    } else if (c == 0) for(v = t.tabs.tRNS ? t.tabs.tRNS : -1, U = 0; U < s; U++){
+        var Q = U * i4, R = U * a;
+        if (A == 1) for(var M = 0; M < a; M++){
+            var x = (B = 255 * (r[Q + (M >>> 3)] >>> 7 - (7 & M) & 1)) == 255 * v ? 0 : 255;
+            l3[R + M] = x << 24 | B << 16 | B << 8 | B;
+        }
+        else if (A == 2) for(M = 0; M < a; M++)x = (B = 85 * (r[Q + (M >>> 2)] >>> 6 - ((3 & M) << 1) & 3)) == 85 * v ? 0 : 255, l3[R + M] = x << 24 | B << 16 | B << 8 | B;
+        else if (A == 4) for(M = 0; M < a; M++)x = (B = 17 * (r[Q + (M >>> 1)] >>> 4 - ((1 & M) << 2) & 15)) == 17 * v ? 0 : 255, l3[R + M] = x << 24 | B << 16 | B << 8 | B;
+        else if (A == 8) for(M = 0; M < a; M++)x = (B = r[Q + M]) == v ? 0 : 255, l3[R + M] = x << 24 | B << 16 | B << 8 | B;
+        else if (A == 16) for(M = 0; M < a; M++)B = r[Q + (M << 1)], x = h(r, Q + (M << d)) == v ? 0 : 255, l3[R + M] = x << 24 | B << 16 | B << 8 | B;
+    }
+    return o;
+}, w.decode = function(r) {
+    for(var a, s = new Uint8Array(r), t = 8, n = w._bin, e = n.readUshort, i4 = n.readUint, o = {
+        tabs: {
+        },
+        frames: []
+    }, l3 = new Uint8Array(s.length), c = 0, A = 0, h = [
+        137,
+        80,
+        78,
+        71,
+        13,
+        10,
+        26,
+        10
+    ], u = 0; u < 8; u++)if (s[u] != h[u]) throw "The input is not a PNG file!";
+    for(; t < s.length;){
+        var d = n.readUint(s, t);
+        t += 4;
+        var m = n.readASCII(s, t, 4);
+        if (t += 4, m == "IHDR") w.decode._IHDR(s, t, o);
+        else if (m == "CgBI") o.tabs[m] = s.slice(t, t + 4);
+        else if (m == "IDAT") {
+            for(u = 0; u < d; u++)l3[c + u] = s[t + u];
+            c += d;
+        } else if (m == "acTL") o.tabs[m] = {
+            num_frames: i4(s, t),
+            num_plays: i4(s, t + 4)
+        }, a = new Uint8Array(s.length);
+        else if (m == "fcTL") {
+            var g;
+            A != 0 && ((g = o.frames[o.frames.length - 1]).data = w.decode._decompress(o, a.slice(0, A), g.rect.width, g.rect.height), A = 0);
+            var v = {
+                x: i4(s, t + 12),
+                y: i4(s, t + 16),
+                width: i4(s, t + 4),
+                height: i4(s, t + 8)
+            }, I = e(s, t + 22);
+            I = e(s, t + 20) / (I == 0 ? 100 : I);
+            var E = {
+                rect: v,
+                delay: Math.round(1000 * I),
+                dispose: s[t + 24],
+                blend: s[t + 25]
+            };
+            o.frames.push(E);
+        } else if (m == "fdAT") {
+            for(u = 0; u < d - 4; u++)a[A + u] = s[t + u + 4];
+            A += d - 4;
+        } else if (m == "pHYs") o.tabs[m] = [
+            n.readUint(s, t),
+            n.readUint(s, t + 4),
+            s[t + 8]
+        ];
+        else if (m == "cHRM") for(o.tabs[m] = [], u = 0; u < 8; u++)o.tabs[m].push(n.readUint(s, t + 4 * u));
+        else if (m == "tEXt" || m == "zTXt") {
+            o.tabs[m] == null && (o.tabs[m] = {
+            });
+            var p = n.nextZero(s, t), H = n.readASCII(s, t, p - t), _ = t + d - p - 1;
+            if (m == "tEXt") y = n.readASCII(s, p + 1, _);
+            else {
+                var b = w.decode._inflate(s.slice(p + 2, p + 2 + _));
+                y = n.readUTF8(b, 0, b.length);
+            }
+            o.tabs[m][H] = y;
+        } else if (m == "iTXt") {
+            o.tabs[m] == null && (o.tabs[m] = {
+            }), p = 0;
+            var U = t;
+            p = n.nextZero(s, U), H = n.readASCII(s, U, p - U);
+            var F = s[U = p + 1];
+            U += 2, p = n.nextZero(s, U), n.readASCII(s, U, p - U), U = p + 1, p = n.nextZero(s, U);
+            var y;
+            n.readUTF8(s, U, p - U), _ = d - ((U = p + 1) - t), F == 0 ? y = n.readUTF8(s, U, _) : (b = w.decode._inflate(s.slice(U, U + _)), y = n.readUTF8(b, 0, b.length)), o.tabs[m][H] = y;
+        } else if (m == "PLTE") o.tabs[m] = n.readBytes(s, t, d);
+        else if (m == "hIST") {
+            var N = o.tabs.PLTE.length / 3;
+            for(o.tabs[m] = [], u = 0; u < N; u++)o.tabs[m].push(e(s, t + 2 * u));
+        } else if (m == "tRNS") o.ctype == 3 ? o.tabs[m] = n.readBytes(s, t, d) : o.ctype == 0 ? o.tabs[m] = e(s, t) : o.ctype == 2 && (o.tabs[m] = [
+            e(s, t),
+            e(s, t + 2),
+            e(s, t + 4)
+        ]);
+        else if (m == "gAMA") o.tabs[m] = n.readUint(s, t) / 100000;
+        else if (m == "sRGB") o.tabs[m] = s[t];
+        else if (m == "bKGD") o.ctype == 0 || o.ctype == 4 ? o.tabs[m] = [
+            e(s, t)
+        ] : o.ctype == 2 || o.ctype == 6 ? o.tabs[m] = [
+            e(s, t),
+            e(s, t + 2),
+            e(s, t + 4)
+        ] : o.ctype == 3 && (o.tabs[m] = s[t]);
+        else if (m == "IEND") break;
+        t += d, n.readUint(s, t), t += 4;
+    }
+    return A != 0 && ((g = o.frames[o.frames.length - 1]).data = w.decode._decompress(o, a.slice(0, A), g.rect.width, g.rect.height), A = 0), o.data = w.decode._decompress(o, l3, o.width, o.height), delete o.compress, delete o.interlace, delete o.filter, o;
+}, w.decode._decompress = function(r, a, s, t) {
+    var n = w.decode._getBPP(r), e = Math.ceil(s * n / 8), i4 = new Uint8Array((e + 1 + r.interlace) * t);
+    return a = r.tabs.CgBI ? w.inflateRaw(a, i4) : w.decode._inflate(a, i4), r.interlace == 0 ? a = w.decode._filterZero(a, r, 0, s, t) : r.interlace == 1 && (a = w.decode._readInterlace(a, r)), a;
+}, w.decode._inflate = function(r, a) {
+    return w.inflateRaw(new Uint8Array(r.buffer, 2, r.length - 6), a);
+}, w.inflateRaw = (T = {
+}, T.H = {
+}, T.H.N = function(r, a) {
+    var s, t, n = Uint8Array, e = 0, i4 = 0, o = 0, l3 = 0, c = 0, A = 0, h = 0, u = 0, d = 0;
+    if (r[0] == 3 && r[1] == 0) return a || new n(0);
+    var m = T.H, g = m.b, v = m.e, I = m.R, E = m.n, p = m.A, H = m.Z, _ = m.m, b = a == null;
+    for(b && (a = new n(r.length >>> 2 << 5)); e == 0;)if (e = g(r, d, 1), i4 = g(r, d + 1, 2), d += 3, i4 != 0) {
+        if (b && (a = T.H.W(a, u + (1 << 17))), i4 == 1 && (s = _.J, t = _.h, A = 511, h = 31), i4 == 2) {
+            o = v(r, d, 5) + 257, l3 = v(r, d + 5, 5) + 1, c = v(r, d + 10, 4) + 4, d += 14;
+            for(var U = 1, F = 0; F < 38; F += 2)_.Q[F] = 0, _.Q[F + 1] = 0;
+            for(F = 0; F < c; F++){
+                var y = v(r, d + 3 * F, 3);
+                _.Q[1 + (_.X[F] << 1)] = y, y > U && (U = y);
+            }
+            d += 3 * c, E(_.Q, U), p(_.Q, U, _.u), s = _.w, t = _.d, d = I(_.u, (1 << U) - 1, o + l3, r, d, _.v);
+            var N = m.V(_.v, 0, o, _.C);
+            A = (1 << N) - 1;
+            var C = m.V(_.v, o, l3, _.D);
+            h = (1 << C) - 1, E(_.C, N), p(_.C, N, s), E(_.D, C), p(_.D, C, t);
+        }
+        for(;;){
+            var B = s[H(r, d) & A];
+            d += 15 & B;
+            var P = B >>> 4;
+            if (P >>> 8 == 0) a[u++] = P;
+            else {
+                if (P == 256) break;
+                var Q = u + P - 254;
+                if (P > 264) {
+                    var R = _.q[P - 257];
+                    Q = u + (R >>> 3) + v(r, d, 7 & R), d += 7 & R;
+                }
+                var M = t[H(r, d) & h];
+                d += 15 & M;
+                var x = M >>> 4, z = _.c[x], D = (z >>> 4) + g(r, d, 15 & z);
+                for(d += 15 & z; u < Q;)a[u] = a[(u++) - D], a[u] = a[(u++) - D], a[u] = a[(u++) - D], a[u] = a[(u++) - D];
+                u = Q;
+            }
+        }
+    } else {
+        (7 & d) != 0 && (d += 8 - (7 & d));
+        var V = 4 + (d >>> 3), q = r[V - 4] | r[V - 3] << 8;
+        b && (a = T.H.W(a, u + q)), a.set(new n(r.buffer, r.byteOffset + V, q), u), d = V + q << 3, u += q;
+    }
+    return a.length == u ? a : a.slice(0, u);
+}, T.H.W = function(r, a) {
+    var s = r.length;
+    if (a <= s) return r;
+    var t = new Uint8Array(s << 1);
+    return t.set(r, 0), t;
+}, T.H.R = function(r, a, s, t, n, e) {
+    for(var i4 = T.H.e, o = T.H.Z, l3 = 0; l3 < s;){
+        var c = r[o(t, n) & a];
+        n += 15 & c;
+        var A = c >>> 4;
+        if (A <= 15) e[l3] = A, l3++;
+        else {
+            var h = 0, u = 0;
+            A == 16 ? (u = 3 + i4(t, n, 2), n += 2, h = e[l3 - 1]) : A == 17 ? (u = 3 + i4(t, n, 3), n += 3) : A == 18 && (u = 11 + i4(t, n, 7), n += 7);
+            for(var d = l3 + u; l3 < d;)e[l3] = h, l3++;
+        }
+    }
+    return n;
+}, T.H.V = function(r, a, s, t) {
+    for(var n = 0, e = 0, i4 = t.length >>> 1; e < s;){
+        var o = r[e + a];
+        t[e << 1] = 0, t[1 + (e << 1)] = o, o > n && (n = o), e++;
+    }
+    for(; e < i4;)t[e << 1] = 0, t[1 + (e << 1)] = 0, e++;
+    return n;
+}, T.H.n = function(r, a) {
+    for(var s, t, n, e, i4 = T.H.m, o = r.length, l3 = i4.j, c = 0; c <= a; c++)l3[c] = 0;
+    for(c = 1; c < o; c += 2)l3[r[c]]++;
+    var A = i4.K;
+    for(s = 0, l3[0] = 0, t = 1; t <= a; t++)s = s + l3[t - 1] << 1, A[t] = s;
+    for(n = 0; n < o; n += 2)(e = r[n + 1]) != 0 && (r[n] = A[e], A[e]++);
+}, T.H.A = function(r, a, s) {
+    for(var t = r.length, n = T.H.m.r, e = 0; e < t; e += 2)if (r[e + 1] != 0) for(var i4 = e >> 1, o = r[e + 1], l3 = i4 << 4 | o, c = a - o, A = r[e] << c, h = A + (1 << c); A != h;)s[n[A] >>> 15 - a] = l3, A++;
+}, T.H.l = function(r, a) {
+    for(var s = T.H.m.r, t = 15 - a, n = 0; n < r.length; n += 2){
+        var e = r[n] << a - r[n + 1];
+        r[n] = s[e] >>> t;
+    }
+}, T.H.M = function(r, a, s) {
+    s <<= 7 & a;
+    var t = a >>> 3;
+    r[t] |= s, r[t + 1] |= s >>> 8;
+}, T.H.I = function(r, a, s) {
+    s <<= 7 & a;
+    var t = a >>> 3;
+    r[t] |= s, r[t + 1] |= s >>> 8, r[t + 2] |= s >>> 16;
+}, T.H.e = function(r, a, s) {
+    return (r[a >>> 3] | r[1 + (a >>> 3)] << 8) >>> (7 & a) & (1 << s) - 1;
+}, T.H.b = function(r, a, s) {
+    return (r[a >>> 3] | r[1 + (a >>> 3)] << 8 | r[2 + (a >>> 3)] << 16) >>> (7 & a) & (1 << s) - 1;
+}, T.H.Z = function(r, a) {
+    return (r[a >>> 3] | r[1 + (a >>> 3)] << 8 | r[2 + (a >>> 3)] << 16) >>> (7 & a);
+}, T.H.i = function(r, a) {
+    return (r[a >>> 3] | r[1 + (a >>> 3)] << 8 | r[2 + (a >>> 3)] << 16 | r[3 + (a >>> 3)] << 24) >>> (7 & a);
+}, T.H.m = (G = Uint16Array, X = Uint32Array, {
+    K: new G(16),
+    j: new G(16),
+    X: [
+        16,
+        17,
+        18,
+        0,
+        8,
+        7,
+        9,
+        6,
+        10,
+        5,
+        11,
+        4,
+        12,
+        3,
+        13,
+        2,
+        14,
+        1,
+        15
+    ],
+    S: [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        13,
+        15,
+        17,
+        19,
+        23,
+        27,
+        31,
+        35,
+        43,
+        51,
+        59,
+        67,
+        83,
+        99,
+        115,
+        131,
+        163,
+        195,
+        227,
+        258,
+        999,
+        999,
+        999
+    ],
+    T: [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        2,
+        2,
+        2,
+        2,
+        3,
+        3,
+        3,
+        3,
+        4,
+        4,
+        4,
+        4,
+        5,
+        5,
+        5,
+        5,
+        0,
+        0,
+        0,
+        0
+    ],
+    q: new G(32),
+    p: [
+        1,
+        2,
+        3,
+        4,
+        5,
+        7,
+        9,
+        13,
+        17,
+        25,
+        33,
+        49,
+        65,
+        97,
+        129,
+        193,
+        257,
+        385,
+        513,
+        769,
+        1025,
+        1537,
+        2049,
+        3073,
+        4097,
+        6145,
+        8193,
+        12289,
+        16385,
+        24577,
+        65535,
+        65535
+    ],
+    z: [
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        2,
+        2,
+        3,
+        3,
+        4,
+        4,
+        5,
+        5,
+        6,
+        6,
+        7,
+        7,
+        8,
+        8,
+        9,
+        9,
+        10,
+        10,
+        11,
+        11,
+        12,
+        12,
+        13,
+        13,
+        0,
+        0
+    ],
+    c: new X(32),
+    J: new G(512),
+    _: [],
+    h: new G(32),
+    $: [],
+    w: new G(32768),
+    C: [],
+    v: [],
+    d: new G(32768),
+    D: [],
+    u: new G(512),
+    Q: [],
+    r: new G(32768),
+    s: new X(286),
+    Y: new X(30),
+    a: new X(19),
+    t: new X(15000),
+    k: new G(65536),
+    g: new G(32768)
+}), (function() {
+    for(var r = T.H.m, a = 0; a < 32768; a++){
+        var s = a;
+        s = (4278255360 & (s = (4042322160 & (s = (3435973836 & (s = (2863311530 & s) >>> 1 | (1431655765 & s) << 1)) >>> 2 | (858993459 & s) << 2)) >>> 4 | (252645135 & s) << 4)) >>> 8 | (16711935 & s) << 8, r.r[a] = (s >>> 16 | s << 16) >>> 17;
+    }
+    function t(n, e, i4) {
+        for(; (e--) != 0;)n.push(0, i4);
+    }
+    for(a = 0; a < 32; a++)r.q[a] = r.S[a] << 3 | r.T[a], r.c[a] = r.p[a] << 4 | r.z[a];
+    t(r._, 144, 8), t(r._, 112, 9), t(r._, 24, 7), t(r._, 8, 8), T.H.n(r._, 9), T.H.A(r._, 9, r.J), T.H.l(r._, 9), t(r.$, 32, 5), T.H.n(r.$, 5), T.H.A(r.$, 5, r.h), T.H.l(r.$, 5), t(r.Q, 19, 0), t(r.C, 286, 0), t(r.D, 30, 0), t(r.v, 320, 0);
+})(), T.H.N), w.decode._readInterlace = function(r, a) {
+    for(var s = a.width, t = a.height, n = w.decode._getBPP(a), e = n >> 3, i4 = Math.ceil(s * n / 8), o = new Uint8Array(t * i4), l3 = 0, c = [
+        0,
+        0,
+        4,
+        0,
+        2,
+        0,
+        1
+    ], A = [
+        0,
+        4,
+        0,
+        2,
+        0,
+        1,
+        0
+    ], h = [
+        8,
+        8,
+        8,
+        4,
+        4,
+        2,
+        2
+    ], u = [
+        8,
+        8,
+        4,
+        4,
+        2,
+        2,
+        1
+    ], d = 0; d < 7;){
+        for(var m = h[d], g = u[d], v = 0, I = 0, E = c[d]; E < t;)E += m, I++;
+        for(var p = A[d]; p < s;)p += g, v++;
+        var H = Math.ceil(v * n / 8);
+        w.decode._filterZero(r, a, l3, v, I);
+        for(var _ = 0, b = c[d]; b < t;){
+            for(var U = A[d], F = l3 + _ * H << 3; U < s;){
+                var y;
+                if (n == 1 && (y = (y = r[F >> 3]) >> 7 - (7 & F) & 1, o[b * i4 + (U >> 3)] |= y << 7 - ((7 & U) << 0)), n == 2 && (y = (y = r[F >> 3]) >> 6 - (7 & F) & 3, o[b * i4 + (U >> 2)] |= y << 6 - ((3 & U) << 1)), n == 4 && (y = (y = r[F >> 3]) >> 4 - (7 & F) & 15, o[b * i4 + (U >> 1)] |= y << 4 - ((1 & U) << 2)), n >= 8) for(var N = b * i4 + U * e, C = 0; C < e; C++)o[N + C] = r[(F >> 3) + C];
+                F += n, U += g;
+            }
+            _++, b += m;
+        }
+        v * I != 0 && (l3 += I * (1 + H)), d += 1;
+    }
+    return o;
+}, w.decode._getBPP = function(r) {
+    return [
+        1,
+        null,
+        3,
+        1,
+        2,
+        null,
+        4
+    ][r.ctype] * r.depth;
+}, w.decode._filterZero = function(r, a, s, t, n) {
+    var e = w.decode._getBPP(a), i4 = Math.ceil(t * e / 8), o = w.decode._paeth;
+    e = Math.ceil(e / 8);
+    var l3 = 0, c = 1, A = r[s], h = 0;
+    if (A > 1 && (r[s] = [
+        0,
+        0,
+        1
+    ][A - 2]), A == 3) for(h = e; h < i4; h++)r[h + 1] = r[h + 1] + (r[h + 1 - e] >>> 1) & 255;
+    for(var u = 0; u < n; u++)if (h = 0, (A = r[(c = (l3 = s + u * i4) + u + 1) - 1]) == 0) for(; h < i4; h++)r[l3 + h] = r[c + h];
+    else if (A == 1) {
+        for(; h < e; h++)r[l3 + h] = r[c + h];
+        for(; h < i4; h++)r[l3 + h] = r[c + h] + r[l3 + h - e];
+    } else if (A == 2) for(; h < i4; h++)r[l3 + h] = r[c + h] + r[l3 + h - i4];
+    else if (A == 3) {
+        for(; h < e; h++)r[l3 + h] = r[c + h] + (r[l3 + h - i4] >>> 1);
+        for(; h < i4; h++)r[l3 + h] = r[c + h] + (r[l3 + h - i4] + r[l3 + h - e] >>> 1);
+    } else {
+        for(; h < e; h++)r[l3 + h] = r[c + h] + o(0, r[l3 + h - i4], 0);
+        for(; h < i4; h++)r[l3 + h] = r[c + h] + o(r[l3 + h - e], r[l3 + h - i4], r[l3 + h - e - i4]);
+    }
+    return r;
+}, w.decode._paeth = function(r, a, s) {
+    var t = r + a - s, n = t - r, e = t - a, i4 = t - s;
+    return n * n <= e * e && n * n <= i4 * i4 ? r : e * e <= i4 * i4 ? a : s;
+}, w.decode._IHDR = function(r, a, s) {
+    var t = w._bin;
+    s.width = t.readUint(r, a), a += 4, s.height = t.readUint(r, a), a += 4, s.depth = r[a], a++, s.ctype = r[a], a++, s.compress = r[a], a++, s.filter = r[a], a++, s.interlace = r[a], a++;
+}, w._bin = {
+    nextZero: function(a, s) {
+        for(; a[s] != 0;)s++;
+        return s;
+    },
+    readUshort: function(a, s) {
+        return a[s] << 8 | a[s + 1];
+    },
+    writeUshort: function(a, s, t) {
+        a[s] = t >> 8 & 255, a[s + 1] = 255 & t;
+    },
+    readUint: function(a, s) {
+        return 16777216 * a[s] + (a[s + 1] << 16 | a[s + 2] << 8 | a[s + 3]);
+    },
+    writeUint: function(a, s, t) {
+        a[s] = t >> 24 & 255, a[s + 1] = t >> 16 & 255, a[s + 2] = t >> 8 & 255, a[s + 3] = 255 & t;
+    },
+    readASCII: function(a, s, t) {
+        for(var n = "", e = 0; e < t; e++)n += String.fromCharCode(a[s + e]);
+        return n;
+    },
+    writeASCII: function(a, s, t) {
+        for(var n = 0; n < t.length; n++)a[s + n] = t.charCodeAt(n);
+    },
+    readBytes: function(a, s, t) {
+        for(var n = [], e = 0; e < t; e++)n.push(a[s + e]);
+        return n;
+    },
+    pad: function(a) {
+        return a.length < 2 ? "0" + a : a;
+    },
+    readUTF8: function(a, s, t) {
+        for(var n, e = "", i4 = 0; i4 < t; i4++)e += "%" + w._bin.pad(a[s + i4].toString(16));
+        try {
+            n = decodeURIComponent(e);
+        } catch (o) {
+            return w._bin.readASCII(a, s, t);
+        }
+        return n;
+    }
+}, w._copyTile = function(r, a, s, t, n, e, i4, o, l3) {
+    for(var c = Math.min(a, n), A = Math.min(s, e), h = 0, u = 0, d = 0; d < A; d++)for(var m = 0; m < c; m++)if (i4 >= 0 && o >= 0 ? (h = d * a + m << 2, u = (o + d) * n + i4 + m << 2) : (h = (-o + d) * a - i4 + m << 2, u = d * n + m << 2), l3 == 0) t[u] = r[h], t[u + 1] = r[h + 1], t[u + 2] = r[h + 2], t[u + 3] = r[h + 3];
+    else if (l3 == 1) {
+        var g = r[h + 3] * (1 / 255), v = r[h] * g, I = r[h + 1] * g, E = r[h + 2] * g, p = t[u + 3] * (1 / 255), H = t[u] * p, _ = t[u + 1] * p, b = t[u + 2] * p, U = 1 - g, F = g + p * U, y = F == 0 ? 0 : 1 / F;
+        t[u + 3] = 255 * F, t[u + 0] = (v + H * U) * y, t[u + 1] = (I + _ * U) * y, t[u + 2] = (E + b * U) * y;
+    } else if (l3 == 2) g = r[h + 3], v = r[h], I = r[h + 1], E = r[h + 2], p = t[u + 3], H = t[u], _ = t[u + 1], b = t[u + 2], g == p && v == H && I == _ && E == b ? (t[u] = 0, t[u + 1] = 0, t[u + 2] = 0, t[u + 3] = 0) : (t[u] = v, t[u + 1] = I, t[u + 2] = E, t[u + 3] = g);
+    else if (l3 == 3) {
+        if (g = r[h + 3], v = r[h], I = r[h + 1], E = r[h + 2], p = t[u + 3], H = t[u], _ = t[u + 1], b = t[u + 2], g == p && v == H && I == _ && E == b) continue;
+        if (g < 220 && p > 20) return !1;
+    }
+    return !0;
+}, w.encode = function(r, a, s, t, n, e, i4) {
+    t == null && (t = 0), i4 == null && (i4 = !1);
+    var o = w.encode.compress(r, a, s, t, [
+        !1,
+        !1,
+        !1,
+        0,
+        i4
+    ]);
+    return w.encode.compressPNG(o, -1), w.encode._main(o, a, s, n, e);
+}, w.encodeLL = function(r, a, s, t, n, e, i4, o) {
+    for(var l3 = {
+        ctype: 0 + (t == 1 ? 0 : 2) + (n == 0 ? 0 : 4),
+        depth: e,
+        frames: []
+    }, c = (t + n) * e, A = c * a, h = 0; h < r.length; h++)l3.frames.push({
+        rect: {
+            x: 0,
+            y: 0,
+            width: a,
+            height: s
+        },
+        img: new Uint8Array(r[h]),
+        blend: 0,
+        dispose: 1,
+        bpp: Math.ceil(c / 8),
+        bpl: Math.ceil(A / 8)
+    });
+    return w.encode.compressPNG(l3, 0, !0), w.encode._main(l3, a, s, i4, o);
+}, w.encode._main = function(r, a, s, t, n) {
+    n == null && (n = {
+    });
+    var e = w.crc.crc, i4 = w._bin.writeUint, o = w._bin.writeUshort, l3 = w._bin.writeASCII, c = 8, A = r.frames.length > 1, h = !1, u = 33 + (A ? 20 : 0);
+    if (n.sRGB != null && (u += 13), n.pHYs != null && (u += 21), r.ctype == 3) {
+        for(var d = r.plte.length, m = 0; m < d; m++)r.plte[m] >>> 24 != 255 && (h = !0);
+        u += 8 + 3 * d + 4 + (h ? 8 + 1 * d + 4 : 0);
+    }
+    for(var g = 0; g < r.frames.length; g++)A && (u += 38), u += (F = r.frames[g]).cimg.length + 12, g != 0 && (u += 4);
+    u += 12;
+    var v = new Uint8Array(u), I = [
+        137,
+        80,
+        78,
+        71,
+        13,
+        10,
+        26,
+        10
+    ];
+    for(m = 0; m < 8; m++)v[m] = I[m];
+    if (i4(v, c, 13), l3(v, c += 4, "IHDR"), i4(v, c += 4, a), i4(v, c += 4, s), v[c += 4] = r.depth, v[++c] = r.ctype, v[++c] = 0, v[++c] = 0, v[++c] = 0, i4(v, ++c, e(v, c - 17, 17)), c += 4, n.sRGB != null && (i4(v, c, 1), l3(v, c += 4, "sRGB"), v[c += 4] = n.sRGB, i4(v, ++c, e(v, c - 5, 5)), c += 4), n.pHYs != null && (i4(v, c, 9), l3(v, c += 4, "pHYs"), i4(v, c += 4, n.pHYs[0]), i4(v, c += 4, n.pHYs[1]), v[c += 4] = n.pHYs[2], i4(v, ++c, e(v, c - 13, 13)), c += 4), A && (i4(v, c, 8), l3(v, c += 4, "acTL"), i4(v, c += 4, r.frames.length), i4(v, c += 4, n.loop != null ? n.loop : 0), i4(v, c += 4, e(v, c - 12, 12)), c += 4), r.ctype == 3) {
+        for(i4(v, c, 3 * (d = r.plte.length)), l3(v, c += 4, "PLTE"), c += 4, m = 0; m < d; m++){
+            var E = 3 * m, p = r.plte[m], H = 255 & p, _ = p >>> 8 & 255, b = p >>> 16 & 255;
+            v[c + E + 0] = H, v[c + E + 1] = _, v[c + E + 2] = b;
+        }
+        if (i4(v, c += 3 * d, e(v, c - 3 * d - 4, 3 * d + 4)), c += 4, h) {
+            for(i4(v, c, d), l3(v, c += 4, "tRNS"), c += 4, m = 0; m < d; m++)v[c + m] = r.plte[m] >>> 24 & 255;
+            i4(v, c += d, e(v, c - d - 4, d + 4)), c += 4;
+        }
+    }
+    var U = 0;
+    for(g = 0; g < r.frames.length; g++){
+        var F = r.frames[g];
+        A && (i4(v, c, 26), l3(v, c += 4, "fcTL"), i4(v, c += 4, U++), i4(v, c += 4, F.rect.width), i4(v, c += 4, F.rect.height), i4(v, c += 4, F.rect.x), i4(v, c += 4, F.rect.y), o(v, c += 4, t[g]), o(v, c += 2, 1000), v[c += 2] = F.dispose, v[++c] = F.blend, i4(v, ++c, e(v, c - 30, 30)), c += 4);
+        var y = F.cimg;
+        i4(v, c, (d = y.length) + (g == 0 ? 0 : 4));
+        var N = c += 4;
+        l3(v, c, g == 0 ? "IDAT" : "fdAT"), c += 4, g != 0 && (i4(v, c, U++), c += 4), v.set(y, c), i4(v, c += d, e(v, N, c - N)), c += 4;
+    }
+    return i4(v, c, 0), l3(v, c += 4, "IEND"), i4(v, c += 4, e(v, c - 4, 4)), c += 4, v.buffer;
+}, w.encode.compressPNG = function(r, a, s) {
+    for(var t = 0; t < r.frames.length; t++){
+        var n = r.frames[t], e = (n.rect.width, n.rect.height), i4 = new Uint8Array(e * n.bpl + e);
+        n.cimg = w.encode._filterZero(n.img, e, n.bpp, n.bpl, i4, a, s);
+    }
+}, w.encode.compress = function(r, a, s, t, n) {
+    for(var e = n[0], i5 = n[1], o = n[2], l3 = n[3], c = n[4], A = 6, h = 8, u = 255, d = 0; d < r.length; d++)for(var m = new Uint8Array(r[d]), g = m.length, v = 0; v < g; v += 4)u &= m[v + 3];
+    var I = u != 255, E = w.encode.framize(r, a, s, e, i5, o), p = {
+    }, H = [], _ = [];
+    if (t != 0) {
+        var b = [];
+        for(v = 0; v < E.length; v++)b.push(E[v].img.buffer);
+        var U = w.encode.concatRGBA(b), F = w.quantize(U, t), y = 0, N = new Uint8Array(F.abuf);
+        for(v = 0; v < E.length; v++){
+            var C = (Y = E[v].img).length;
+            for(_.push(new Uint8Array(F.inds.buffer, y >> 2, C >> 2)), d = 0; d < C; d += 4)Y[d] = N[y + d], Y[d + 1] = N[y + d + 1], Y[d + 2] = N[y + d + 2], Y[d + 3] = N[y + d + 3];
+            y += C;
+        }
+        for(v = 0; v < F.plte.length; v++)H.push(F.plte[v].est.rgba);
+    } else for(d = 0; d < E.length; d++){
+        var B = E[d], P = new Uint32Array(B.img.buffer), Q = B.rect.width, R = (g = P.length, new Uint8Array(g));
+        for(_.push(R), v = 0; v < g; v++){
+            var M = P[v];
+            if (v != 0 && M == P[v - 1]) R[v] = R[v - 1];
+            else if (v > Q && M == P[v - Q]) R[v] = R[v - Q];
+            else {
+                var x = p[M];
+                if (x == null && (p[M] = x = H.length, H.push(M), H.length >= 300)) break;
+                R[v] = x;
+            }
+        }
+    }
+    var z = H.length;
+    for(z <= 256 && c == 0 && (h = z <= 2 ? 1 : z <= 4 ? 2 : z <= 16 ? 4 : 8, h = Math.max(h, l3)), d = 0; d < E.length; d++){
+        (B = E[d]).rect.x, B.rect.y, Q = B.rect.width;
+        var D = B.rect.height, V = B.img, q = (new Uint32Array(V.buffer), 4 * Q), j = 4;
+        if (z <= 256 && c == 0) {
+            q = Math.ceil(h * Q / 8);
+            for(var L = new Uint8Array(q * D), O = _[d], k = 0; k < D; k++){
+                v = k * q;
+                var rn = k * Q;
+                if (h == 8) for(var S = 0; S < Q; S++)L[v + S] = O[rn + S];
+                else if (h == 4) for(S = 0; S < Q; S++)L[v + (S >> 1)] |= O[rn + S] << 4 - 4 * (1 & S);
+                else if (h == 2) for(S = 0; S < Q; S++)L[v + (S >> 2)] |= O[rn + S] << 6 - 2 * (3 & S);
+                else if (h == 1) for(S = 0; S < Q; S++)L[v + (S >> 3)] |= O[rn + S] << 7 - 1 * (7 & S);
+            }
+            V = L, A = 3, j = 1;
+        } else if (I == 0 && E.length == 1) {
+            L = new Uint8Array(Q * D * 3);
+            var Fn = Q * D;
+            for(v = 0; v < Fn; v++){
+                var Y, sn = 4 * v;
+                L[Y = 3 * v] = V[sn], L[Y + 1] = V[sn + 1], L[Y + 2] = V[sn + 2];
+            }
+            V = L, A = 2, j = 3, q = 3 * Q;
+        }
+        B.img = V, B.bpl = q, B.bpp = j;
+    }
+    return {
+        ctype: A,
+        depth: h,
+        plte: H,
+        frames: E
+    };
+}, w.encode.framize = function(r, a, s, t, n, e) {
+    for(var i5 = [], o = 0; o < r.length; o++){
+        var l3, c = new Uint8Array(r[o]), A = new Uint32Array(c.buffer), h = 0, u = 0, d = a, m = s, g = t ? 1 : 0;
+        if (o != 0) {
+            for(var v = e || t || o == 1 || i5[o - 2].dispose != 0 ? 1 : 2, I = 0, E = 1000000000, p = 0; p < v; p++){
+                for(var H = new Uint8Array(r[o - 1 - p]), _ = new Uint32Array(r[o - 1 - p]), b = a, U = s, F = -1, y = -1, N = 0; N < s; N++)for(var C = 0; C < a; C++)A[z = N * a + C] != _[z] && (C < b && (b = C), C > F && (F = C), N < U && (U = N), N > y && (y = N));
+                F == -1 && (b = U = F = y = 0), n && ((1 & b) == 1 && b--, (1 & U) == 1 && U--);
+                var B = (F - b + 1) * (y - U + 1);
+                B < E && (E = B, I = p, h = b, u = U, d = F - b + 1, m = y - U + 1);
+            }
+            H = new Uint8Array(r[o - 1 - I]), I == 1 && (i5[o - 1].dispose = 2), l3 = new Uint8Array(d * m * 4), w._copyTile(H, a, s, l3, d, m, -h, -u, 0), (g = w._copyTile(c, a, s, l3, d, m, -h, -u, 3) ? 1 : 0) == 1 ? w.encode._prepareDiff(c, a, s, l3, {
+                x: h,
+                y: u,
+                width: d,
+                height: m
+            }) : w._copyTile(c, a, s, l3, d, m, -h, -u, 0);
+        } else l3 = c.slice(0);
+        i5.push({
+            rect: {
+                x: h,
+                y: u,
+                width: d,
+                height: m
+            },
+            img: l3,
+            blend: g,
+            dispose: 0
+        });
+    }
+    if (t) {
+        for(o = 0; o < i5.length; o++)if ((D = i5[o]).blend != 1) {
+            var P = D.rect, Q = i5[o - 1].rect, R = Math.min(P.x, Q.x), M = Math.min(P.y, Q.y), x = {
+                x: R,
+                y: M,
+                width: Math.max(P.x + P.width, Q.x + Q.width) - R,
+                height: Math.max(P.y + P.height, Q.y + Q.height) - M
+            };
+            i5[o - 1].dispose = 1, o - 1 != 0 && w.encode._updateFrame(r, a, s, i5, o - 1, x, n), w.encode._updateFrame(r, a, s, i5, o, x, n);
+        }
+    }
+    if (r.length != 1) for(var z = 0; z < i5.length; z++){
+        var D;
+        (D = i5[z]).rect.width * D.rect.height;
+    }
+    return i5;
+}, w.encode._updateFrame = function(r, a, s, t, n, e, i5) {
+    for(var o = Uint8Array, l4 = Uint32Array, c = new o(r[n - 1]), A = new l4(r[n - 1]), h = n + 1 < r.length ? new o(r[n + 1]) : null, u = new o(r[n]), d = new l4(u.buffer), m = a, g = s, v = -1, I = -1, E = 0; E < e.height; E++)for(var p = 0; p < e.width; p++){
+        var H = e.x + p, _ = e.y + E, b = _ * a + H, U = d[b];
+        U == 0 || t[n - 1].dispose == 0 && A[b] == U && (h == null || h[4 * b + 3] != 0) || (H < m && (m = H), H > v && (v = H), _ < g && (g = _), _ > I && (I = _));
+    }
+    v == -1 && (m = g = v = I = 0), i5 && ((1 & m) == 1 && m--, (1 & g) == 1 && g--), e = {
+        x: m,
+        y: g,
+        width: v - m + 1,
+        height: I - g + 1
+    };
+    var F = t[n];
+    F.rect = e, F.blend = 1, F.img = new Uint8Array(e.width * e.height * 4), t[n - 1].dispose == 0 ? (w._copyTile(c, a, s, F.img, e.width, e.height, -e.x, -e.y, 0), w.encode._prepareDiff(u, a, s, F.img, e)) : w._copyTile(u, a, s, F.img, e.width, e.height, -e.x, -e.y, 0);
+}, w.encode._prepareDiff = function(r, a, s, t, n) {
+    w._copyTile(r, a, s, t, n.width, n.height, -n.x, -n.y, 2);
+}, w.encode._filterZero = function(r, a, s, t, n, e, i5) {
+    var o, l4 = [], c = [
+        0,
+        1,
+        2,
+        3,
+        4
+    ];
+    e != -1 ? c = [
+        e
+    ] : (a * t > 500000 || s == 1) && (c = [
+        0
+    ]), i5 && (o = {
+        level: 0
+    });
+    for(var A = Qn, h = 0; h < c.length; h++){
+        for(var u = 0; u < a; u++)w.encode._filterLine(n, r, u, t, s, c[h]);
+        l4.push(A.deflate(n, o));
+    }
+    var d, m = 1000000000;
+    for(h = 0; h < l4.length; h++)l4[h].length < m && (d = h, m = l4[h].length);
+    return l4[d];
+}, w.encode._filterLine = function(r, a, s, t, n, e) {
+    var i5 = s * t, o = i5 + s, l4 = w.decode._paeth;
+    if (r[o] = e, o++, e == 0) {
+        if (t < 500) for(var c = 0; c < t; c++)r[o + c] = a[i5 + c];
+        else r.set(new Uint8Array(a.buffer, i5, t), o);
+    } else if (e == 1) {
+        for(c = 0; c < n; c++)r[o + c] = a[i5 + c];
+        for(c = n; c < t; c++)r[o + c] = a[i5 + c] - a[i5 + c - n] + 256 & 255;
+    } else if (s == 0) {
+        for(c = 0; c < n; c++)r[o + c] = a[i5 + c];
+        if (e == 2) for(c = n; c < t; c++)r[o + c] = a[i5 + c];
+        if (e == 3) for(c = n; c < t; c++)r[o + c] = a[i5 + c] - (a[i5 + c - n] >> 1) + 256 & 255;
+        if (e == 4) for(c = n; c < t; c++)r[o + c] = a[i5 + c] - l4(a[i5 + c - n], 0, 0) + 256 & 255;
+    } else {
+        if (e == 2) for(c = 0; c < t; c++)r[o + c] = a[i5 + c] + 256 - a[i5 + c - t] & 255;
+        if (e == 3) {
+            for(c = 0; c < n; c++)r[o + c] = a[i5 + c] + 256 - (a[i5 + c - t] >> 1) & 255;
+            for(c = n; c < t; c++)r[o + c] = a[i5 + c] + 256 - (a[i5 + c - t] + a[i5 + c - n] >> 1) & 255;
+        }
+        if (e == 4) {
+            for(c = 0; c < n; c++)r[o + c] = a[i5 + c] + 256 - l4(0, a[i5 + c - t], 0) & 255;
+            for(c = n; c < t; c++)r[o + c] = a[i5 + c] + 256 - l4(a[i5 + c - n], a[i5 + c - t], a[i5 + c - n - t]) & 255;
+        }
+    }
+}, w.crc = {
+    table: (function() {
+        for(var r = new Uint32Array(256), a = 0; a < 256; a++){
+            for(var s = a, t = 0; t < 8; t++)1 & s ? s = 3988292384 ^ s >>> 1 : s >>>= 1;
+            r[a] = s;
+        }
+        return r;
+    })(),
+    update: function(a, s, t, n) {
+        for(var e = 0; e < n; e++)a = w.crc.table[255 & (a ^ s[t + e])] ^ a >>> 8;
+        return a;
+    },
+    crc: function(a, s, t) {
+        return 4294967295 ^ w.crc.update(4294967295, a, s, t);
+    }
+}, w.quantize = function(r, a) {
+    var s, t = new Uint8Array(r), n = t.slice(0), e = new Uint32Array(n.buffer), i5 = w.quantize.getKDtree(n, a), o = i5[0], l4 = i5[1], c = w.quantize.planeDst, A = t, h = e, u = A.length, d = new Uint8Array(t.length >> 2);
+    if (t.length < 20000000) for(var m = 0; m < u; m += 4){
+        var g = A[m] * (1 / 255), v = A[m + 1] * (1 / 255), I = A[m + 2] * (1 / 255), E = A[m + 3] * (1 / 255);
+        s = w.quantize.getNearest(o, g, v, I, E), d[m >> 2] = s.ind, h[m >> 2] = s.est.rgba;
+    }
+    else for(m = 0; m < u; m += 4){
+        for(g = A[m] * (1 / 255), v = A[m + 1] * (1 / 255), I = A[m + 2] * (1 / 255), E = A[m + 3] * (1 / 255), s = o; s.left;)s = c(s.est, g, v, I, E) <= 0 ? s.left : s.right;
+        d[m >> 2] = s.ind, h[m >> 2] = s.est.rgba;
+    }
+    return {
+        abuf: n.buffer,
+        inds: d,
+        plte: l4
+    };
+}, w.quantize.getKDtree = function(r, a, s) {
+    s == null && (s = 0.0001);
+    var t = new Uint32Array(r.buffer), n = {
+        i0: 0,
+        i1: r.length,
+        bst: null,
+        est: null,
+        tdst: 0,
+        left: null,
+        right: null
+    };
+    n.bst = w.quantize.stats(r, n.i0, n.i1), n.est = w.quantize.estats(n.bst);
+    for(var e = [
+        n
+    ]; e.length < a;){
+        for(var i5 = 0, o = 0, l4 = 0; l4 < e.length; l4++)e[l4].est.L > i5 && (i5 = e[l4].est.L, o = l4);
+        if (i5 < s) break;
+        var c = e[o], A = w.quantize.splitPixels(r, t, c.i0, c.i1, c.est.e, c.est.eMq255);
+        if (c.i0 >= A || c.i1 <= A) c.est.L = 0;
+        else {
+            var h = {
+                i0: c.i0,
+                i1: A,
+                bst: null,
+                est: null,
+                tdst: 0,
+                left: null,
+                right: null
+            };
+            h.bst = w.quantize.stats(r, h.i0, h.i1), h.est = w.quantize.estats(h.bst);
+            var u = {
+                i0: A,
+                i1: c.i1,
+                bst: null,
+                est: null,
+                tdst: 0,
+                left: null,
+                right: null
+            };
+            for(u.bst = {
+                R: [],
+                m: [],
+                N: c.bst.N - h.bst.N
+            }, l4 = 0; l4 < 16; l4++)u.bst.R[l4] = c.bst.R[l4] - h.bst.R[l4];
+            for(l4 = 0; l4 < 4; l4++)u.bst.m[l4] = c.bst.m[l4] - h.bst.m[l4];
+            u.est = w.quantize.estats(u.bst), c.left = h, c.right = u, e[o] = h, e.push(u);
+        }
+    }
+    for(e.sort(function(d, m) {
+        return m.bst.N - d.bst.N;
+    }), l4 = 0; l4 < e.length; l4++)e[l4].ind = l4;
+    return [
+        n,
+        e
+    ];
+}, w.quantize.getNearest = function(r, a, s, t, n) {
+    if (r.left == null) return r.tdst = w.quantize.dist(r.est.q, a, s, t, n), r;
+    var e = w.quantize.planeDst(r.est, a, s, t, n), i6 = r.left, o = r.right;
+    e > 0 && (i6 = r.right, o = r.left);
+    var l5 = w.quantize.getNearest(i6, a, s, t, n);
+    if (l5.tdst <= e * e) return l5;
+    var c = w.quantize.getNearest(o, a, s, t, n);
+    return c.tdst < l5.tdst ? c : l5;
+}, w.quantize.planeDst = function(r, a, s, t, n) {
+    var e = r.e;
+    return e[0] * a + e[1] * s + e[2] * t + e[3] * n - r.eMq;
+}, w.quantize.dist = function(r, a, s, t, n) {
+    var e = a - r[0], i6 = s - r[1], o = t - r[2], l5 = n - r[3];
+    return e * e + i6 * i6 + o * o + l5 * l5;
+}, w.quantize.splitPixels = function(r, a, s, t, n, e) {
+    var i6 = w.quantize.vecDot;
+    for(t -= 4; s < t;){
+        for(; i6(r, s, n) <= e;)s += 4;
+        for(; i6(r, t, n) > e;)t -= 4;
+        if (s >= t) break;
+        var o = a[s >> 2];
+        a[s >> 2] = a[t >> 2], a[t >> 2] = o, s += 4, t -= 4;
+    }
+    for(; i6(r, s, n) > e;)s -= 4;
+    return s + 4;
+}, w.quantize.vecDot = function(r, a, s) {
+    return r[a] * s[0] + r[a + 1] * s[1] + r[a + 2] * s[2] + r[a + 3] * s[3];
+}, w.quantize.stats = function(r, a, s) {
+    for(var t = [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+    ], n = [
+        0,
+        0,
+        0,
+        0
+    ], e = s - a >> 2, i6 = a; i6 < s; i6 += 4){
+        var o = r[i6] * (1 / 255), l5 = r[i6 + 1] * (1 / 255), c = r[i6 + 2] * (1 / 255), A = r[i6 + 3] * (1 / 255);
+        n[0] += o, n[1] += l5, n[2] += c, n[3] += A, t[0] += o * o, t[1] += o * l5, t[2] += o * c, t[3] += o * A, t[5] += l5 * l5, t[6] += l5 * c, t[7] += l5 * A, t[10] += c * c, t[11] += c * A, t[15] += A * A;
+    }
+    return t[4] = t[1], t[8] = t[2], t[9] = t[6], t[12] = t[3], t[13] = t[7], t[14] = t[11], {
+        R: t,
+        m: n,
+        N: e
+    };
+}, w.quantize.estats = function(r) {
+    var a = r.R, s = r.m, t = r.N, n = s[0], e = s[1], i6 = s[2], o = s[3], l6 = t == 0 ? 0 : 1 / t, c = [
+        a[0] - n * n * l6,
+        a[1] - n * e * l6,
+        a[2] - n * i6 * l6,
+        a[3] - n * o * l6,
+        a[4] - e * n * l6,
+        a[5] - e * e * l6,
+        a[6] - e * i6 * l6,
+        a[7] - e * o * l6,
+        a[8] - i6 * n * l6,
+        a[9] - i6 * e * l6,
+        a[10] - i6 * i6 * l6,
+        a[11] - i6 * o * l6,
+        a[12] - o * n * l6,
+        a[13] - o * e * l6,
+        a[14] - o * i6 * l6,
+        a[15] - o * o * l6
+    ], A = c, h = w.M4, u = [
+        Math.random(),
+        Math.random(),
+        Math.random(),
+        Math.random()
+    ], d = 0, m = 0;
+    if (t != 0) for(var g = 0; g < 16 && (u = h.multVec(A, u), m = Math.sqrt(h.dot(u, u)), u = h.sml(1 / m, u), !(g != 0 && Math.abs(m - d) < 0.000000001)); g++)d = m;
+    var v = [
+        n * l6,
+        e * l6,
+        i6 * l6,
+        o * l6
+    ];
+    return {
+        Cov: c,
+        q: v,
+        e: u,
+        L: d,
+        eMq255: h.dot(h.sml(255, v), u),
+        eMq: h.dot(u, v),
+        rgba: (Math.round(255 * v[3]) << 24 | Math.round(255 * v[2]) << 16 | Math.round(255 * v[1]) << 8 | Math.round(255 * v[0]) << 0) >>> 0
+    };
+}, w.M4 = {
+    multVec: function(a, s) {
+        return [
+            a[0] * s[0] + a[1] * s[1] + a[2] * s[2] + a[3] * s[3],
+            a[4] * s[0] + a[5] * s[1] + a[6] * s[2] + a[7] * s[3],
+            a[8] * s[0] + a[9] * s[1] + a[10] * s[2] + a[11] * s[3],
+            a[12] * s[0] + a[13] * s[1] + a[14] * s[2] + a[15] * s[3]
+        ];
+    },
+    dot: function(a, s) {
+        return a[0] * s[0] + a[1] * s[1] + a[2] * s[2] + a[3] * s[3];
+    },
+    sml: function(a, s) {
+        return [
+            a * s[0],
+            a * s[1],
+            a * s[2],
+            a * s[3]
+        ];
+    }
+}, w.encode.concatRGBA = function(r) {
+    for(var a = 0, s = 0; s < r.length; s++)a += r[s].byteLength;
+    var t = new Uint8Array(a), n = 0;
+    for(s = 0; s < r.length; s++){
+        for(var e = new Uint8Array(r[s]), i6 = e.length, o = 0; o < i6; o += 4){
+            var l6 = e[o], c = e[o + 1], A = e[o + 2], h = e[o + 3];
+            h == 0 && (l6 = c = A = 0), t[n + o] = l6, t[n + o + 1] = c, t[n + o + 2] = A, t[n + o + 3] = h;
+        }
+        n += i6;
+    }
+    return t.buffer;
+};
+var on = typeof window != "undefined", an = on && window.cordova && window.cordova.require && window.cordova.require("cordova/modulemapper"), Mn = on && (an && an.getOriginalSymbol(window, "File") || File), vn = on && (an && an.getOriginalSymbol(window, "FileReader") || FileReader);
+function K() {
+    return new Promise(function(r, a) {
+        var s, t, n, e;
+        return K.result !== void 0 ? r(K.result) : ln("data:image/jpeg;base64,/9j/4QAiRXhpZgAATU0AKgAAAAgAAQESAAMAAAABAAYAAAAAAAD/2wCEAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAf/AABEIAAEAAgMBEQACEQEDEQH/xABKAAEAAAAAAAAAAAAAAAAAAAALEAEAAAAAAAAAAAAAAAAAAAAAAQEAAAAAAAAAAAAAAAAAAAAAEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwA/8H//2Q==", "test.jpg", Date.now()).then(function(i7) {
+            try {
+                return fn(s = i7).then(function(o) {
+                    try {
+                        return cn(t = o[1], s.type, s.name, s.lastModified).then(function(l7) {
+                            try {
+                                return (n = l7, $(t), fn(n).then(function(c) {
+                                    try {
+                                        return (e = c[0], K.result = e.width === 1 && e.height === 2, r(K.result));
+                                    } catch (A) {
+                                        return a(A);
+                                    }
+                                }, a));
+                            } catch (c) {
+                                return a(c);
+                            }
+                        }, a);
+                    } catch (l7) {
+                        return a(l7);
+                    }
+                }, a);
+            } catch (o) {
+                return a(o);
+            }
+        }, a);
+    });
+}
+function gn(r) {
+    return new Promise(function(a, s) {
+        var t = new vn;
+        t.onload = function() {
+            return a(t.result);
+        }, t.onerror = function(n) {
+            return s(n);
+        }, t.readAsDataURL(r);
+    });
+}
+function ln(r, a) {
+    var s = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : Date.now();
+    return new Promise(function(t) {
+        for(var n = r.split(","), e = n[0].match(/:(.*?);/)[1], i7 = globalThis.atob(n[1]), o = i7.length, l7 = new Uint8Array(o); o--;)l7[o] = i7.charCodeAt(o);
+        var c = new Blob([
+            l7
+        ], {
+            type: e
+        });
+        c.name = a, c.lastModified = s, t(c);
+    });
+}
+function wn(r) {
+    return new Promise(function(a, s) {
+        var t = new Image;
+        t.onload = function() {
+            return a(t);
+        }, t.onerror = function(n) {
+            return s(n);
+        }, t.src = r;
+    });
+}
+function pn(r) {
+    var a = J(en(r.width, r.height), 2), s = a[0];
+    return a[1].drawImage(r, 0, 0, s.width, s.height), s;
+}
+function fn(r) {
+    return new Promise(function(a, s) {
+        var t, n, e = function() {
+            try {
+                return (n = pn(t), a([
+                    t,
+                    n
+                ]));
+            } catch (l7) {
+                return s(l7);
+            }
+        }, i7 = function(l7) {
+            try {
+                return gn(r).then(function(c) {
+                    try {
+                        return wn(c).then(function(A) {
+                            try {
+                                return (t = A, e());
+                            } catch (h) {
+                                return s(h);
+                            }
+                        }, s);
+                    } catch (A) {
+                        return s(A);
+                    }
+                }, s);
+            } catch (c) {
+                return s(c);
+            }
+        };
+        try {
+            return createImageBitmap(r).then(function(o) {
+                try {
+                    return (t = o, e());
+                } catch (l7) {
+                    return i7();
+                }
+            }, i7);
+        } catch (o) {
+            i7();
+        }
+    });
+}
+function cn(r, a, s, t) {
+    var n = arguments.length > 4 && arguments[4] !== void 0 ? arguments[4] : 1;
+    return new Promise(function(e, i7) {
+        var o, l7, c;
+        if (a === "image/png") return (l7 = r.getContext("2d").getImageData(0, 0, r.width, r.height).data, c = w.encode([
+            l7
+        ], r.width, r.height, 256 * n), (o = new Blob([
+            c
+        ], {
+            type: a
+        })).name = s, o.lastModified = t, A.call(this));
+        {
+            let h = function() {
+                return A.call(this);
+            };
+            return typeof OffscreenCanvas == "function" && r instanceof OffscreenCanvas ? r.convertToBlob({
+                type: a,
+                quality: n
+            }).then((function(u) {
+                try {
+                    return (o = u).name = s, o.lastModified = t, h.call(this);
+                } catch (d) {
+                    return i7(d);
+                }
+            }).bind(this), i7) : ln(r.toDataURL(a, n), s, t).then((function(u) {
+                try {
+                    return o = u, h.call(this);
+                } catch (d) {
+                    return i7(d);
+                }
+            }).bind(this), i7);
+        }
+        function A() {
+            return e(o);
+        }
+    });
+}
+function bn(r) {
+    return new Promise(function(a, s) {
+        var t = new vn;
+        t.onload = function(n) {
+            var e = new DataView(n.target.result);
+            if (e.getUint16(0, !1) != 65496) return a(-2);
+            for(var i7 = e.byteLength, o = 2; o < i7;){
+                if (e.getUint16(o + 2, !1) <= 8) return a(-1);
+                var l7 = e.getUint16(o, !1);
+                if (o += 2, l7 == 65505) {
+                    if (e.getUint32(o += 2, !1) != 1165519206) return a(-1);
+                    var c = e.getUint16(o += 6, !1) == 18761;
+                    o += e.getUint32(o + 4, c);
+                    var A = e.getUint16(o, c);
+                    o += 2;
+                    for(var h = 0; h < A; h++)if (e.getUint16(o + 12 * h, c) == 274) return a(e.getUint16(o + 12 * h + 8, c));
+                } else {
+                    if ((65280 & l7) != 65280) break;
+                    o += e.getUint16(o, !1);
+                }
+            }
+            return a(-1);
+        }, t.onerror = function(n) {
+            return s(n);
+        }, t.readAsArrayBuffer(r);
+    });
+}
+function Un(r, a) {
+    var s, t = r.width, n = r.height, e = a.maxWidthOrHeight, i7 = r;
+    if (isFinite(e) && (t > e || n > e)) {
+        var o = J(en(t, n), 2);
+        i7 = o[0], s = o[1], t > n ? (i7.width = e, i7.height = n / t * e) : (i7.width = t / n * e, i7.height = e), s.drawImage(r, 0, 0, i7.width, i7.height), $(r);
+    }
+    return i7;
+}
+function _n(r, a) {
+    var s = r.width, t = r.height, n = J(en(s, t), 2), e = n[0], i7 = n[1];
+    switch(4 < a && a < 9 ? (e.width = t, e.height = s) : (e.width = s, e.height = t), a){
+        case 2:
+            i7.transform(-1, 0, 0, 1, s, 0);
+            break;
+        case 3:
+            i7.transform(-1, 0, 0, -1, s, t);
+            break;
+        case 4:
+            i7.transform(1, 0, 0, -1, 0, t);
+            break;
+        case 5:
+            i7.transform(0, 1, 1, 0, 0, 0);
+            break;
+        case 6:
+            i7.transform(0, 1, -1, 0, t, 0);
+            break;
+        case 7:
+            i7.transform(0, -1, -1, 0, t, s);
+            break;
+        case 8:
+            i7.transform(0, -1, 1, 0, 0, s);
+    }
+    return i7.drawImage(r, 0, 0, s, t), $(r), e;
+}
+function en(r, a) {
+    var s, t;
+    try {
+        if ((t = (s = new OffscreenCanvas(r, a)).getContext("2d")) === null) throw new Error("getContext of OffscreenCanvas returns null");
+    } catch (n) {
+        t = (s = document.createElement("canvas")).getContext("2d");
+    }
+    return s.width = r, s.height = a, [
+        s,
+        t
+    ];
+}
+function $(r) {
+    r.width = 0, r.height = 0;
+}
+function un(r, a) {
+    var s = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : 0;
+    return new Promise(function(t, n) {
+        var e, i7, o, l8, c, A, h, u, d, m, g, v, I, E, p, H, _, b;
+        function U() {
+            var y = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : 5;
+            e += y, a.onProgress(Math.min(e, 100));
+        }
+        function F(y) {
+            e = Math.min(Math.max(y, e), 100), a.onProgress(e);
+        }
+        return (e = s, i7 = a.maxIteration || 10, o = 1024 * a.maxSizeMB * 1024, U(), fn(r).then((function(y) {
+            try {
+                var N = J(y, 2);
+                return N[0], l8 = N[1], U(), c = Un(l8, a), U(), new Promise(function(C, B) {
+                    var P;
+                    if (!(P = a.exifOrientation)) return bn(r).then((function(R) {
+                        try {
+                            return P = R, Q.call(this);
+                        } catch (M) {
+                            return B(M);
+                        }
+                    }).bind(this), B);
+                    function Q() {
+                        return C(P);
+                    }
+                    return Q.call(this);
+                }).then((function(C) {
+                    try {
+                        return A = C, U(), K().then((function(B) {
+                            try {
+                                return h = B ? c : _n(c, A), U(), u = a.initialQuality || 1, d = a.fileType || r.type, cn(h, d, r.name, r.lastModified, u).then((function(P) {
+                                    try {
+                                        {
+                                            let R = function() {
+                                                if ((i7--) && (p > o || p > I)) {
+                                                    var x, z, D = J(en(x = g ? 0.95 * b.width : b.width, z = g ? 0.95 * b.height : b.height), 2);
+                                                    return (_ = D[0], D[1].drawImage(b, 0, 0, x, z), u *= 0.95, cn(_, d, r.name, r.lastModified, u).then(function(V) {
+                                                        try {
+                                                            return (H = V, $(b), b = _, p = H.size, F(Math.min(99, Math.floor((E - p) / (E - o) * 100))), R);
+                                                        } catch (q) {
+                                                            return n(q);
+                                                        }
+                                                    }, n));
+                                                }
+                                                return [
+                                                    1
+                                                ];
+                                            }, M = function() {
+                                                return ($(b), $(_), $(c), $(h), $(l8), F(100), t(H));
+                                            };
+                                            if (m = P, U(), g = m.size > o, v = m.size > r.size, !g && !v) return F(100), t(m);
+                                            var Q;
+                                            return I = r.size, E = m.size, p = E, b = h, (Q = (function(x) {
+                                                for(; x;){
+                                                    if (x.then) return void x.then(Q, n);
+                                                    try {
+                                                        if (x.pop) {
+                                                            if (x.length) return x.pop() ? M.call(this) : x;
+                                                            x = R;
+                                                        } else x = x.call(this);
+                                                    } catch (z) {
+                                                        return n(z);
+                                                    }
+                                                }
+                                            }).bind(this))(R);
+                                        }
+                                    } catch (R) {
+                                        return n(R);
+                                    }
+                                }).bind(this), n);
+                            } catch (P) {
+                                return n(P);
+                            }
+                        }).bind(this), n);
+                    } catch (B) {
+                        return n(B);
+                    }
+                }).bind(this), n);
+            } catch (C) {
+                return n(C);
+            }
+        }).bind(this), n));
+    });
+}
+on && (Number.isInteger = Number.isInteger || function(r) {
+    return typeof r == "number" && isFinite(r) && Math.floor(r) === r;
+});
+var Wn = 0, dn, nn;
+function Pn(r) {
+    return typeof r == "function" && (r = "(".concat(f, ")()")), new Worker(URL.createObjectURL(new Blob([
+        r
+    ])));
+}
+function xn(r) {
+    return URL.createObjectURL(new Blob([
+        r
+    ], {
+        type: "application/javascript"
+    }));
+}
+function tn(r) {
+    return JSON.stringify(r, function(a, s) {
+        return typeof s == "function" ? "BIC_FN:::(() => ".concat(s.toString(), ")()") : s;
+    });
+}
+function yn(o) {
+    if (typeof o == "string") return o;
+    var result = {
+    };
+    return Object.entries(o).forEach(function(_ref) {
+        var _ref2 = J(_ref, 2), key = _ref2[0], value = _ref2[1];
+        if (typeof value == "string" && value.startsWith("BIC_FN:::")) try {
+            result[key] = eval(value.replace(/^BIC_FN:::/, ""));
+        } catch (r) {
+            throw (console.log(key, r), r);
+        }
+        else result[key] = yn(value);
+    }), result;
+}
+function Rn() {
+    return xn(`\n    // reconstruct library\n    function imageCompression (){return (`.concat(Z, `).apply(null, arguments)}\n\n    imageCompression.getDataUrlFromFile = `).concat(Z.getDataUrlFromFile, `\n    imageCompression.getFilefromDataUrl = `).concat(Z.getFilefromDataUrl, `\n    imageCompression.loadImage = `).concat(Z.loadImage, `\n    imageCompression.drawImageInCanvas = `).concat(Z.drawImageInCanvas, `\n    imageCompression.drawFileInCanvas = `).concat(Z.drawFileInCanvas, `\n    imageCompression.canvasToFile = `).concat(Z.canvasToFile, `\n    imageCompression.getExifOrientation = `).concat(Z.getExifOrientation, `\n    imageCompression.handleMaxWidthOrHeight = `).concat(Z.handleMaxWidthOrHeight, `\n    imageCompression.followExifOrientation = `).concat(Z.followExifOrientation, `\n    imageCompression.cleanupCanvasMemory = `).concat(Z.cleanupCanvasMemory, `\n    imageCompression.isAutoOrientationInBrowser = `).concat(Z.isAutoOrientationInBrowser, `\n\n    // functions / objects\n    getDataUrlFromFile = imageCompression.getDataUrlFromFile\n    getFilefromDataUrl = imageCompression.getFilefromDataUrl\n    loadImage = imageCompression.loadImage\n    drawImageInCanvas = imageCompression.drawImageInCanvas\n    drawFileInCanvas = imageCompression.drawFileInCanvas\n    canvasToFile = imageCompression.canvasToFile\n    getExifOrientation = imageCompression.getExifOrientation\n    handleMaxWidthOrHeight = imageCompression.handleMaxWidthOrHeight\n    followExifOrientation = imageCompression.followExifOrientation\n    cleanupCanvasMemory = imageCompression.cleanupCanvasMemory\n    isAutoOrientationInBrowser = imageCompression.isAutoOrientationInBrowser\n    \n    getNewCanvasAndCtx = `).concat(en, `\n    CustomFileReader = FileReader\n    CustomFile = File\n    function _slicedToArray(arr, n) { return arr }\n    function _typeof(a) { return typeof a }\n    function compress (){return (`).concat(un, `).apply(null, arguments)}\n\n    // Libraries\n    const parse = `).concat(yn, `\n    const UPNG = {}\n    UPNG.toRGBA8 = `).concat(w.toRGBA8, `\n    UPNG.toRGBA8.decodeImage = `).concat(w.toRGBA8.decodeImage, `\n    UPNG.decode = `).concat(w.decode, `\n    UPNG.decode._decompress = `).concat(w.decode._decompress, `\n    UPNG.decode._inflate = `).concat(w.decode._inflate, `\n    UPNG.decode._readInterlace = `).concat(w.decode._readInterlace, `\n    UPNG.decode._getBPP = `).concat(w.decode._getBPP, ` \n    UPNG.decode._filterZero = `).concat(w.decode._filterZero, `\n    UPNG.decode._paeth = `).concat(w.decode._paeth, `\n    UPNG.decode._IHDR = `).concat(w.decode._IHDR, `\n    UPNG._bin = parse(`).concat(tn(w._bin), `)\n    UPNG._copyTile = `).concat(w._copyTile, `\n    UPNG.encode = `).concat(w.encode, `\n    UPNG.encodeLL = `).concat(w.encodeLL, ` \n    UPNG.encode._main = `).concat(w.encode._main, `\n    UPNG.encode.compressPNG = `).concat(w.encode.compressPNG, ` \n    UPNG.encode.compress = `).concat(w.encode.compress, `\n    UPNG.encode.framize = `).concat(w.encode.framize, ` \n    UPNG.encode._updateFrame = `).concat(w.encode._updateFrame, ` \n    UPNG.encode._prepareDiff = `).concat(w.encode._prepareDiff, ` \n    UPNG.encode._filterZero = `).concat(w.encode._filterZero, ` \n    UPNG.encode._filterLine = `).concat(w.encode._filterLine, `\n    UPNG.encode.concatRGBA = `).concat(w.encode.concatRGBA, `\n    UPNG.crc = parse(`).concat(tn(w.crc), `)\n    UPNG.crc.table = ( function() {\n    var tab = new Uint32Array(256);\n    for (var n=0; n<256; n++) {\n      var c = n;\n      for (var k=0; k<8; k++) {\n        if (c & 1)  c = 0xedb88320 ^ (c >>> 1);\n        else        c = c >>> 1;\n      }\n      tab[n] = c;  }\n    return tab;  })()\n    UPNG.quantize = `).concat(w.quantize, ` \n    UPNG.quantize.getKDtree = `).concat(w.quantize.getKDtree, ` \n    UPNG.quantize.getNearest = `).concat(w.quantize.getNearest, ` \n    UPNG.quantize.planeDst = `).concat(w.quantize.planeDst, ` \n    UPNG.quantize.dist = `).concat(w.quantize.dist, `     \n    UPNG.quantize.splitPixels = `).concat(w.quantize.splitPixels, ` \n    UPNG.quantize.vecDot = `).concat(w.quantize.vecDot, ` \n    UPNG.quantize.stats = `).concat(w.quantize.stats, ` \n    UPNG.quantize.estats = `).concat(w.quantize.estats, `\n    UPNG.M4 = parse(`).concat(tn(w.M4), `)\n    UPNG.encode.concatRGBA = `).concat(w.encode.concatRGBA, `\n    UPNG.inflateRaw=function(){\n    var H={};H.H={};H.H.N=function(N,W){var R=Uint8Array,i=0,m=0,J=0,h=0,Q=0,X=0,u=0,w=0,d=0,v,C;\n      if(N[0]==3&&N[1]==0)return W?W:new R(0);var V=H.H,n=V.b,A=V.e,l=V.R,M=V.n,I=V.A,e=V.Z,b=V.m,Z=W==null;\n      if(Z)W=new R(N.length>>>2<<5);while(i==0){i=n(N,d,1);m=n(N,d+1,2);d+=3;if(m==0){if((d&7)!=0)d+=8-(d&7);\n        var D=(d>>>3)+4,q=N[D-4]|N[D-3]<<8;if(Z)W=H.H.W(W,w+q);W.set(new R(N.buffer,N.byteOffset+D,q),w);d=D+q<<3;\n        w+=q;continue}if(Z)W=H.H.W(W,w+(1<<17));if(m==1){v=b.J;C=b.h;X=(1<<9)-1;u=(1<<5)-1}if(m==2){J=A(N,d,5)+257;\n        h=A(N,d+5,5)+1;Q=A(N,d+10,4)+4;d+=14;var E=d,j=1;for(var c=0;c<38;c+=2){b.Q[c]=0;b.Q[c+1]=0}for(var c=0;\n                                                                                                        c<Q;c++){var K=A(N,d+c*3,3);b.Q[(b.X[c]<<1)+1]=K;if(K>j)j=K}d+=3*Q;M(b.Q,j);I(b.Q,j,b.u);v=b.w;C=b.d;\n        d=l(b.u,(1<<j)-1,J+h,N,d,b.v);var r=V.V(b.v,0,J,b.C);X=(1<<r)-1;var S=V.V(b.v,J,h,b.D);u=(1<<S)-1;M(b.C,r);\n        I(b.C,r,v);M(b.D,S);I(b.D,S,C)}while(!0){var T=v[e(N,d)&X];d+=T&15;var p=T>>>4;if(p>>>8==0){W[w++]=p}else if(p==256){break}else{var z=w+p-254;\n        if(p>264){var _=b.q[p-257];z=w+(_>>>3)+A(N,d,_&7);d+=_&7}var $=C[e(N,d)&u];d+=$&15;var s=$>>>4,Y=b.c[s],a=(Y>>>4)+n(N,d,Y&15);\n        d+=Y&15;while(w<z){W[w]=W[w++-a];W[w]=W[w++-a];W[w]=W[w++-a];W[w]=W[w++-a]}w=z}}}return W.length==w?W:W.slice(0,w)};\n      H.H.W=function(N,W){var R=N.length;if(W<=R)return N;var V=new Uint8Array(R<<1);V.set(N,0);return V};\n      H.H.R=function(N,W,R,V,n,A){var l=H.H.e,M=H.H.Z,I=0;while(I<R){var e=N[M(V,n)&W];n+=e&15;var b=e>>>4;\n        if(b<=15){A[I]=b;I++}else{var Z=0,m=0;if(b==16){m=3+l(V,n,2);n+=2;Z=A[I-1]}else if(b==17){m=3+l(V,n,3);\n          n+=3}else if(b==18){m=11+l(V,n,7);n+=7}var J=I+m;while(I<J){A[I]=Z;I++}}}return n};H.H.V=function(N,W,R,V){var n=0,A=0,l=V.length>>>1;\n        while(A<R){var M=N[A+W];V[A<<1]=0;V[(A<<1)+1]=M;if(M>n)n=M;A++}while(A<l){V[A<<1]=0;V[(A<<1)+1]=0;A++}return n};\n      H.H.n=function(N,W){var R=H.H.m,V=N.length,n,A,l,M,I,e=R.j;for(var M=0;M<=W;M++)e[M]=0;for(M=1;M<V;M+=2)e[N[M]]++;\n        var b=R.K;n=0;e[0]=0;for(A=1;A<=W;A++){n=n+e[A-1]<<1;b[A]=n}for(l=0;l<V;l+=2){I=N[l+1];if(I!=0){N[l]=b[I];\n          b[I]++}}};H.H.A=function(N,W,R){var V=N.length,n=H.H.m,A=n.r;for(var l=0;l<V;l+=2)if(N[l+1]!=0){var M=l>>1,I=N[l+1],e=M<<4|I,b=W-I,Z=N[l]<<b,m=Z+(1<<b);\n        while(Z!=m){var J=A[Z]>>>15-W;R[J]=e;Z++}}};H.H.l=function(N,W){var R=H.H.m.r,V=15-W;for(var n=0;n<N.length;\n                                                                                                 n+=2){var A=N[n]<<W-N[n+1];N[n]=R[A]>>>V}};H.H.M=function(N,W,R){R=R<<(W&7);var V=W>>>3;N[V]|=R;N[V+1]|=R>>>8};\n      H.H.I=function(N,W,R){R=R<<(W&7);var V=W>>>3;N[V]|=R;N[V+1]|=R>>>8;N[V+2]|=R>>>16};H.H.e=function(N,W,R){return(N[W>>>3]|N[(W>>>3)+1]<<8)>>>(W&7)&(1<<R)-1};\n      H.H.b=function(N,W,R){return(N[W>>>3]|N[(W>>>3)+1]<<8|N[(W>>>3)+2]<<16)>>>(W&7)&(1<<R)-1};H.H.Z=function(N,W){return(N[W>>>3]|N[(W>>>3)+1]<<8|N[(W>>>3)+2]<<16)>>>(W&7)};\n      H.H.i=function(N,W){return(N[W>>>3]|N[(W>>>3)+1]<<8|N[(W>>>3)+2]<<16|N[(W>>>3)+3]<<24)>>>(W&7)};H.H.m=function(){var N=Uint16Array,W=Uint32Array;\n        return{K:new N(16),j:new N(16),X:[16,17,18,0,8,7,9,6,10,5,11,4,12,3,13,2,14,1,15],S:[3,4,5,6,7,8,9,10,11,13,15,17,19,23,27,31,35,43,51,59,67,83,99,115,131,163,195,227,258,999,999,999],T:[0,0,0,0,0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,0,0,0,0],q:new N(32),p:[1,2,3,4,5,7,9,13,17,25,33,49,65,97,129,193,257,385,513,769,1025,1537,2049,3073,4097,6145,8193,12289,16385,24577,65535,65535],z:[0,0,0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11,12,12,13,13,0,0],c:new W(32),J:new N(512),_:[],h:new N(32),$:[],w:new N(32768),C:[],v:[],d:new N(32768),D:[],u:new N(512),Q:[],r:new N(1<<15),s:new W(286),Y:new W(30),a:new W(19),t:new W(15e3),k:new N(1<<16),g:new N(1<<15)}}();\n      (function(){var N=H.H.m,W=1<<15;for(var R=0;R<W;R++){var V=R;V=(V&2863311530)>>>1|(V&1431655765)<<1;\n        V=(V&3435973836)>>>2|(V&858993459)<<2;V=(V&4042322160)>>>4|(V&252645135)<<4;V=(V&4278255360)>>>8|(V&16711935)<<8;\n        N.r[R]=(V>>>16|V<<16)>>>17}function n(A,l,M){while(l--!=0)A.push(0,M)}for(var R=0;R<32;R++){N.q[R]=N.S[R]<<3|N.T[R];\n        N.c[R]=N.p[R]<<4|N.z[R]}n(N._,144,8);n(N._,255-143,9);n(N._,279-255,7);n(N._,287-279,8);H.H.n(N._,9);\n        H.H.A(N._,9,N.J);H.H.l(N._,9);n(N.$,32,5);H.H.n(N.$,5);H.H.A(N.$,5,N.h);H.H.l(N.$,5);n(N.Q,19,0);n(N.C,286,0);\n        n(N.D,30,0);n(N.v,320,0)}());return H.H.N}()\n    \n    const UZIP = {}\n    UZIP["parse"] = `).concat(W.parse, `\n    UZIP._readLocal = `).concat(W._readLocal, `\n    UZIP.inflateRaw = `).concat(W.inflateRaw, `\n    UZIP.inflate = `).concat(W.inflate, `\n    UZIP.deflate = `).concat(W.deflate, `\n    UZIP.deflateRaw = `).concat(W.deflateRaw, `\n    UZIP.encode = `).concat(W.encode, `\n    UZIP._noNeed = `).concat(W._noNeed, `\n    UZIP._writeHeader = `).concat(W._writeHeader, `\n    UZIP.crc = parse(`).concat(tn(W.crc), `)\n    UZIP.crc.table = ( function() {\n      var tab = new Uint32Array(256);\n      for (var n=0; n<256; n++) {\n        var c = n;\n        for (var k=0; k<8; k++) {\n          if (c & 1)  c = 0xedb88320 ^ (c >>> 1);\n          else        c = c >>> 1;\n        }\n        tab[n] = c;  }\n      return tab;  })()\n    \n    UZIP.adler = `).concat(W.adler, `\n    UZIP.bin = parse(`).concat(tn(W.bin), `)\n    UZIP.F = {}\n    UZIP.F.deflateRaw = `).concat(W.F.deflateRaw, `\n    UZIP.F._bestMatch = `).concat(W.F._bestMatch, `\n    UZIP.F._howLong = `).concat(W.F._howLong, `\n    UZIP.F._hash = `).concat(W.F._hash, `\n    UZIP.saved = `).concat(W.saved, `\n    UZIP.F._writeBlock = `).concat(W.F._writeBlock, `\n    UZIP.F._copyExact = `).concat(W.F._copyExact, `\n    UZIP.F.getTrees = `).concat(W.F.getTrees, `\n    UZIP.F.getSecond = `).concat(W.F.getSecond, `\n    UZIP.F.nonZero = `).concat(W.F.nonZero, `\n    UZIP.F.contSize = `).concat(W.F.contSize, `\n    UZIP.F._codeTiny = `).concat(W.F._codeTiny, ` \n    UZIP.F._lenCodes = `).concat(W.F._lenCodes, ` \n    UZIP.F._hufTree = `).concat(W.F._hufTree, ` \n    UZIP.F.setDepth = `).concat(W.F.setDepth, ` \n    UZIP.F.restrictDepth = `).concat(W.F.restrictDepth, `\n    UZIP.F._goodIndex = `).concat(W.F._goodIndex, ` \n    UZIP.F._writeLit = `).concat(W.F._writeLit, ` \n    UZIP.F.inflate = `).concat(W.F.inflate, ` \n    UZIP.F._check = `).concat(W.F._check, ` \n    UZIP.F._decodeTiny = `).concat(W.F._decodeTiny, ` \n    UZIP.F._copyOut = `).concat(W.F._copyOut, ` \n    UZIP.F.makeCodes = `).concat(W.F.makeCodes, ` \n    UZIP.F.codes2map = `).concat(W.F.codes2map, ` \n    UZIP.F.revCodes = `).concat(W.F.revCodes, ` \n\n    // used only in deflate\n    UZIP.F._putsE = `).concat(W.F._putsE, `\n    UZIP.F._putsF = `).concat(W.F._putsF, `\n  \n    UZIP.F._bitsE = `).concat(W.F._bitsE, `\n    UZIP.F._bitsF = `).concat(W.F._bitsF, `\n\n    UZIP.F._get17 = `).concat(W.F._get17, `\n    UZIP.F._get25 = `).concat(W.F._get25, `\n    UZIP.F.U = function(){\n      var u16=Uint16Array, u32=Uint32Array;\n      return {\n        next_code : new u16(16),\n        bl_count  : new u16(16),\n        ordr : [ 16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15 ],\n        of0  : [3,4,5,6,7,8,9,10,11,13,15,17,19,23,27,31,35,43,51,59,67,83,99,115,131,163,195,227,258,999,999,999],\n        exb  : [0,0,0,0,0,0,0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4,  4,  5,  5,  5,  5,  0,  0,  0,  0],\n        ldef : new u16(32),\n        df0  : [1,2,3,4,5,7,9,13,17,25,33,49,65,97,129,193,257,385,513,769,1025,1537,2049,3073,4097,6145,8193,12289,16385,24577, 65535, 65535],\n        dxb  : [0,0,0,0,1,1,2, 2, 3, 3, 4, 4, 5, 5,  6,  6,  7,  7,  8,  8,   9,   9,  10,  10,  11,  11,  12,   12,   13,   13,     0,     0],\n        ddef : new u32(32),\n        flmap: new u16(  512),  fltree: [],\n        fdmap: new u16(   32),  fdtree: [],\n        lmap : new u16(32768),  ltree : [],  ttree:[],\n        dmap : new u16(32768),  dtree : [],\n        imap : new u16(  512),  itree : [],\n        //rev9 : new u16(  512)\n        rev15: new u16(1<<15),\n        lhst : new u32(286), dhst : new u32( 30), ihst : new u32(19),\n        lits : new u32(15000),\n        strt : new u16(1<<16),\n        prev : new u16(1<<15)\n      };\n    } ();\n\n    (function(){\n      var U = UZIP.F.U;\n      var len = 1<<15;\n      for(var i=0; i<len; i++) {\n        var x = i;\n        x = (((x & 0xaaaaaaaa) >>> 1) | ((x & 0x55555555) << 1));\n        x = (((x & 0xcccccccc) >>> 2) | ((x & 0x33333333) << 2));\n        x = (((x & 0xf0f0f0f0) >>> 4) | ((x & 0x0f0f0f0f) << 4));\n        x = (((x & 0xff00ff00) >>> 8) | ((x & 0x00ff00ff) << 8));\n        U.rev15[i] = (((x >>> 16) | (x << 16)))>>>17;\n      }\n  \n      function pushV(tgt, n, sv) {  while(n--!=0) tgt.push(0,sv);  }\n  \n      for(var i=0; i<32; i++) {  U.ldef[i]=(U.of0[i]<<3)|U.exb[i];  U.ddef[i]=(U.df0[i]<<4)|U.dxb[i];  }\n  \n      pushV(U.fltree, 144, 8);  pushV(U.fltree, 255-143, 9);  pushV(U.fltree, 279-255, 7);  pushV(U.fltree,287-279,8);\n      /*\n        var i = 0;\n        for(; i<=143; i++) U.fltree.push(0,8);\n        for(; i<=255; i++) U.fltree.push(0,9);\n        for(; i<=279; i++) U.fltree.push(0,7);\n        for(; i<=287; i++) U.fltree.push(0,8);\n        */\n      UZIP.F.makeCodes(U.fltree, 9);\n      UZIP.F.codes2map(U.fltree, 9, U.flmap);\n      UZIP.F.revCodes (U.fltree, 9)\n  \n      pushV(U.fdtree,32,5);\n      //for(i=0;i<32; i++) U.fdtree.push(0,5);\n      UZIP.F.makeCodes(U.fdtree, 5);\n      UZIP.F.codes2map(U.fdtree, 5, U.fdmap);\n      UZIP.F.revCodes (U.fdtree, 5)\n  \n      pushV(U.itree,19,0);  pushV(U.ltree,286,0);  pushV(U.dtree,30,0);  pushV(U.ttree,320,0);\n      /*\n        for(var i=0; i< 19; i++) U.itree.push(0,0);\n        for(var i=0; i<286; i++) U.ltree.push(0,0);\n        for(var i=0; i< 30; i++) U.dtree.push(0,0);\n        for(var i=0; i<320; i++) U.ttree.push(0,0);\n        */\n    })()\n    `));
+}
+function Tn() {
+    return Pn(`\n    let scriptImported = false\n    self.addEventListener('message', async (e) => {\n      const { file, id, imageCompressionLibUrl, options } = e.data\n      options.onProgress = (progress) => self.postMessage({ progress, id })\n      try {\n        if (!scriptImported) {\n          // console.log('[worker] importScripts', imageCompressionLibUrl)\n          self.importScripts(imageCompressionLibUrl)\n          scriptImported = true\n        }\n        // console.log('[worker] self', self)\n        const compressedFile = await imageCompression(file, options)\n        self.postMessage({ file: compressedFile, id })\n      } catch (e) {\n        // console.error('[worker] error', e)\n        self.postMessage({ error: e.message + '\\n' + e.stack, id })\n      }\n    })\n  `);
+}
+function zn(r, a) {
+    return new Promise(function(s, t) {
+        return new Promise(function(n, e) {
+            var i7 = Wn++;
+            return (dn || (dn = Rn()), nn || (nn = Tn()), nn.addEventListener("message", function o(l8) {
+                if (l8.data.id === i7) {
+                    if (l8.data.progress !== void 0) return void a.onProgress(l8.data.progress);
+                    nn.removeEventListener("message", o), l8.data.error && t(new Error(l8.data.error)), s(l8.data.file);
+                }
+            }), nn.addEventListener("error", t), nn.postMessage({
+                file: r,
+                id: i7,
+                imageCompressionLibUrl: dn,
+                options: An(An({
+                }, a), {
+                }, {
+                    onProgress: void 0
+                })
+            }), n());
+        });
+    });
+}
+function Z(r, a) {
+    return new Promise(function(s, t) {
+        var n, e, i7, o, l8;
+        if ((e = 0, a.maxSizeMB = a.maxSizeMB || Number.POSITIVE_INFINITY, o = typeof a.useWebWorker != "boolean" || a.useWebWorker, delete a.useWebWorker, i7 = a.onProgress, a.onProgress = function(u) {
+            e = u, typeof i7 == "function" && i7(e);
+        }, !(r instanceof Blob || r instanceof Mn))) return t(new Error("The file given is not an instance of Blob or File"));
+        if (!/^image/.test(r.type)) return t(new Error("The file given is not an image"));
+        if ((l8 = typeof WorkerGlobalScope != "undefined" && self instanceof WorkerGlobalScope, !o || typeof Worker != "function" || l8)) return un(r, a).then((function(u) {
+            try {
+                return n = u, h.call(this);
+            } catch (d) {
+                return t(d);
+            }
+        }).bind(this), t);
+        var c = (function() {
+            try {
+                return h.call(this);
+            } catch (u) {
+                return t(u);
+            }
+        }).bind(this), A = function(d) {
+            try {
+                return un(r, a).then(function(m) {
+                    try {
+                        return (n = m, c());
+                    } catch (g) {
+                        return t(g);
+                    }
+                }, t);
+            } catch (m) {
+                return t(m);
+            }
+        };
+        try {
+            return zn(r, a).then(function(u) {
+                try {
+                    return (n = u, c());
+                } catch (d) {
+                    return A();
+                }
+            }, A);
+        } catch (u) {
+            A();
+        }
+        function h() {
+            try {
+                n.name = r.name, n.lastModified = r.lastModified;
+            } catch (u) {
+            }
+            return s(n);
+        }
+    });
+}
+Z.getDataUrlFromFile = gn, Z.getFilefromDataUrl = ln, Z.loadImage = wn, Z.drawImageInCanvas = pn, Z.drawFileInCanvas = fn, Z.canvasToFile = cn, Z.getExifOrientation = bn, Z.handleMaxWidthOrHeight = Un, Z.followExifOrientation = _n, Z.cleanupCanvasMemory = $, Z.isAutoOrientationInBrowser = K, Z.version = "1.0.14";
+var Zn = Z;
+class ImageHelper {
+    async resizeBase64Image(base64Image) {
+        const options = {
+            maxSizeMB: 0.1,
+            maxWidthOrHeight: 1392,
+            useWebWorker: true,
+            maxIteration: 10
+        };
+        const fileImage = await Zn.getFilefromDataUrl(base64Image);
+        const compressImage = await Zn(fileImage, options);
+        const base64 = await Zn.getDataUrlFromFile(compressImage);
+        return base64;
+    }
+}
+const Header = ({ user: user1  })=>{
+    const [userInfo, setUserInfo] = useState(user1.user);
+    const editInfo = {
+        isEditing: false,
+        currentElement: undefined
+    };
+    const selectImage = ({ target  })=>target.previousElementSibling.click()
+    ;
+    const changeImage = ({ target  })=>{
+        const file = target.files[0];
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = async (readerEvent)=>{
+            const imageHelper = new ImageHelper();
+            const content = readerEvent.target.result;
+            const compressedContent = await imageHelper.resizeBase64Image(content);
+            target.nextElementSibling.src = compressedContent;
+            try {
+                const updatedUser = {
+                    ...userInfo,
+                    [target.id]: compressedContent
+                };
+                await updateUser(updatedUser);
+                setUserInfo(updatedUser);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+    };
+    const editField = (event)=>{
+        editInfo.currentElement?.classList.remove('updating-field');
+        event.target.setAttribute('contenteditable', true);
+        event.target.focus();
+        if (editInfo.currentElement?.innerText !== userInfo[editInfo.currentElement?.id]) {
+            document.body.click();
+        }
+        event.target.classList.add('updating-field');
+        editInfo.currentElement = event.target;
+        const oldValue = userInfo[event.target.id];
+        const fireEvent = async ()=>{
+            event.target.classList.remove('updated-field');
+            if (event.target.innerText !== oldValue) {
+                try {
+                    const updatedUser = {
+                        ...userInfo,
+                        [event.target.id]: event.target.innerText
+                    };
+                    await updateUser(updatedUser);
+                    setUserInfo(updatedUser);
+                    event.target.classList.add('updated-field');
+                    setTimeout(()=>{
+                        event.target.classList.remove('updated-field');
+                    }, 500);
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+            document.body.removeEventListener('click', fireEvent, false);
+            event.target.classList.remove('updating-field');
+            event.target.setAttribute('contenteditable', false);
+            editInfo.isEditing = false;
+        };
+        if (!editInfo.isEditing) document.body.addEventListener('click', fireEvent, false);
+        event.stopPropagation();
+    };
+    return export_default1.createElement(export_default1.Fragment, null, export_default1.createElement("div", {
+        className: 'profile-header row'
+    }, export_default1.createElement("input", {
+        id: "image",
+        type: "file",
+        name: "name",
+        style: {
+            display: 'none'
+        },
+        accept: "image/png, image/jpeg",
+        onChange: changeImage
+    }), export_default1.createElement("img", {
+        src: userInfo.image,
+        className: 'col s4 profile-header__image responsive-img',
+        onClick: selectImage
+    }), export_default1.createElement("div", {
+        className: 'col s8 row profile-header__textgroup'
+    }, export_default1.createElement("div", {
+        className: 'col s12'
+    }, export_default1.createElement("span", {
+        id: "name",
+        className: 'col s6 h3 profile-header__name blue-text lighten-2',
+        onClick: editField
+    }, userInfo.name), export_default1.createElement("span", {
+        id: "surname",
+        className: 'col s6 h3 profile-header__name blue-text lighten-2',
+        onClick: editField
+    }, userInfo.surname)), export_default1.createElement("input", {
+        id: "optional_image",
+        type: "file",
+        name: "name",
+        style: {
+            display: 'none'
+        },
+        accept: "image/png, image/jpeg",
+        onChange: changeImage
+    }), export_default1.createElement("img", {
+        id: "optional_image",
+        src: userInfo.optional_image,
+        className: 'col s4 profile-header__image2 responsive-img',
+        onClick: selectImage
+    }), export_default1.createElement("span", {
+        id: "profile_slot_1",
+        className: 'col s8 profile-header__slot',
+        onClick: editField
+    }, userInfo.profile_slot_1), export_default1.createElement("span", {
+        id: "profile_slot_2",
+        className: 'col s8 profile-header__slot',
+        onClick: editField
+    }, userInfo.profile_slot_2))));
+};
+const NewCategoryForm = ({ current , userInfo , setUserInfo , setShowModal , setActiveForm  })=>{
+    const form = useRef(undefined);
     useEffect(()=>{
-        console.log(user1);
+        document.body.classList.add('show-modal-body');
+        document.body.addEventListener('click', closeModal, false);
+        if (current !== '') form.current.getElementsByTagName('input')[0].value = current;
     }, []);
-    return export_default1.createElement(export_default1.Fragment, null, user1 ? export_default1.createElement(Profile, {
-        user: user1
+    const closeModal = ()=>{
+        setShowModal(false);
+        document.body.classList.remove('show-modal-body');
+        setActiveForm(undefined);
+        document.body.removeEventListener('click', closeModal, false);
+    };
+    const send = async (event)=>{
+        event.preventDefault();
+        const category_name = [
+            ...event.target
+        ].find((input)=>input.id === 'category_name'
+        ).value;
+        try {
+            const updatedUser = {
+                ...userInfo.user,
+                categories: [
+                    ...userInfo.user.categories,
+                    {
+                        category_name: category_name,
+                        order: document.querySelectorAll('.profile-articles__category').length ? document.querySelectorAll('.profile-articles__category').length : 1
+                    }
+                ]
+            };
+            await updateUser(updatedUser);
+            setUserInfo({
+                user: updatedUser,
+                documents: userInfo.documents
+            });
+            closeModal();
+        } catch (error) {
+            console.error(error);
+        }
+    };
+    return export_default1.createElement("div", {
+        className: "row"
+    }, export_default1.createElement("span", {
+        className: "modal-label"
+    }, current === '' ? 'Add new ' : 'Edit ', "category"), export_default1.createElement("button", {
+        className: "close-modal btn-floating red btn-small",
+        onClick: closeModal
+    }, export_default1.createElement("i", {
+        className: "material-icons right"
+    }, "clear")), export_default1.createElement("form", {
+        className: "col s12",
+        onSubmit: send,
+        ref: form
+    }, export_default1.createElement("div", {
+        className: "row"
+    }, export_default1.createElement("div", {
+        className: "input-field col s12"
+    }, export_default1.createElement("input", {
+        id: "category_name",
+        type: "text",
+        required: true
+    }), export_default1.createElement("label", {
+        htmlFor: "category-name",
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "Category name"))), export_default1.createElement("button", {
+        id: "send-form",
+        className: "btn waves-effect waves-light blue accent-4",
+        type: "submit",
+        name: "action"
+    }, "Submit", export_default1.createElement("i", {
+        className: "material-icons right"
+    }, "send"))));
+};
+const addDocument = async (newDocument)=>fetch('/documentadd', {
+        method: 'post',
+        headers: {
+            'Content-Type': "application/json"
+        },
+        body: JSON.stringify(newDocument)
+    })
+;
+const updateDocument = async (document)=>fetch('/updatedocument', {
+        method: 'put',
+        headers: {
+            'Content-Type': "application/json"
+        },
+        body: JSON.stringify(document)
+    })
+;
+const FreeDocumentForm = ({ current , userInfo , setUserInfo , setShowModal , setActiveForm , categoryNode  })=>{
+    const [editor, setEditor] = useState('');
+    useEffect(()=>{
+        document.body.classList.add('show-modal-body');
+        ClassicEditor.create(document.querySelector('#editor'), {
+            toolbar: {
+                items: [
+                    'heading',
+                    '|',
+                    'bold',
+                    'italic',
+                    'link',
+                    'bulletedList',
+                    'numberedList',
+                    'fontColor',
+                    'fontSize',
+                    'specialCharacters',
+                    '|',
+                    'outdent',
+                    'indent',
+                    '|',
+                    'imageInsert',
+                    'insertTable',
+                    'blockQuote',
+                    'mediaEmbed',
+                    'undo',
+                    'redo',
+                    'htmlEmbed',
+                    'code',
+                    'codeBlock'
+                ]
+            },
+            language: 'en',
+            image: {
+                toolbar: [
+                    'imageTextAlternative',
+                    'imageStyle:full',
+                    'imageStyle:side'
+                ]
+            },
+            table: {
+                contentToolbar: [
+                    'tableColumn',
+                    'tableRow',
+                    'mergeTableCells'
+                ]
+            },
+            licenseKey: ''
+        }).then((editor1)=>{
+            window.editor = editor1;
+            setEditor(editor1);
+            if (current) {
+                editor1.setData(current.html);
+            }
+        }).catch((error)=>{
+            console.error('Oops, something went wrong!');
+            console.error('Please, report the following error on https://github.com/ckeditor/ckeditor5/issues with the build id and the error stack trace:');
+            console.warn('Build id: quv3rfo3pxrj-vm52prjvm8zk');
+            console.error(error);
+        });
+    }, []);
+    const closeModal = (ask = true)=>{
+        if (!ask || confirm('Cancel current operation?')) {
+            setShowModal(false);
+            document.body.classList.remove('show-modal-body');
+            setActiveForm(undefined);
+        }
+    };
+    const getArticleOrder = (nodes)=>{
+        if (nodes.length === 0) return 1;
+        const orderList = [];
+        for (const node of nodes){
+            orderList.push(node.firstElementChild.getAttribute('data-article-order'));
+        }
+        return Math.max(...orderList) + 1;
+    };
+    const send = async (event)=>{
+        event.preventDefault();
+        if (editor.getData() === "") return;
+        try {
+            if (!current) {
+                const newDocument = {
+                    can_be_cited: false,
+                    category: categoryNode.getAttribute('data-category'),
+                    user: userInfo.user.email,
+                    type: 'freedocument',
+                    html: editor.getData(),
+                    order: getArticleOrder(categoryNode.querySelectorAll('.profile-articles__document'))
+                };
+                const response = await addDocument(newDocument);
+                const { document_id  } = await response.json();
+                console.log({
+                    user: {
+                        ...userInfo.user
+                    },
+                    documents: [
+                        ...userInfo.documents,
+                        {
+                            ...newDocument,
+                            _id: document_id
+                        }
+                    ]
+                });
+                setUserInfo({
+                    user: {
+                        ...userInfo.user
+                    },
+                    documents: [
+                        ...userInfo.documents,
+                        {
+                            ...newDocument,
+                            _id: document_id
+                        }
+                    ]
+                });
+            } else {
+                const updatedDocuments = [
+                    ...userInfo.documents.filter((doc)=>doc._id !== current._id
+                    ),
+                    {
+                        ...current,
+                        html: editor.getData()
+                    }
+                ];
+                await updateDocument({
+                    ...current,
+                    html: editor.getData()
+                });
+                console.log({
+                    user: userInfo.user,
+                    documents: updatedDocuments
+                });
+                setUserInfo({
+                    user: userInfo.user,
+                    documents: updatedDocuments
+                });
+            }
+            document.body.removeEventListener('click', closeModal, false);
+            closeModal(false);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+    return export_default1.createElement("div", {
+        className: "row"
+    }, export_default1.createElement("span", {
+        className: "modal-label"
+    }, current ? 'Edit ' : 'Add new ', "FreeDocument"), export_default1.createElement("button", {
+        className: "close-modal btn-floating red btn-small",
+        onClick: closeModal
+    }, export_default1.createElement("i", {
+        className: "material-icons right"
+    }, "clear")), export_default1.createElement("div", {
+        id: "editor"
+    }), export_default1.createElement("button", {
+        id: "send-form",
+        onClick: send,
+        className: "btn waves-effect waves-light blue accent-4",
+        type: "submit",
+        name: "action"
+    }, "Submit", export_default1.createElement("i", {
+        className: "material-icons right"
+    }, "send")));
+};
+class JournalArticle {
+    _id;
+    type;
+    category;
+    abstract;
+    order;
+    user;
+    can_be_cited;
+    generate_citation;
+    authors;
+    title;
+    journal;
+    volume;
+    volume_number;
+    publisher;
+    start_page;
+    end_page;
+    publication_year;
+    doi;
+}
+const JournalArticleForm = ({ current , userInfo , setUserInfo , setShowModal , setActiveForm , categoryNode  })=>{
+    const [authors, setAuthors] = useState([
+        0
+    ]);
+    const form = useRef();
+    useEffect(()=>{
+        document.body.classList.add('show-modal-body');
+        if (current) {
+            setAuthors([
+                ...Array(current.authors.length).keys()
+            ]);
+        }
+    }, []);
+    const closeModal = (ask = true)=>{
+        if (!ask || confirm('Cancel current operation?')) {
+            setShowModal(false);
+            document.body.classList.remove('show-modal-body');
+            setActiveForm(undefined);
+        }
+    };
+    const getArticleOrder = (nodes)=>{
+        if (nodes.length === 0) return 1;
+        const orderList = [];
+        for (const node of nodes){
+            orderList.push(node.firstElementChild.getAttribute('data-article-order'));
+        }
+        return Math.max(...orderList) + 1;
+    };
+    const createDocumentObject = ()=>{
+        const document = new JournalArticle();
+        if (!current) {
+            document.category = categoryNode.getAttribute('data-category');
+            document.type = 'journalarticle';
+            document.order = getArticleOrder(categoryNode.querySelectorAll('.profile-articles__document'));
+        }
+        document.can_be_cited = true;
+        document.user = userInfo.user.email;
+        document.authors = [
+            ...form.current.querySelectorAll('[data-authors]')
+        ].map((aut, index)=>({
+                name: form.current.querySelector(`#aut-name-${index}`).value,
+                surname: form.current.querySelector(`#aut-surname-${index}`).value
+            })
+        );
+        document.title = form.current.querySelector(`#title`).value;
+        document.journal = form.current.querySelector(`#journal`).value;
+        document.volume = +form.current.querySelector(`#volume`).value;
+        document.volume_number = +form.current.querySelector(`#volume_number`).value;
+        document.publisher = form.current.querySelector(`#publisher`).value;
+        document.abstract = form.current.querySelector(`#abstract`).value;
+        document.start_page = +form.current.querySelector(`#start_page`).value;
+        document.end_page = +form.current.querySelector(`#end_page`).value;
+        document.publication_year = +form.current.querySelector(`#publication_year`).value;
+        document.doi = form.current.querySelector(`#doi`).value;
+        return document;
+    };
+    const send = async (event)=>{
+        event.preventDefault();
+        try {
+            const newDocument = createDocumentObject();
+            console.log({
+                ...current,
+                ...newDocument
+            });
+            if (!current) {
+                console.log(newDocument);
+                const { document_id  } = await response.json();
+                console.log({
+                    user: {
+                        ...userInfo.user
+                    },
+                    documents: [
+                        ...userInfo.documents,
+                        {
+                            ...newDocument,
+                            _id: document_id
+                        }
+                    ]
+                });
+                setUserInfo({
+                    user: {
+                        ...userInfo.user
+                    },
+                    documents: [
+                        ...userInfo.documents,
+                        {
+                            ...newDocument,
+                            _id: document_id
+                        }
+                    ]
+                });
+            } else {
+                const updatedDocuments = [
+                    ...userInfo.documents.filter((doc)=>doc._id !== current._id
+                    ),
+                    {
+                        ...current,
+                        ...newDocument,
+                        _id: current._id,
+                        category: current.category,
+                        order: current.order,
+                        type: current.type
+                    }
+                ];
+                await updateDocument({
+                    ...newDocument,
+                    _id: current._id
+                });
+                console.log({
+                    user: userInfo.user,
+                    documents: updatedDocuments
+                });
+                setUserInfo({
+                    user: userInfo.user,
+                    documents: updatedDocuments
+                });
+            }
+            document.body.removeEventListener('click', closeModal, false);
+            closeModal(false);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+    const addAuthor = ()=>setAuthors([
+            ...authors,
+            Math.max(...authors) + 1
+        ])
+    ;
+    const removeAuthor = (id)=>setAuthors(authors.filter((aut)=>aut !== id
+        ))
+    ;
+    return export_default1.createElement("div", {
+        className: "row"
+    }, export_default1.createElement("span", {
+        className: "modal-label"
+    }, !current ? 'Add new ' : 'Edit ', "journal article"), export_default1.createElement("button", {
+        className: "close-modal btn-floating red btn-small",
+        onClick: closeModal
+    }, export_default1.createElement("i", {
+        className: "material-icons right"
+    }, "clear")), export_default1.createElement("form", {
+        className: "col s12",
+        onSubmit: send,
+        ref: form
+    }, export_default1.createElement("div", {
+        className: "row"
+    }, export_default1.createElement("div", {
+        className: "input-field col s12"
+    }, export_default1.createElement("input", {
+        id: "title",
+        type: "text",
+        defaultValue: current?.title,
+        required: true
+    }), export_default1.createElement("label", {
+        htmlFor: "title",
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "Article title")), export_default1.createElement("div", {
+        id: "authors"
+    }, authors.map((aut)=>{
+        return export_default1.createElement("div", {
+            key: aut,
+            "data-authors": true
+        }, export_default1.createElement("div", {
+            className: "input-field col s6"
+        }, export_default1.createElement("input", {
+            id: `aut-name-${aut}`,
+            type: "text",
+            defaultValue: current?.authors[aut]?.name,
+            required: true
+        }), export_default1.createElement("label", {
+            htmlFor: `aut-name-${aut}`,
+            className: "active",
+            onClick: ({ target  })=>target.previousElementSibling.focus()
+        }, "Author name")), export_default1.createElement("div", {
+            className: "input-field col s6"
+        }, export_default1.createElement("input", {
+            id: `aut-surname-${aut}`,
+            type: "text",
+            defaultValue: current?.authors[aut]?.surname,
+            required: true
+        }), export_default1.createElement("label", {
+            htmlFor: `aut-surname-${aut}`,
+            className: "active",
+            onClick: ({ target  })=>target.previousElementSibling.focus()
+        }, "Author surname")), aut !== 0 ? export_default1.createElement("span", {
+            onClick: ()=>removeAuthor(aut)
+        }, "Remove") : undefined);
+    }), export_default1.createElement("span", {
+        onClick: addAuthor
+    }, "Add author"), export_default1.createElement("div", {
+        className: "input-field col s12"
+    }, export_default1.createElement("input", {
+        id: "journal",
+        type: "text",
+        defaultValue: current?.journal,
+        required: true
+    }), export_default1.createElement("label", {
+        htmlFor: "journal",
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "Journal")), export_default1.createElement("div", {
+        className: "input-field col s12"
+    }, export_default1.createElement("input", {
+        id: "volume",
+        type: "number",
+        defaultValue: current?.volume,
+        required: true
+    }), export_default1.createElement("label", {
+        htmlFor: "volume",
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "Volume")), export_default1.createElement("div", {
+        className: "input-field col s12"
+    }, export_default1.createElement("textarea", {
+        id: "abstract",
+        className: "materialize-textarea",
+        defaultValue: current?.abstract
+    }), export_default1.createElement("label", {
+        htmlFor: "abstract",
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "Abstract")), export_default1.createElement("div", {
+        className: "input-field col s12"
+    }, export_default1.createElement("input", {
+        id: "volume_number",
+        type: "number",
+        defaultValue: current?.volume_number,
+        required: true
+    }), export_default1.createElement("label", {
+        htmlFor: "volume_number",
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "Volume number")), export_default1.createElement("div", {
+        className: "input-field col s12"
+    }, export_default1.createElement("input", {
+        id: "publisher",
+        type: "text",
+        defaultValue: current?.publisher,
+        required: true
+    }), export_default1.createElement("label", {
+        htmlFor: "publisher",
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "Publisher")), export_default1.createElement("div", {
+        className: "input-field col s12"
+    }, export_default1.createElement("input", {
+        id: "start_page",
+        type: "number",
+        defaultValue: current?.start_page,
+        required: true
+    }), export_default1.createElement("label", {
+        htmlFor: "start_page",
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "Start page")), export_default1.createElement("div", {
+        className: "input-field col s12"
+    }, export_default1.createElement("input", {
+        id: "end_page",
+        type: "number",
+        defaultValue: current?.end_page,
+        required: true
+    }), export_default1.createElement("label", {
+        htmlFor: "end_page",
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "End page")), export_default1.createElement("div", {
+        className: "input-field col s12"
+    }, export_default1.createElement("input", {
+        id: "publication_year",
+        type: "number",
+        defaultValue: current?.publication_year,
+        required: true
+    }), export_default1.createElement("label", {
+        htmlFor: "publication_year",
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "Publication year")), export_default1.createElement("div", {
+        className: "input-field col s12"
+    }, export_default1.createElement("input", {
+        id: "doi",
+        type: "text",
+        defaultValue: current?.doi,
+        required: true
+    }), export_default1.createElement("label", {
+        htmlFor: "doi",
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "DOI / URI")))), export_default1.createElement("button", {
+        id: "send-form",
+        onClick: send,
+        className: "btn waves-effect waves-light blue accent-4",
+        type: "submit",
+        name: "action"
+    }, "Submit", export_default1.createElement("i", {
+        className: "material-icons right"
+    }, "send"))));
+};
+const FreeDocumentRender = ({ doc  })=>{
+    useEffect(()=>{
+        const node = document.querySelector(`[data-article-id=id-${doc._id}]`);
+        node.innerHTML = doc.html;
+    });
+    return export_default1.createElement("div", {
+        "data-article-id": `id-${doc._id}`,
+        "data-article-order": doc.order
+    });
+};
+const JournalArticleRender = ({ doc  })=>{
+    const collapse = ({ target  })=>target.classList.toggle('show')
+    ;
+    return export_default1.createElement("div", {
+        "data-article-id": `id-${doc._id}`,
+        "data-article-order": doc.order,
+        className: 'profile-articles__journalArticle'
+    }, export_default1.createElement("div", {
+        className: "documents__title"
+    }, doc.title), export_default1.createElement("div", {
+        className: "documents__journal"
+    }, doc.journal), export_default1.createElement("div", {
+        className: "documents__authors"
+    }, doc.authors.map(({ name , surname  }, index)=>{
+        return export_default1.createElement(export_default1.Fragment, {
+            key: index
+        }, index < 3 ? export_default1.createElement(export_default1.Fragment, null, export_default1.createElement("span", {
+            className: "documents__aut-name"
+        }, name), export_default1.createElement("span", {
+            className: "documents__aut-surname"
+        }, surname)) : undefined, index !== 2 && index !== doc.authors.length - 1 ? export_default1.createElement("span", null, ", ") : undefined, index > 2 ? export_default1.createElement("span", null, ", et al.") : undefined);
+    })), export_default1.createElement("p", {
+        className: "documents__abstract collapse",
+        onClick: collapse
+    }, doc.abstract));
+};
+const DocumentRender = ({ doc  })=>{
+    const [document, setDocument] = useState(undefined);
+    const node = useRef();
+    useEffect(()=>{
+        switch(doc.type){
+            case 'freedocument':
+                setDocument(export_default1.createElement(FreeDocumentRender, {
+                    doc: doc
+                }));
+                break;
+            case 'journalarticle':
+                setDocument(export_default1.createElement(JournalArticleRender, {
+                    doc: doc
+                }));
+                break;
+        }
+    }, []);
+    return export_default1.createElement("div", {
+        ref: node,
+        className: 'profile-articles__document'
+    }, document);
+};
+const deleteDocument = async (document_id)=>fetch('/deletedocument', {
+        method: 'delete',
+        body: document_id
+    })
+;
+const deleteCategory = (category, user2)=>fetch('/deletecategory', {
+        method: 'delete',
+        headers: {
+            'Content-Type': "application/json"
+        },
+        body: JSON.stringify({
+            category,
+            user: user2
+        })
+    })
+;
+const Modal = ({ children , show  })=>{
+    useEffect(()=>{
+        if (show) document.querySelector('.modal').classList.add('show-modal');
+        else document.querySelector('.modal').classList.remove('show-modal');
+    }, [
+        show
+    ]);
+    return export_default1.createElement("div", {
+        className: 'modal',
+        onClick: (event)=>event.stopPropagation()
+        ,
+        style: {
+            marginTop: window.scrollY - 100
+        }
+    }, children);
+};
+const ProfileDocuments = ({ user: user2  })=>{
+    const [userInfo, setUserInfo] = useState(user2);
+    const [showModal, setShowModal] = useState(false);
+    const [activeForm, setActiveForm] = useState(undefined);
+    useEffect(()=>{
+        const elems = document.querySelectorAll('.dropdown-trigger');
+        M.Dropdown.init(elems);
+    }, [
+        userInfo
+    ]);
+    const addEditCategory = (category)=>{
+        setShowModal(true);
+        setActiveForm(export_default1.createElement(NewCategoryForm, {
+            userInfo: userInfo,
+            setShowModal: setShowModal,
+            setActiveForm: setActiveForm,
+            setUserInfo: setUserInfo,
+            current: category
+        }));
+    };
+    const addDocument1 = ({ target  }, Form, doc)=>{
+        setShowModal(true);
+        setActiveForm(export_default1.createElement(Form, {
+            userInfo: userInfo,
+            setShowModal: setShowModal,
+            setActiveForm: setActiveForm,
+            setUserInfo: setUserInfo,
+            categoryNode: target.parentElement.parentElement.parentElement,
+            current: doc
+        }));
+    };
+    const deleteOneDocument = async (id)=>{
+        if (confirm('Delete this document?')) {
+            try {
+                await deleteDocument(id);
+                const updatedDocuments = userInfo.documents.filter(({ _id  })=>_id !== id
+                );
+                setUserInfo({
+                    user: userInfo.user,
+                    documents: updatedDocuments
+                });
+            } catch (error) {
+                console.error(error);
+            }
+        }
+    };
+    const deleteCategoryDocuments = async (category)=>{
+        if (confirm(`Delete category "${category}" and all its documents?`)) {
+            try {
+                const updatedDocuments = userInfo.documents.filter(({ category: currentCat  })=>currentCat !== category
+                );
+                const updatedUser = {
+                    ...userInfo.user,
+                    categories: userInfo.user.categories.filter(({ category_name  })=>category_name !== category
+                    )
+                };
+                await deleteCategory(category, updatedUser);
+                setUserInfo({
+                    user: updatedUser,
+                    documents: updatedDocuments
+                });
+            } catch (error) {
+                console.error(error);
+            }
+        }
+    };
+    const orderList = (a, b)=>{
+        if (a.order > b.order) {
+            return 1;
+        }
+        if (a.order < b.order) {
+            return -1;
+        }
+        return 0;
+    };
+    const changeCategoryOrder = async (modify, currentName, currentOrder)=>{
+        const categoryChangedOrder = currentOrder + modify;
+        const updatedCategories = [
+            ...userInfo.user.categories
+        ];
+        const toChangeIndex = updatedCategories.findIndex(({ category_name , order  })=>category_name === currentName && order == currentOrder
+        );
+        const toSwitchIndex = updatedCategories.findIndex((cat)=>cat.order === categoryChangedOrder
+        );
+        const oldOrder = updatedCategories[toChangeIndex].order;
+        updatedCategories[toChangeIndex].order = categoryChangedOrder;
+        updatedCategories[toSwitchIndex].order = oldOrder;
+        const updatedUser = {
+            ...userInfo.user,
+            categories: updatedCategories
+        };
+        console.log(updatedUser);
+        try {
+            await updateUser(updatedUser);
+            setUserInfo({
+                user: updatedUser,
+                documents: userInfo.documents
+            });
+        } catch (error) {
+            console.error(error);
+        }
+    };
+    const changeDocumentOrder = async (modify, currentCategory, currentOrder)=>{
+        const documentChangedOrder = currentOrder + modify;
+        const updatedCategoryDocuments = [
+            ...userInfo.documents.filter(({ category  })=>category === currentCategory
+            )
+        ];
+        const toChangeIndex = updatedCategoryDocuments.findIndex(({ category , order  })=>category === currentCategory && order == currentOrder
+        );
+        const toSwitchIndex = updatedCategoryDocuments.findIndex((doc)=>doc.order === documentChangedOrder
+        );
+        const oldOrder = updatedCategoryDocuments[toChangeIndex].order;
+        updatedCategoryDocuments[toChangeIndex].order = documentChangedOrder;
+        updatedCategoryDocuments[toSwitchIndex].order = oldOrder;
+        const updatedDocuments = [
+            ...userInfo.documents.filter((doc)=>doc.category !== currentCategory
+            ),
+            ...updatedCategoryDocuments
+        ];
+        console.log(updatedDocuments);
+        try {
+            await updateDocument(updatedCategoryDocuments[toChangeIndex]);
+            await updateDocument(updatedCategoryDocuments[toSwitchIndex]);
+            setUserInfo({
+                user: userInfo.user,
+                documents: updatedDocuments
+            });
+        } catch (error) {
+            console.error(error);
+        }
+    };
+    const editDocument = (type)=>{
+        switch(type){
+            case 'freedocument':
+                return FreeDocumentForm;
+            case 'journalarticle':
+                return JournalArticleForm;
+        }
+    };
+    return export_default1.createElement("div", {
+        className: 'profile-articles'
+    }, export_default1.createElement("a", {
+        className: "btn-floating btn-medium waves-effect waves-light blue dropdown-trigger",
+        href: "#",
+        "data-target": "dropdownc"
+    }, export_default1.createElement("i", {
+        className: "material-icons"
+    }, "add")), export_default1.createElement("ul", {
+        id: "dropdownc",
+        className: "dropdown-content"
+    }, export_default1.createElement("li", null, export_default1.createElement("a", {
+        onClick: ()=>addEditCategory('')
+    }, "Add category"))), export_default1.createElement("div", {
+        className: 'profile-articles__categories'
+    }, userInfo.user.categories.sort((a, b)=>orderList(a, b)
+    ).map(({ category_name , order  }, index)=>{
+        return export_default1.createElement("div", {
+            className: 'profile-articles__category',
+            key: index,
+            "data-category": category_name,
+            "data-order": `order-${order}`
+        }, export_default1.createElement("div", {
+            className: "profile-articles__category-header"
+        }, export_default1.createElement("div", {
+            className: "profile-articles__buttons-group1"
+        }, export_default1.createElement("span", {
+            className: 'profile-articles__category-name'
+        }, category_name), export_default1.createElement("div", {
+            className: "profile-articles__order-controls"
+        }, index === 0 ? undefined : export_default1.createElement("button", {
+            className: "profile-articles__order-button"
+        }, export_default1.createElement("i", {
+            className: "material-icons",
+            onClick: ()=>changeCategoryOrder(-1, category_name, order)
+        }, "expand_less")), index === userInfo.user.categories.length - 1 ? undefined : export_default1.createElement("button", {
+            className: "profile-articles__order-button"
+        }, export_default1.createElement("i", {
+            className: "material-icons",
+            onClick: ()=>changeCategoryOrder(1, category_name, order)
+        }, "expand_more")))), export_default1.createElement("div", {
+            className: "profile-articles__buttons-group2"
+        }, export_default1.createElement("button", {
+            className: "btn-floating btn-small waves-effect waves-light blue dropdown-trigger",
+            href: "#",
+            "data-target": `dropdown${index}`
+        }, export_default1.createElement("i", {
+            className: "material-icons"
+        }, "add")), export_default1.createElement("button", {
+            id: "delete-category",
+            onClick: ()=>deleteCategoryDocuments(category_name)
+            ,
+            className: "btn waves-effect waves-light btn-floating red btn-small"
+        }, export_default1.createElement("i", {
+            className: "material-icons right"
+        }, "delete"))), export_default1.createElement("ul", {
+            id: `dropdown${index}`,
+            className: "dropdown-content"
+        }, export_default1.createElement("li", null, export_default1.createElement("a", {
+            onClick: (event)=>addDocument1(event, FreeDocumentForm, undefined)
+        }, "Add free document")), export_default1.createElement("li", null, export_default1.createElement("a", {
+            onClick: (event)=>addDocument1(event, JournalArticleForm, undefined)
+        }, "Add journal article")))), userInfo.documents.filter(({ category  })=>category === category_name
+        ).sort((a, b)=>orderList(a, b)
+        ).map((doc, docIndex)=>{
+            return export_default1.createElement("div", {
+                className: 'profile-articles__category-document',
+                key: JSON.stringify(doc)
+            }, export_default1.createElement(DocumentRender, {
+                doc: doc
+            }), export_default1.createElement("div", {
+                className: "profile-articles__buttons-group1"
+            }, export_default1.createElement("button", {
+                id: "delete-document",
+                onClick: ()=>deleteOneDocument(doc._id)
+                ,
+                className: "btn waves-effect waves-light btn-floating red btn-small"
+            }, export_default1.createElement("i", {
+                className: "material-icons right"
+            }, "delete")), export_default1.createElement("button", {
+                id: "edit-document",
+                onClick: (event)=>addDocument1(event, editDocument(doc.type), doc)
+                ,
+                className: "btn waves-effect waves-light btn-floating blue btn-small"
+            }, export_default1.createElement("i", {
+                className: "material-icons right"
+            }, "edit")), export_default1.createElement("div", {
+                className: "profile-articles__order-controls"
+            }, docIndex === 0 ? undefined : export_default1.createElement("button", {
+                className: "profile-articles__order-button"
+            }, export_default1.createElement("i", {
+                className: "material-icons",
+                onClick: ()=>changeDocumentOrder(-1, doc.category, doc.order)
+            }, "expand_less")), docIndex === userInfo.documents.filter(({ category  })=>category === category_name
+            ).length - 1 ? undefined : export_default1.createElement("button", {
+                className: "profile-articles__order-button"
+            }, export_default1.createElement("i", {
+                className: "material-icons",
+                onClick: ()=>changeDocumentOrder(1, doc.category, doc.order)
+            }, "expand_more")))), docIndex === userInfo.documents.filter(({ category  })=>category === category_name
+            ).length - 1 ? undefined : export_default1.createElement("div", {
+                className: "profile-articles__document-separator"
+            }));
+        }));
+    })), export_default1.createElement(Modal, {
+        show: showModal
+    }, activeForm));
+};
+const Profile = ({ user: user2  })=>{
+    return export_default1.createElement("div", {
+        className: 'profile'
+    }, export_default1.createElement(Header, {
+        user: user2
+    }), export_default1.createElement(ProfileDocuments, {
+        user: user2
+    }));
+};
+const App = ()=>{
+    const userInfo = useContext(UserContext);
+    return export_default1.createElement(export_default1.Fragment, null, userInfo.user ? export_default1.createElement(Profile, {
+        user: userInfo
     }) : export_default1.createElement(Auth, null));
 };
 export_default3.hydrate(export_default1.createElement(UserTokenContext, null, export_default1.createElement(App, null)), document.getElementById('app'));

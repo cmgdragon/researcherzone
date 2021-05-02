@@ -2,6 +2,14 @@ import { Application, send, Context } from "oak";
 import { config } from 'dotenv';
 import router from '~/controllers/routes.tsx';
 
+declare global {
+  namespace ImageBitmap {
+      interface ImageBitmap {
+      [key: string]: any;
+      }
+  }
+}
+
 //dotenv
 config({export: true, safe: true});
 

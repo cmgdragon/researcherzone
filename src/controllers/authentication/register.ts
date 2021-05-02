@@ -1,19 +1,25 @@
 import { Context } from "oak";
-import { addNewUser } from '~/controllers/database/users.ts';
+import { addNewUser, findUser } from '~/controllers/database/users.ts';
 import User from "~/models/User.ts";
 
 const register = async (context: Context) => {
     try {
         const body = await context.request.body().value;
+        const query = await findUser(body.email);
+
+        if (query) {
+            context.response.body
+            context.response.body = { message: 'This email already exists', status: 409 };
+            return;
+        }
+        
         const user = addNewUser(body);
+        context.response.status = 200;
+        context.response.body = { status: 200 };
 
-       // await context.state.session.set("user", "jajajaja");
-        //const ret = await context.state.session.get("user");
-
-        context.response.body = {message: user};
     } catch (error) {
         console.log(error);
-        context.response.body = {error};
+        context.response.body = { error };
     }
 }
 

@@ -1,5 +1,4 @@
 import IBibliography from './interfaces/IBibliography.ts';
-import IProfileDocumentOrder from './interfaces/IProfileDocumentOrder.ts';
 import { sha256 } from 'sha256';
 
 class User {
@@ -9,11 +8,11 @@ class User {
     pwd: string;
     profile_slot_1: string = '';
     profile_slot_2: string = '';
-    categories: Array<string> = [];
+    categories: Array<{category: string, category_order: number}> = [];
     image: any = '';
+    optional_image: any = '';
     people_following: Array<string> = [];
     people_followers: Array<string> = [];
-    profile_documents: Array<IProfileDocumentOrder> = [];
     bibliographies: Array<IBibliography> = [];
     social_media: Array<{name: string, url: string}> = [];
 

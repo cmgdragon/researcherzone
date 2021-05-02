@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import User from '~/models/User.ts';
 
-const Register = () => {
+const Register = ({changeRoute}) => {
 
     const [inputs, setInputs] = useState({email: '', name: '', password: '', password2: ''});
-    const [errors, setError] = useState({email: '', name: '', password: '', password2: ''});
-    const [isValid, setValid] = useState(false);
+    const [errors, setError] = useState({email: '', name: '', password: '', password2: '', form: ''});
 
     const validate = ({target}) => {
         setInputs({...inputs, [target.id]: target.value});
@@ -13,49 +12,41 @@ const Register = () => {
         if (target.id === 'name') {
 
             if (target.value.length < 3) {
-                target.classNameList.add('invalid');
+                target.classList.add('invalid');
                 setError({...errors, [target.id]: 'Too short! Min. 3 chars.'})
                 return;
             }
             setError({...errors, [target.id]: '✓'})
-            target.classNameList.remove('invalid');
+            target.classList.remove('invalid');
 
         } else if (target.id === 'password') {
             if (target.value.length < 8) {
-                target.classNameList.add('invalid');
+                target.classList.add('invalid');
                 setError({...errors, [target.id]: 'Too short! Min. 8 chars.'})
                 return;
             }
             setError({...errors, [target.id]: '✓'})
-            target.classNameList.remove('invalid');
+            target.classList.remove('invalid');
 
         } else if (target.id === 'password2') {
             if (target.value !== document.getElementById('password').value) {
-                target.classNameList.add('invalid');
+                target.classList.add('invalid');
                 setError({...errors, [target.id]: 'Passwords must match!'})
                 return;
             }
             setError({...errors, [target.id]: '✓'})
-            target.classNameList.remove('invalid');
+            target.classList.remove('invalid');
 
         } else if (target.id === 'email') {
             if (!/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(target.value)) {
-                target.classNameList.add('invalid');
+                target.classList.add('invalid');
                 setError({...errors, [target.id]: 'Invalid email'})
                 return;
             }
             setError({...errors, [target.id]: '✓'})
-            target.classNameList.remove('invalid');
+            target.classList.remove('invalid');
         }
 
-    }
-
-   const isValidForm = () => {
-        for (const input of Object.values(errors)) {
-            console.log(input)
-            if (input !== '') return;
-        }
-        setValid(true);
     }
 
     const register = async (event) => {
@@ -67,16 +58,24 @@ const Register = () => {
             pwd: [...event.target].find(input => input.id === 'password').value
         });
 
-        const response = await fetch('/register', {
+        const request = await fetch('/register', {
           method: 'post',
           headers: { 'Content-Type': "application/json" },
           body: JSON.stringify(newUser)
         });
-        console.log(await response.json())
+        const response = await request.json();
+        switch(response.status) {
+          case 200:
+            changeRoute('login');
+          break;
+          case 409:
+            setError({...errors, form: response.message})
+        }
     }
 
     return (
         <div className="row">
+        <span className="red-text">{errors.form}</span>
         <form className="col s12" onSubmit={register}>
           <div className="row">
           <div className="input-field col s6">

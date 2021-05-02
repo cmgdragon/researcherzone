@@ -8,23 +8,14 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!--Import materialize.css-->
     <link type="text/css" rel="stylesheet" href="materialize/css/materialize.min.css"  media="screen,projection"/>
-
-    <!--meta name="google-signin-client_id" content="806110519086-ou9505u4u7ug7897uga4bukqv2p46oi9.apps.googleusercontent.com"></meta-->
     <link href="main.css" rel="stylesheet">
+    <link href="css/editor-content-styles.css" rel="stylesheet">
     <title>Document</title>
 </head>
 <body>
     <main id="app" class="container"></main>
     <script src="materialize/js/materialize.min.js" async defer></script>
-    <script>
-        function onSignIn(googleUser) {
-            var profile = googleUser.getBasicProfile();
-            console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-            console.log('Name: ' + profile.getName());
-            console.log('Image URL: ' + profile.getImageUrl());
-            console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
-        }
-    </script>
+    <script src="js/ckeditor.js"></script>
     <script src="index.js"></script>
 </body>
 </html>

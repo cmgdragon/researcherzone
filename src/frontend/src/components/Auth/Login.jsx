@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { BrowserRouter, Link } from 'react-router-dom';
 
 const Login = () => {
 
@@ -20,9 +19,7 @@ const Login = () => {
       console.log(response)
       switch (response.status) {
             case 200:
-                console.log(response.user)
-                //localStorage.setItem('token', response.token);
-                //window.location.href = '/';
+                window.location.reload();
             break;
             default:
                 setError(response.message);

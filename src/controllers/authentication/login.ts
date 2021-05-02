@@ -24,8 +24,8 @@ const login = async ({request, response}: Context) => {
       typ: 'JWT'
     }
   
-    const payload = {
-      iss: ({...user, pwd: ''}),
+    const payload: any = {
+      iss: { email: user.email },
       exp: getNumericDate(60 * 60)
     }
     
@@ -36,7 +36,7 @@ const login = async ({request, response}: Context) => {
       maxAge: 60 * 60 //* 24 * 7 // 1 week
     }))
     response.status = 200;
-    response.body = {status: 200, user};
+    response.body = { status: 200 };
   } catch (error) {
       response.body = error;
   }
