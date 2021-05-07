@@ -10,7 +10,10 @@ const Header = ({user}) => {
     const editInfo = { isEditing: false, currentElement: undefined };
     const social_networks = ['youtube', 'twitter', 'instagram', 'youtube'];
 
-    const selectImage = ({target}) => target.previousElementSibling.click();
+    const selectImage = ({target}) => {
+        if (user.isGuest) return;
+        target.previousElementSibling.click()
+    };
     const changeImage = ({target}) => {
         const file = target.files[0];
         const reader = new FileReader();
@@ -41,6 +44,8 @@ const Header = ({user}) => {
     }
     const editField = event => {
     
+        if (user.isGuest) return;
+
         editInfo.currentElement?.classList.remove('updating-field');
         event.target.setAttribute('contenteditable', true);
         event.target.focus();
@@ -90,7 +95,7 @@ const Header = ({user}) => {
                 <input id="optional_image" type="file" name="name" style={{display: 'none'}} accept="image/png, image/jpeg" onChange={changeImage} />
                 <div className={'profile-header__optional-image col'}>
                     <img id="optional_image" src={userInfo.optional_image} className={'profile-header__image2 responsive-img'} onClick={selectImage} />
-                    <i className="material-icons right">close</i>
+                    {!user.isGuest ? <i className="material-icons right">close</i> : undefined}
                 </div>
                 <div className={'profile-header__slots col s12'}>
                     <span id="profile_slot_1" className={'col s8 profile-header__slot'} onClick={editField}>{userInfo.profile_slot_1}</span>
@@ -119,9 +124,12 @@ const Header = ({user}) => {
                         )
                     })
                 }
-                <div className="btn waves-effect waves-light btn-floating blue btn-small" onClick={() => {document.body.classList.add('show-modal-body'); setShowModal(true)}}>
-                    <i className="material-icons right">add</i>
-                </div>
+                { !user.isGuest ? 
+                    <div className="btn waves-effect waves-light btn-floating blue btn-small" onClick={() => {document.body.classList.add('show-modal-body'); setShowModal(true)}}>
+                        <i className="material-icons right">add</i>
+                    </div>
+                    : undefined
+                }
             </div>
         <SocialMediaModal show={showModal}>
             <SocialMediaForm userInfo={userInfo} setUserInfo={setUserInfo} setShowModal={setShowModal} />

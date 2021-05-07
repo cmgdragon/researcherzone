@@ -8,7 +8,7 @@ const createGuestToken = async (context, next) => {
 
     const { token } = cookie.parse(context.request.headers.get('cookie') || '');
 
-    if (token || !context?.params?.id) return await next();
+    if (token || !context.params?.id) return await next();
 
     if (!token) {
         try {

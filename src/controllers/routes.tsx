@@ -2,7 +2,8 @@ import App from '~/frontend/src/App.jsx';
 import { Router, Context } from "oak";
 import React from "react";
 import ReactDOMServer from "react-dom/server";
-import verifyToken from '~/controllers/authentication/security.ts';
+import verifyToken from '~/controllers/authentication/security/verifyToken.ts';
+import verifyUserCall from '~/controllers/authentication/security/verifyUserCall.ts';
 import createGuestToken from '~/controllers/authentication/createGuestToken.ts';
 import cookie from 'cookie';
 
@@ -35,15 +36,15 @@ router.get('/user/:id', createGuestToken, async (context) => {
 
 .post('/register', register)
 
-.put('/updateuser', verifyToken, users_api.update)
+.put('/updateuser', verifyUserCall, users_api.update)
 
-.put('/updatedocument', verifyToken, documents_api.update_document)
+.put('/updatedocument', verifyUserCall, documents_api.update_document)
 
-.post('/documentadd', verifyToken, documents_api.addDocument)
+.post('/documentadd', verifyUserCall, documents_api.addDocument)
 
-.delete('/deletedocument', verifyToken, documents_api.removeDocument)
+.delete('/deletedocument', verifyUserCall, documents_api.removeDocument)
 
-.delete('/deletecategory', verifyToken, documents_api.removeCategory)
+.delete('/deletecategory', verifyUserCall, documents_api.removeCategory)
 
 .get('/gettokeninfo', verifyToken, getTokenInfo)
 

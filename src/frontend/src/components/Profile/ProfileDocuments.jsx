@@ -1,12 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import NewCategoryForm from './DocumentForms/NewCategoryForm.jsx';
-import FreeDocumentForm from './DocumentForms/FreeDocumentForm.jsx';
-import BookForm from './DocumentForms/BookForm.jsx'
-import JournalArticleForm from './DocumentForms/JournalArticleForm.jsx';
-import BookChapterForm from './DocumentForms/BookChapterForm.jsx';
-import ConferenceProceedingForm from './DocumentForms/ConferenceProceedingForm.jsx';
-import ThesisForm from './DocumentForms/ThesisForm.jsx';
 import DocumentRender from './DocumentRenders/index.jsx';
+import NewCategoryForm from './DocumentForms/NewCategoryForm.jsx';
 import deleteDocument from '~/frontend/src/api/deleteDocument.js';
 import deleteCategory from '~/frontend/src/api/deleteCategory.js';
 import updateUser from '~/frontend/src/api/updateUser.js';
@@ -14,6 +8,7 @@ import updateDocument from '~/frontend/src/api/updateDocument.js';
 import DocumentsModal from '../DocumentsModal.jsx';
 import CitationModal from './Citations/CitationModal.jsx';
 import selectCitation from './Citations/selectCitation.js';
+import selectForm from './DocumentForms/selectForm.js';
 
 const ProfileDocuments = ({user}) => {
 
@@ -147,34 +142,18 @@ const ProfileDocuments = ({user}) => {
         }
     }
 
-    const editDocument = type => {
-        switch (type) {
-            case 'freedocument':
-                return FreeDocumentForm;
-            case 'journalarticle':
-                return JournalArticleForm;
-            case 'book':
-                return BookForm;
-            case 'bookchapter':
-                return BookChapterForm;
-            case 'conferenceproceeding':
-                return ConferenceProceedingForm;
-            case 'thesis':
-                return ThesisForm;
-        }
-    }
-
     return (
         <div className={'profile-articles'}>
 
-            <div className="profile-articles__add-category">
-                <a className='btn-floating btn-medium waves-effect waves-light blue dropdown-trigger' href='#' data-target='dropdownc'><i className="material-icons">add</i></a>
-            </div>
-
-            <ul id='dropdownc' className='dropdown-content'>
-                <li><a onClick={() => addEditCategory('')}>Add category</a></li>
-            </ul>
-
+            { !user.isGuest ? <>
+                <div className="profile-articles__add-category">
+                    <a className='btn-floating btn-medium waves-effect waves-light blue dropdown-trigger' href='#' data-target='dropdownc'><i className="material-icons">add</i></a>
+                </div>
+                <ul id='dropdownc' className='dropdown-content'>
+                    <li><a onClick={() => addEditCategory('')}>Add category</a></li>
+                </ul>
+                </> : undefined
+            }
 
         <div className={'profile-articles__categories'}>
         {
@@ -185,7 +164,8 @@ const ProfileDocuments = ({user}) => {
                      <div className="profile-articles__category-header">
 
                         <div className="profile-articles__buttons-group1">
-                            <span className={'profile-articles__category-name'}>{category_name}</span>
+                        <span className={'profile-articles__category-name'}>{category_name}</span>
+                        { !user.isGuest ? <>              
                             <div className="profile-articles__order-controls">
                                 { index === 0 ? undefined :
                                 <button className="profile-articles__order-button">
@@ -199,21 +179,23 @@ const ProfileDocuments = ({user}) => {
                                     </button>
                                 }
                             </div>
-                        </div>
-                        <div className="profile-articles__buttons-group2">
-                            <button className='btn-floating btn-small waves-effect waves-light blue dropdown-trigger' href='#' data-target={`dropdown${index}`}><i className="material-icons">add</i></button>
-                            <button id="delete-category" onClick={() => deleteCategoryDocuments(category_name)} className="btn waves-effect waves-light btn-floating red btn-small">
-                                <i className="material-icons right">delete</i>
-                            </button>
+                            <div className="profile-articles__buttons-group2">
+                                <button className='btn-floating btn-small waves-effect waves-light blue dropdown-trigger' href='#' data-target={`dropdown${index}`}><i className="material-icons">add</i></button>
+                                <button id="delete-category" onClick={() => deleteCategoryDocuments(category_name)} className="btn waves-effect waves-light btn-floating red btn-small">
+                                    <i className="material-icons right">delete</i>
+                                </button>
+                            </div>
+                        </> : 'undefined'
+                        }
                         </div>
 
                             <ul id={`dropdown${index}`} className='dropdown-content'>
-                                <li><a onClick={() => addDocument(category_id, FreeDocumentForm, undefined)}>Add free document</a></li>
-                                <li><a onClick={() => addDocument(category_id, JournalArticleForm, undefined)}>Add journal article</a></li>
-                                <li><a onClick={() => addDocument(category_id, BookForm, undefined)}>Add book</a></li>
-                                <li><a onClick={() => addDocument(category_id, BookChapterForm, undefined)}>Add book chapter</a></li>
-                                <li><a onClick={() => addDocument(category_id, ConferenceProceedingForm, undefined)}>Add conference proceeding</a></li>
-                                <li><a onClick={() => addDocument(category_id, ThesisForm, undefined)}>Add thesis</a></li>
+                                <li><a onClick={() => addDocument(category_id, selectForm('freedocument'), undefined)}>Add free document</a></li>
+                                <li><a onClick={() => addDocument(category_id, selectForm('journalarticle'), undefined)}>Add journal article</a></li>
+                                <li><a onClick={() => addDocument(category_id, selectForm('book'), undefined)}>Add book</a></li>
+                                <li><a onClick={() => addDocument(category_id, selectForm('bookchapter'), undefined)}>Add book chapter</a></li>
+                                <li><a onClick={() => addDocument(category_id, selectForm('conferenceproceeding'), undefined)}>Add conference proceeding</a></li>
+                                <li><a onClick={() => addDocument(category_id, selectForm('thesis'), undefined)}>Add thesis</a></li>
                             </ul>
                     </div>
                     {
@@ -229,7 +211,7 @@ const ProfileDocuments = ({user}) => {
                                             >
                                                 <i className="material-icons right">delete</i>
                                             </button>
-                                            <button id="edit-document" onClick={() => addDocument(category_id, editDocument(doc.type), doc)} className="btn waves-effect waves-light btn-floating blue btn-small"
+                                            <button id="edit-document" onClick={() => addDocument(category_id, selectForm(doc.type), doc)} className="btn waves-effect waves-light btn-floating blue btn-small"
                                             >
                                                 <i className="material-icons right">edit</i>
                                             </button>

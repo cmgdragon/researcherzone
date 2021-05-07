@@ -7,8 +7,8 @@ const getTokenInfo = async () => {
                 'cache-control': 'no-cache'
             }
         });
-        const { user, documents } = await request.json();
-        return { user, documents };
+        const { isGuest, user, documents } = await request.json();
+        return { isGuest, user, documents };
     } catch ({message}) {
         return false;
     }

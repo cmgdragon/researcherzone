@@ -1,11 +1,10 @@
 import { Context } from 'oak';
-import { verify } from 'djwt';
+import { verify, decode } from 'djwt';
 import cookie from 'cookie';
 
 const verifyToken = async (context, next: any) => {
 
-    const token = context.cookies.get('token')//cookie.parse(request.headers.get('cookie') || '');
-    console.log(token)
+    const { token } = cookie.parse(context.request.headers.get('cookie') || '');
 
     if (!token) {
         throw new Error('No token found');
@@ -16,14 +15,12 @@ const verifyToken = async (context, next: any) => {
     }
 
     try {
-    
-    const payload = await verify(token, Deno.env.get('SECRET'), "HS512");
 
-    console.log(context.request.headers.get('pathname'))
-    if (payload.iss === 'guest' && context.request.headers.get('pathname') === '/') {
-        throw new Error('Not logged in');
-    }
+        const [ header, payload, signature ] : any = decode(token);
     
+        if (payload.iss === 'guest' && context.request.headers.get('pathname') === '/') {
+            throw new Error('Not logged in');
+        }
 
     } catch ({message}) {
         context.response.status = 403;

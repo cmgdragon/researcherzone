@@ -4,7 +4,7 @@ import ProfileDocuments from './ProfileDocuments.jsx';
 
 const Profile = ({user}) => {
 
-    //useEffect(() => console.log(user), [user])
+    useEffect(() => console.log(user), [user])
 
     return (
         <div className={'profile'}>
