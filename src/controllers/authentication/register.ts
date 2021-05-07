@@ -1,11 +1,11 @@
 import { Context } from "oak";
-import { addNewUser, findUser } from '~/controllers/database/users.ts';
+import { addNewUser, findUserByEmail } from '~/controllers/database/users.ts';
 import User from "~/models/User.ts";
 
 const register = async (context: Context) => {
     try {
         const body = await context.request.body().value;
-        const query = await findUser(body.email);
+        const query = await findUserByEmail(body.email);
 
         if (query) {
             context.response.body
