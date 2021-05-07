@@ -1,20 +1,18 @@
 import IProfileDocument from './interfaces/IProfileDocument.ts';
-import ICitableDocument from './interfaces/ICitableDocument.ts';
 
-class JournalArticle implements IProfileDocument, ICitableDocument {
+class JournalArticle implements IProfileDocument {
     _id?: string;
     type: string;
-    category: string;
+    category: number;
     abstract: string;
     order: number;
     user: string;
     can_be_cited: boolean;
-    generate_citation: Function;
     authors: Array<{name: string, surname: string}>;
     title: string;
     journal: string;
     volume: number;
-    volume_number: number;
+    issue: number;
     publisher: string;
     start_page: number;
     end_page: number;

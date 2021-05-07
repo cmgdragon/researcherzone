@@ -1,10 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react';
 import updateDocument from '~/frontend/src/api/updateDocument.js';
-import BookChapter from '~/models/Book.ts';
+import addDocument from '~/frontend/src/api/addDocument.js';
+import { BookChapter } from '~/models/Book.ts';
 
-const BookChapterForm = ({current, userInfo, setUserInfo, setShowModal, setActiveForm, categoryNode}) => {
+const BookChapterForm = ({current, userInfo, setUserInfo, setShowModal, setActiveForm, categoryId}) => {
 
     const [authors, setAuthors] = useState([0]);
+    const [editors, setEditors] = useState([]);
     const form = useRef();
     useEffect(() => {
         document.body.classList.add('show-modal-body');
@@ -18,43 +20,41 @@ const BookChapterForm = ({current, userInfo, setUserInfo, setShowModal, setActiv
         }
     }
 
-    const getArticleOrder = nodes => {
-        if (nodes.length === 0) return 1;
-        const orderList = [];
-        for (const node of nodes) {
-            orderList.push(node.firstElementChild.getAttribute('data-article-order'));
-        }
-        return Math.max(...orderList) + 1;
-    }
-
     const createDocumentObject = () => {     
         const document = new BookChapter();
         //common properties
         if (!current) {
-            document.category = categoryNode.getAttribute('data-category');
-            document.type = 'book';
-            document.order = getArticleOrder(categoryNode.querySelectorAll('.profile-articles__document'));
+            document.category = userInfo.user.categories.find(({id}) => id === categoryId).id
+            document.type = 'bookchapter';
+            document.order = userInfo.documents.length ?
+            Math.max( ...userInfo.documents.filter(({category}) => category === categoryId).map(({order}) => order) )+1 : 1
         }
         document.can_be_cited = true;
         document.user = userInfo.user.email;
         //custom properties
-        document.authors = [...form.current.querySelectorAll('[data-authors]')].map((aut, index) => ({
+        document.authors = [...form.current.querySelectorAll('[data-editors]')].length ?
+        [...form.current.querySelectorAll('[data-authors]')].map((aut, index) => ({
             name: form.current.querySelector(`#aut-name-${index}`).value,
             surname: form.current.querySelector(`#aut-surname-${index}`).value,
+        })) : [];
+        document.editors = [...form.current.querySelectorAll('[data-editors]')].map((ed, index) => ({
+            name: form.current.querySelector(`#ed-name-${index}`).value,
+            surname: form.current.querySelector(`#ed-surname-${index}`).value,
         }));
-        document.title = form.current.querySelector(`#title`).value;
-        document.edition = +form.current.querySelector(`#edition`).value;
-        document.publication_place = +form.current.querySelector(`#publication_place`).value;
-        document.publisher = form.current.querySelector(`#publisher`).value;
-        document.abstract = form.current.querySelector(`#abstract`).value;
-        document.publication_year = +form.current.querySelector(`#publication_year`).value;
-        document.volume = +form.current.querySelector(`#volume`).value;
-        document.doi = form.current.querySelector(`#doi`).value;
-        document.start_page = +form.current.querySelector(`#start_page`).value;
-        document.end_page = +form.current.querySelector(`#end_page`).value;
-        document.coordinator = +form.current.querySelector(`#coordinator`).value;
-        document.number = +form.current.querySelector(`#number`).value;
-        document.chapter_title = +form.current.querySelector(`#chapter_title`).value;
+        document.title = form.current.querySelector(`#title`).value ?? '';
+        document.subtitle = form.current.querySelector(`#subtitle`).value ?? '';
+        document.edition = +form.current.querySelector(`#edition`).value  ?? 0;
+        document.publication_place = +form.current.querySelector(`#publication_place`).value  ?? 0;
+        document.publisher = form.current.querySelector(`#publisher`).value  ?? '';
+        document.abstract = form.current.querySelector(`#abstract`).value  ?? '';
+        document.publication_year = +form.current.querySelector(`#publication_year`).value  ?? 0;
+        document.volume = +form.current.querySelector(`#volume`).value  ?? 0;
+        document.doi = form.current.querySelector(`#doi`).value  ?? '';
+        document.start_page = +form.current.querySelector(`#start_page`).value  ?? 0;
+        document.end_page = +form.current.querySelector(`#end_page`).value  ?? 0;
+        document.coordinator = +form.current.querySelector(`#coordinator`).value  ?? 0;
+        document.number = +form.current.querySelector(`#number`).value  ?? 0;
+        document.chapter_title = +form.current.querySelector(`#chapter_title`).value  ?? 0;
         return document;
     }
 
@@ -67,7 +67,7 @@ const BookChapterForm = ({current, userInfo, setUserInfo, setShowModal, setActiv
             console.log({...current, ...newDocument});
             if (!current) {
                 console.log(newDocument)
-                //const response = await addDocument(newDocument);
+                const response = await addDocument(newDocument);
                 const { document_id } = await response.json();
                 console.log({ user: { ...userInfo.user }, documents: [...userInfo.documents, { ...newDocument, _id: document_id }] });
                 setUserInfo({ user: { ...userInfo.user }, documents: [...userInfo.documents, { ...newDocument, _id: document_id }] });
@@ -99,6 +99,9 @@ const BookChapterForm = ({current, userInfo, setUserInfo, setShowModal, setActiv
     const addAuthor = () => setAuthors([...authors, Math.max(...authors) + 1]);
     const removeAuthor = id => setAuthors(authors.filter(aut => aut !== id));
 
+    const addEditor = () => setEditors([...editors, Math.max(...editors) + 1]);
+    const removeEditor = id => setEditors(editors.filter(aut => aut !== id));
+
     return (
         <div className="row">
           <span className="modal-label">{!current ? 'Add new ' : 'Edit '}Book chapter</span>
@@ -109,6 +112,11 @@ const BookChapterForm = ({current, userInfo, setUserInfo, setShowModal, setActiv
             <div className="input-field col s12">
               <input id="title" type="text" defaultValue={current?.title} required />
               <label htmlFor="title" className="active" onClick={({target}) => target.previousElementSibling.focus()}>Book title</label>
+            </div>
+
+            <div className="input-field col s12">
+              <input id="subtitle" type="text" defaultValue={current?.subtitle} required />
+              <label htmlFor="subtitle" className="active" onClick={({target}) => target.previousElementSibling.focus()}>Book subtitle</label>
             </div>
 
             <div className="input-field col s12">
@@ -129,36 +137,58 @@ const BookChapterForm = ({current, userInfo, setUserInfo, setShowModal, setActiv
                             <label htmlFor={`aut-surname-${aut}`} className="active" onClick={({target}) => target.previousElementSibling.focus()}>Author surname</label>
                         </div>
                         { aut !== 1 ?
-                                <span onClick={() => removeAuthor(aut)}>Remove</span>
+                                <a onClick={() => removeAuthor(aut)} className="button-remove-modal waves-effect waves-light red btn-small"><i className="material-icons right">delete_forever</i></a>
                         : undefined }
                         </div>
                     )
                 })
                 }
-                <span onClick={addAuthor}>Add author</span>
+                <a onClick={addAuthor} className="button-add-modal waves-effect waves-light btn-small">Add author <i className="material-icons right">add</i></a>
                 </div>
                 <div className="input-field col s12">
-                    <input id="coordinator" type="text" defaultValue={current?.coordinator} required />
-                    <label htmlFor="coordinator" className="active" onClick={({target}) => target.previousElementSibling.focus()}>Title</label>
+                    <input id="coordinator" type="text" defaultValue={current?.coordinator}  />
+                    <label htmlFor="coordinator" className="active" onClick={({target}) => target.previousElementSibling.focus()}>Coordinator</label>
                 </div>
 
+                <div id="editors">
+                { editors.map(ed => {
+                    return (
+                        <div key={ed} data-editors>
+                        <div className="input-field col s6">
+                            <input id={`ed-name-${ed}`} type="text" defaultValue={current?.editors[ed].name} />
+                            <label htmlFor={`ed-name-${ed}`} className="active" onClick={({target}) => target.previousElementSibling.focus()}>Editor name</label>
+                        </div>
+                        <div className="input-field col s6">
+                            <input id={`ed-surname-${ed}`} type="text" defaultValue={current?.editors[ed].surname} />
+                            <label htmlFor={`ed-surname-${ed}`} className="active" onClick={({target}) => target.previousElementSibling.focus()}>Editor surname</label>
+                        </div>
+                        { ed !== 1 ?
+                                <span onClick={() => removeEditor(ed)}>Remove</span>
+                        : undefined }
+                        </div>
+                    )
+                })
+                }
+                <span onClick={addEditor}>Add editor</span>
+            </div>
+
                 <div className="input-field col s12">
-                    <input id="volume" type="number" defaultValue={current?.volume} required />
+                    <input id="volume" type="number" defaultValue={current?.volume}  />
                     <label htmlFor="volume" className="active" onClick={({target}) => target.previousElementSibling.focus()}>Volume</label>
                 </div>
 
                 <div className="input-field col s12">
-                    <input id="number" type="number" defaultValue={current?.number} required />
-                    <label htmlFor="number" className="active" onClick={({target}) => target.previousElementSibling.focus()}>Number</label>
+                    <input id="number" type="number" defaultValue={current?.number}  />
+                    <label htmlFor="number" className="active" onClick={({target}) => target.previousElementSibling.focus()}>Chapter number</label>
                 </div>
 
                 <div className="input-field col s12">
-                    <input id="start_page" type="number" defaultValue={current?.start_page} required />
+                    <input id="start_page" type="number" defaultValue={current?.start_page}  />
                     <label htmlFor="start_page" className="active" onClick={({target}) => target.previousElementSibling.focus()}>Start page</label>
                 </div>
 
                 <div className="input-field col s12">
-                    <input id="end_page" type="number" defaultValue={current?.end_page} required />
+                    <input id="end_page" type="number" defaultValue={current?.end_page}  />
                     <label htmlFor="end_page" className="active" onClick={({target}) => target.previousElementSibling.focus()}>End page</label>
                 </div>
 
@@ -173,7 +203,7 @@ const BookChapterForm = ({current, userInfo, setUserInfo, setShowModal, setActiv
                 </div>
 
                 <div className="input-field col s12">
-                    <input id="edition" type="text" defaultValue={current?.edition} required />
+                    <input id="edition" type="text" defaultValue={current?.edition}  />
                     <label htmlFor="edition" className="active" onClick={({target}) => target.previousElementSibling.focus()}>Edition</label>
                 </div>
 
@@ -188,12 +218,12 @@ const BookChapterForm = ({current, userInfo, setUserInfo, setShowModal, setActiv
                 </div>
 
                 <div className="input-field col s12">
-                    <input id="doi" type="text" defaultValue={current?.doi} required />
+                    <input id="doi" type="text" defaultValue={current?.doi}  />
                     <label htmlFor="doi" className="active" onClick={({target}) => target.previousElementSibling.focus()}>DOI / URI</label>
                 </div>
             </div>
 
-        <button id="send-form" onClick={send} className="btn waves-effect waves-light blue accent-4" type="submit" name="action"
+        <button id="send-form" className="btn waves-effect waves-light blue accent-4" type="submit" name="action"
         >Submit
             <i className="material-icons right">send</i>
         </button>

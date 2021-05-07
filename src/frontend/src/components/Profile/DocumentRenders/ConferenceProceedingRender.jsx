@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import AuthorCitator from '../Citations/AuthorCitator.jsx';
 
-const JournalArticleRender = ({doc}) => {
+const ConferenceProceedingRender = ({doc}) => {
 
     const abstract = useRef();
     const collapse = ({target}) => target.classList.toggle('show');
@@ -12,7 +12,7 @@ const JournalArticleRender = ({doc}) => {
     return (
         <div data-article-id={`id-${doc._id}`} data-article-order={doc.order} className={'profile-articles__journalArticle'}>
             <div className="documents__title">{doc.title}</div>
-            <div className="documents__subtitle">{doc.journal}</div>
+            <div className="documents__subtitle">Location: {doc.conference_location}</div>
             <div className="documents__authors">
                 <AuthorCitator authors={doc.authors} />
             </div>
@@ -24,4 +24,4 @@ const JournalArticleRender = ({doc}) => {
     )
 }
 
-export default JournalArticleRender;
+export default ConferenceProceedingRender;

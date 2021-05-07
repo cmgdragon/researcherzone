@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react';
+import addDocument from '~/frontend/src/api/addDocument.js';
 import updateDocument from '~/frontend/src/api/updateDocument.js';
 import ConferenceProceeding from '~/models/ConferenceProceeding.ts';
 
-const ConferenceProceedingForm = ({current, userInfo, setUserInfo, setShowModal, setActiveForm, categoryNode}) => {
+const ConferenceProceedingForm = ({current, userInfo, setUserInfo, setShowModal, setActiveForm, categoryId}) => {
 
     const [authors, setAuthors] = useState([0]);
-    const [editors, setEditors] = useState([0]);
+    const [editors, setEditors] = useState([]);
     const form = useRef();
     useEffect(() => {
         document.body.classList.add('show-modal-body');
@@ -19,22 +20,14 @@ const ConferenceProceedingForm = ({current, userInfo, setUserInfo, setShowModal,
         }
     }
 
-    const getArticleOrder = nodes => {
-        if (nodes.length === 0) return 1;
-        const orderList = [];
-        for (const node of nodes) {
-            orderList.push(node.firstElementChild.getAttribute('data-article-order'));
-        }
-        return Math.max(...orderList) + 1;
-    }
-
     const createDocumentObject = () => {     
         const document = new ConferenceProceeding();
         //common properties
         if (!current) {
-            document.category = categoryNode.getAttribute('data-category');
-            document.type = 'book';
-            document.order = getArticleOrder(categoryNode.querySelectorAll('.profile-articles__document'));
+            document.category = userInfo.user.categories.find(({id}) => id === categoryId).id
+            document.type = 'conferenceproceeding';
+            document.order = userInfo.documents.length ?
+            Math.max( ...userInfo.documents.filter(({category}) => category === categoryId).map(({order}) => order) )+1 : 1
         }
         document.abstract = form.current.querySelector(`#abstract`).value;
         document.can_be_cited = true;
@@ -49,15 +42,15 @@ const ConferenceProceedingForm = ({current, userInfo, setUserInfo, setShowModal,
             surname: form.current.querySelector(`#ed-surname-${index}`).value,
         }));
         document.title = form.current.querySelector(`#title`).value;
-        document.subtitle = form.current.querySelector(`#subtitle`).value;
-        document.publication_place = +form.current.querySelector(`#publication_place`).value;
-        document.publication_year = +form.current.querySelector(`#publication_year`).value;
-        document.conference_year = +form.current.querySelector(`#conference_year`).value;
-        document.conference_month = +form.current.querySelector(`#conference_month`).value;
-        document.conference_day = +form.current.querySelector(`#conference_day`).value;
-        document.publisher = form.current.querySelector(`#publisher`).value;
-        document.conference_location = +form.current.querySelector(`#conference_location`).value;
-        document.doi = form.current.querySelector(`#doi`).value;
+        document.subtitle = form.current.querySelector(`#subtitle`).value ?? '';
+        document.publication_place = form.current.querySelector(`#publication_place`).value ?? '';
+        document.publication_year = +form.current.querySelector(`#publication_year`).value ?? 0;
+        document.conference_year = +form.current.querySelector(`#conference_year`).value ?? 0;
+        document.conference_month = +form.current.querySelector(`#conference_month`).value ?? 0;
+        document.conference_day = +form.current.querySelector(`#conference_day`).value ?? 0;
+        document.publisher = form.current.querySelector(`#publisher`).value ?? '';
+        document.conference_location = form.current.querySelector(`#conference_location`).value ?? '';
+        document.doi = form.current.querySelector(`#doi`).value ?? '';
         return document;
     }
 
@@ -70,7 +63,7 @@ const ConferenceProceedingForm = ({current, userInfo, setUserInfo, setShowModal,
             console.log({...current, ...newDocument});
             if (!current) {
                 console.log(newDocument)
-                //const response = await addDocument(newDocument);
+                const response = await addDocument(newDocument);
                 const { document_id } = await response.json();
                 console.log({ user: { ...userInfo.user }, documents: [...userInfo.documents, { ...newDocument, _id: document_id }] });
                 setUserInfo({ user: { ...userInfo.user }, documents: [...userInfo.documents, { ...newDocument, _id: document_id }] });
@@ -135,24 +128,24 @@ const ConferenceProceedingForm = ({current, userInfo, setUserInfo, setShowModal,
                             <label htmlFor={`aut-surname-${aut}`} className="active" onClick={({target}) => target.previousElementSibling.focus()}>Author surname</label>
                         </div>
                         { aut !== 1 ?
-                                <span onClick={() => removeAuthor(aut)}>Remove</span>
+                                <a onClick={() => removeAuthor(aut)} className="button-remove-modal waves-effect waves-light red btn-small"><i className="material-icons right">delete_forever</i></a>
                         : undefined }
                         </div>
                     )
                 })
                 }
-                <span onClick={addAuthor}>Add author</span>
+                <a onClick={addAuthor} className="button-add-modal waves-effect waves-light btn-small">Add author <i className="material-icons right">add</i></a>
             </div>
             <div id="editors">
                 { editors.map(ed => {
                     return (
                         <div key={ed} data-editors>
                         <div className="input-field col s6">
-                            <input id={`ed-name-${ed}`} type="text" defaultValue={current?.editors[ed].name} required />
+                            <input id={`ed-name-${ed}`} type="text" defaultValue={current?.editors[ed].name} />
                             <label htmlFor={`ed-name-${ed}`} className="active" onClick={({target}) => target.previousElementSibling.focus()}>Editor name</label>
                         </div>
                         <div className="input-field col s6">
-                            <input id={`ed-surname-${ed}`} type="text" defaultValue={current?.editors[ed].surname} required />
+                            <input id={`ed-surname-${ed}`} type="text" defaultValue={current?.editors[ed].surname} />
                             <label htmlFor={`ed-surname-${ed}`} className="active" onClick={({target}) => target.previousElementSibling.focus()}>Editor surname</label>
                         </div>
                         { ed !== 1 ?
@@ -172,19 +165,19 @@ const ConferenceProceedingForm = ({current, userInfo, setUserInfo, setShowModal,
 
 
                 <div className="input-field col s12">
-                    <input id="conference_place" type="conference_place" defaultValue={current?.conference_place} required />
+                    <input id="conference_place" type="text" defaultValue={current?.conference_place} required />
                     <label htmlFor="conference_place" className="active" onClick={({target}) => target.previousElementSibling.focus()}>Conference place</label>
                 </div>
-                <div className="input-field col s12">
-                    <input id="conference_year" type="conference_year" defaultValue={current?.conference_year} required />
+                <div className="input-field col s4">
+                    <input id="conference_year" type="number" defaultValue={current?.conference_year} required />
                     <label htmlFor="conference_year" className="active" onClick={({target}) => target.previousElementSibling.focus()}>Conference year</label>
                 </div>
-                <div className="input-field col s12">
-                    <input id="conference_month" type="conference_month" defaultValue={current?.conference_month} required />
+                <div className="input-field col s4">
+                    <input id="conference_month" type="number" defaultValue={current?.conference_month} required />
                     <label htmlFor="conference_month" className="active" onClick={({target}) => target.previousElementSibling.focus()}>Conference month</label>
                 </div>
-                <div className="input-field col s12">
-                    <input id="conference_day" type="conference_day" defaultValue={current?.conference_day} required />
+                <div className="input-field col s4">
+                    <input id="conference_day" type="number" defaultValue={current?.conference_day} required />
                     <label htmlFor="conference_day" className="active" onClick={({target}) => target.previousElementSibling.focus()}>Conference day</label>
                 </div>
 
@@ -210,7 +203,7 @@ const ConferenceProceedingForm = ({current, userInfo, setUserInfo, setShowModal,
                 </div>
 
         </div>
-        <button id="send-form" onClick={send} className="btn waves-effect waves-light blue accent-4" type="submit" name="action"
+        <button id="send-form" className="btn waves-effect waves-light blue accent-4" type="submit" name="action"
         >Submit
             <i className="material-icons right">send</i>
         </button>

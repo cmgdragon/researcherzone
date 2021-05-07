@@ -1,14 +1,11 @@
 import IProfileDocument from './interfaces/IProfileDocument.ts';
-import ICitableDocument from './interfaces/ICitableDocument.ts';
 
-class ConferenceProceeding implements IProfileDocument, ICitableDocument {
+class ConferenceProceeding implements IProfileDocument {
     _id?: string;
     type: string;
-    category: string;
+    category: number;
     order: number;
     user: string;
-    generate_citation: Function;
-    id: string;
     can_be_cited: boolean;
     title: string;
     authors: Array<{name: string, surname: string}>;

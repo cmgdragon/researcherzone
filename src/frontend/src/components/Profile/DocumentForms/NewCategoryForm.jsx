@@ -28,7 +28,9 @@ const NewCategoryForm = ({current, userInfo, setUserInfo, setShowModal, setActiv
                 categories: [...userInfo.user.categories, {
                     category_name: category_name,
                     order: document.querySelectorAll('.profile-articles__category').length ?
-                    document.querySelectorAll('.profile-articles__category').length : 1
+                    document.querySelectorAll('.profile-articles__category').length : 1,
+                    id: document.querySelectorAll('.profile-articles__category').length ?
+                    Math.max( ...userInfo.user.categories.map(({id}) => id) )+1 : 1
                 }] };
 
             await updateUser(updatedUser);

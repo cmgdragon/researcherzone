@@ -1,26 +1,26 @@
 import IProfileDocument from './interfaces/IProfileDocument.ts';
-import ICitableDocument from './interfaces/ICitableDocument.ts';
 
-export class Book implements IProfileDocument, ICitableDocument {
+export class Book implements IProfileDocument {
     order: number;
-    generate_citation: Function;
     _id?: string;
-    category: string;
+    category: number;
     user: string;
-    id: string;
     type: string = 'book';
     can_be_cited: boolean;
     volume: number;
-    authors: Array<string>;
+    author: {name: string, surname: string};
     title: string;
+    subtitle: string;
     edition: string;
     publication_place: string;
     publisher: string;
     publication_year: number;
     doi: string;
+
 }
 
 export class BookChapter extends Book {
+    editors: {name: string, surname: string};
     number: number;
     start_page: number;
     end_page: number;

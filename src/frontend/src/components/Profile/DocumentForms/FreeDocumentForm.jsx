@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import addDocument from '~/frontend/src/api/addDocument.js';
 import updateDocument from '~/frontend/src/api/updateDocument.js';
 
-const FreeDocumentForm = ({current, userInfo, setUserInfo, setShowModal, setActiveForm, categoryNode}) => {
+const FreeDocumentForm = ({current, userInfo, setUserInfo, setShowModal, setActiveForm, categoryId}) => {
 
     const [editor, setEditor] = useState('');
     useEffect(() => {
@@ -83,15 +83,6 @@ const FreeDocumentForm = ({current, userInfo, setUserInfo, setShowModal, setActi
         }
     }
 
-    const getArticleOrder = nodes => {
-        if (nodes.length === 0) return 1;
-        const orderList = [];
-        for (const node of nodes) {
-            orderList.push(node.firstElementChild.getAttribute('data-article-order'));
-        }
-        return Math.max(...orderList) + 1;
-    }
-
     const send = async event => {
         event.preventDefault();
         if (editor.getData() === "") return;
@@ -101,11 +92,12 @@ const FreeDocumentForm = ({current, userInfo, setUserInfo, setShowModal, setActi
             if (!current) {
                 const newDocument = { 
                     can_be_cited: false,
-                    category: categoryNode.getAttribute('data-category'),
+                    category: userInfo.user.categories.find(({id}) => id === categoryId).id,
                     user: userInfo.user.email,
                     type: 'freedocument',
                     html: editor.getData(),
-                    order: getArticleOrder(categoryNode.querySelectorAll('.profile-articles__document'))
+                    order: userInfo.documents.length ?
+                    Math.max( ...userInfo.documents.filter(({category}) => category === categoryId).map(({order}) => order) )+1 : 1
                 };
     
                 const response = await addDocument(newDocument);

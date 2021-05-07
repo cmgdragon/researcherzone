@@ -21714,7 +21714,6 @@ class User {
     optional_image = '';
     people_following = [];
     people_followers = [];
-    bibliographies = [];
     social_media = [];
     constructor(user1){
         this.email = user1.email;
@@ -21992,7 +21991,10 @@ const getTokenInfo = async ()=>{
     try {
         const request = await fetch('http://localhost:8000/gettokeninfo', {
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'pathname': window.location.pathname,
+                'pragma': 'no-cache',
+                'cache-control': 'no-cache'
             }
         });
         const { user: user1 , documents  } = await request.json();
@@ -22000,7 +22002,7 @@ const getTokenInfo = async ()=>{
             user: user1,
             documents
         };
-    } catch (error) {
+    } catch ({ message  }) {
         return false;
     }
 };
@@ -24312,12 +24314,36 @@ class ImageHelper {
         return base64;
     }
 }
+const SocialMediaModal = ({ children , show  })=>{
+    useEffect(()=>{
+        if (show) document.querySelector('#social-modal').classList.add('show-modal');
+        else document.querySelector('#social-modal').classList.remove('show-modal');
+    }, [
+        show
+    ]);
+    return export_default1.createElement("div", {
+        className: 'modal',
+        id: "social-modal",
+        onClick: (event)=>event.stopPropagation()
+        ,
+        style: {
+            marginTop: window.scrollY - 100
+        }
+    }, children);
+};
 const Header = ({ user: user1  })=>{
     const [userInfo, setUserInfo] = useState(user1.user);
+    const [showModal, setShowModal] = useState(false);
     const editInfo = {
         isEditing: false,
         currentElement: undefined
     };
+    const social_networks = [
+        'youtube',
+        'twitter',
+        'instagram',
+        'youtube'
+    ];
     const selectImage = ({ target  })=>target.previousElementSibling.click()
     ;
     const changeImage = ({ target  })=>{
@@ -24340,6 +24366,18 @@ const Header = ({ user: user1  })=>{
                 console.error(error);
             }
         };
+    };
+    const removeOptionalImage = async ()=>{
+        try {
+            const updatedUser = {
+                ...userInfo,
+                optional_image: ''
+            };
+            await updateUser(updatedUser);
+            setUserInfo(updatedUser);
+        } catch (error) {
+            console.error(error);
+        }
     };
     const editField = (event)=>{
         editInfo.currentElement?.classList.remove('updating-field');
@@ -24413,12 +24451,18 @@ const Header = ({ user: user1  })=>{
         },
         accept: "image/png, image/jpeg",
         onChange: changeImage
-    }), export_default1.createElement("img", {
+    }), export_default1.createElement("div", {
+        className: 'profile-header__optional-image col'
+    }, export_default1.createElement("img", {
         id: "optional_image",
         src: userInfo.optional_image,
-        className: 'col s4 profile-header__image2 responsive-img',
+        className: 'profile-header__image2 responsive-img',
         onClick: selectImage
-    }), export_default1.createElement("span", {
+    }), export_default1.createElement("i", {
+        className: "material-icons right"
+    }, "close")), export_default1.createElement("div", {
+        className: 'profile-header__slots col s12'
+    }, export_default1.createElement("span", {
         id: "profile_slot_1",
         className: 'col s8 profile-header__slot',
         onClick: editField
@@ -24426,7 +24470,150 @@ const Header = ({ user: user1  })=>{
         id: "profile_slot_2",
         className: 'col s8 profile-header__slot',
         onClick: editField
-    }, userInfo.profile_slot_2))));
+    }, userInfo.profile_slot_2)))), export_default1.createElement("div", {
+        className: "profile__social"
+    }, userInfo.social_media.map(({ name , url  }, index)=>{
+        const social_name = name.replace(/\s/g, '').replace(/[^\w\s]/gi, '').toLowerCase();
+        let image;
+        for (const network of social_networks){
+            if (social_name === network || url.includes(network)) {
+                image = network;
+                break;
+            }
+        }
+        return export_default1.createElement("a", {
+            className: `profile__social-link ${image ? '' : 'no-image'}`,
+            key: index,
+            href: url,
+            title: name
+        }, image ? export_default1.createElement("img", {
+            src: `http://localhost:8000/img/${image}.png`,
+            alt: name
+        }) : export_default1.createElement("i", {
+            className: "material-icons right"
+        }, "link"));
+    }), export_default1.createElement("div", {
+        className: "btn waves-effect waves-light btn-floating blue btn-small",
+        onClick: ()=>{
+            document.body.classList.add('show-modal-body');
+            setShowModal(true);
+        }
+    }, export_default1.createElement("i", {
+        className: "material-icons right"
+    }, "add"))), export_default1.createElement(SocialMediaModal, {
+        show: showModal
+    }, export_default1.createElement(SocialMediaForm, {
+        userInfo: userInfo,
+        setUserInfo: setUserInfo,
+        setShowModal: setShowModal
+    })));
+};
+const SocialMediaForm = ({ userInfo , setShowModal , setUserInfo  })=>{
+    const form = useRef();
+    const { social_media  } = userInfo;
+    const [links, setLinks] = useState([
+        ...Array(social_media.length ? social_media.length : 1).keys()
+    ]);
+    const addLink = ()=>setLinks([
+            ...links,
+            Math.max(...links) + 1
+        ])
+    ;
+    const removeLink = (id)=>setLinks(links.filter((link)=>link !== id
+        ))
+    ;
+    const closeModal = (ask = true)=>{
+        setShowModal(false);
+        document.body.classList.remove('show-modal-body');
+    };
+    const send = async (event)=>{
+        event.preventDefault();
+        const newSocialMedia = [
+            ...form.current.querySelectorAll('[data-social]')
+        ].map((link)=>({
+                name: link.querySelector(`#link-name-${link.getAttribute('data-social')}`).value,
+                url: link.querySelector(`#link-url-${link.getAttribute('data-social')}`).value
+            })
+        );
+        try {
+            console.log({
+                ...userInfo,
+                social_media: newSocialMedia
+            });
+            await updateUser({
+                ...userInfo,
+                social_media: newSocialMedia
+            });
+            setUserInfo({
+                ...userInfo,
+                social_media: newSocialMedia
+            });
+            closeModal(false);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+    return export_default1.createElement("div", {
+        className: "row"
+    }, export_default1.createElement("span", {
+        className: "modal-label"
+    }, "Edit social media"), export_default1.createElement("button", {
+        className: "close-modal btn-floating red btn-small",
+        onClick: closeModal
+    }, export_default1.createElement("i", {
+        className: "material-icons right"
+    }, "clear")), export_default1.createElement("form", {
+        className: "col s12",
+        onSubmit: send,
+        ref: form
+    }, export_default1.createElement("div", {
+        className: "row"
+    }, links.map((link)=>{
+        return export_default1.createElement("div", {
+            key: link,
+            "data-social": link
+        }, export_default1.createElement("div", {
+            className: "input-field col s6"
+        }, export_default1.createElement("input", {
+            id: `link-name-${link}`,
+            type: "text",
+            defaultValue: social_media[link]?.name ?? '',
+            required: true
+        }), export_default1.createElement("label", {
+            htmlFor: `link-name-${link}`,
+            className: "active",
+            onClick: ({ target  })=>target.previousElementSibling.focus()
+        }, "Name")), export_default1.createElement("div", {
+            className: "input-field col s6"
+        }, export_default1.createElement("input", {
+            id: `link-url-${link}`,
+            type: "text",
+            defaultValue: social_media[link]?.url ?? '',
+            required: true
+        }), export_default1.createElement("label", {
+            htmlFor: `link-url-${link}`,
+            className: "active",
+            onClick: ({ target  })=>target.previousElementSibling.focus()
+        }, "URL")), export_default1.createElement("a", {
+            onClick: ()=>removeLink(link)
+            ,
+            className: "button-remove-modal waves-effect waves-light red btn-small"
+        }, export_default1.createElement("i", {
+            className: "material-icons right"
+        }, "delete_forever")));
+    }), export_default1.createElement("a", {
+        onClick: addLink,
+        className: "button-add-modal waves-effect waves-light btn-small"
+    }, "Add social link ", export_default1.createElement("i", {
+        className: "material-icons right"
+    }, "add"))), export_default1.createElement("button", {
+        id: "send-form",
+        className: "btn waves-effect waves-light blue accent-4",
+        type: "submit",
+        name: "action"
+    }, "Submit", export_default1.createElement("i", {
+        className: "material-icons right"
+    }, "send"))));
 };
 const NewCategoryForm = ({ current , userInfo , setUserInfo , setShowModal , setActiveForm  })=>{
     const form = useRef(undefined);
@@ -24454,7 +24641,9 @@ const NewCategoryForm = ({ current , userInfo , setUserInfo , setShowModal , set
                     ...userInfo.user.categories,
                     {
                         category_name: category_name,
-                        order: document.querySelectorAll('.profile-articles__category').length ? document.querySelectorAll('.profile-articles__category').length : 1
+                        order: document.querySelectorAll('.profile-articles__category').length ? document.querySelectorAll('.profile-articles__category').length : 1,
+                        id: document.querySelectorAll('.profile-articles__category').length ? Math.max(...userInfo.user.categories.map(({ id  })=>id
+                        )) + 1 : 1
                     }
                 ]
             };
@@ -24518,7 +24707,7 @@ const updateDocument = async (document)=>fetch('/updatedocument', {
         body: JSON.stringify(document)
     })
 ;
-const FreeDocumentForm = ({ current , userInfo , setUserInfo , setShowModal , setActiveForm , categoryNode  })=>{
+const FreeDocumentForm = ({ current , userInfo , setUserInfo , setShowModal , setActiveForm , categoryId  })=>{
     const [editor, setEditor] = useState('');
     useEffect(()=>{
         document.body.classList.add('show-modal-body');
@@ -24586,14 +24775,6 @@ const FreeDocumentForm = ({ current , userInfo , setUserInfo , setShowModal , se
             setActiveForm(undefined);
         }
     };
-    const getArticleOrder = (nodes)=>{
-        if (nodes.length === 0) return 1;
-        const orderList = [];
-        for (const node of nodes){
-            orderList.push(node.firstElementChild.getAttribute('data-article-order'));
-        }
-        return Math.max(...orderList) + 1;
-    };
     const send = async (event)=>{
         event.preventDefault();
         if (editor.getData() === "") return;
@@ -24601,11 +24782,14 @@ const FreeDocumentForm = ({ current , userInfo , setUserInfo , setShowModal , se
             if (!current) {
                 const newDocument = {
                     can_be_cited: false,
-                    category: categoryNode.getAttribute('data-category'),
+                    category: userInfo.user.categories.find(({ id  })=>id === categoryId
+                    ).id,
                     user: userInfo.user.email,
                     type: 'freedocument',
                     html: editor.getData(),
-                    order: getArticleOrder(categoryNode.querySelectorAll('.profile-articles__document'))
+                    order: userInfo.documents.length ? Math.max(...userInfo.documents.filter(({ category  })=>category === categoryId
+                    ).map(({ order  })=>order
+                    )) + 1 : 1
                 };
                 const response = await addDocument(newDocument);
                 const { document_id  } = await response.json();
@@ -24682,6 +24866,312 @@ const FreeDocumentForm = ({ current , userInfo , setUserInfo , setShowModal , se
         className: "material-icons right"
     }, "send")));
 };
+class Book {
+    order;
+    _id;
+    category;
+    user;
+    type = 'book';
+    can_be_cited;
+    volume;
+    author;
+    title;
+    subtitle;
+    edition;
+    publication_place;
+    publisher;
+    publication_year;
+    doi;
+}
+class BookChapter extends Book {
+    editors;
+    number;
+    start_page;
+    end_page;
+    chapter_title;
+    coordinator;
+}
+const BookForm = ({ current , userInfo , setUserInfo , setShowModal , setActiveForm , categoryId  })=>{
+    const [authors, setAuthors] = useState([
+        0
+    ]);
+    const form = useRef();
+    useEffect(()=>{
+        document.body.classList.add('show-modal-body');
+    }, []);
+    const closeModal = (ask = true)=>{
+        if (!ask || confirm('Cancel current operation?')) {
+            setShowModal(false);
+            document.body.classList.remove('show-modal-body');
+            setActiveForm(undefined);
+        }
+    };
+    const createDocumentObject = ()=>{
+        const document = new Book();
+        if (!current) {
+            document.category = userInfo.user.categories.find(({ id  })=>id === categoryId
+            ).id;
+            document.type = 'book';
+            document.order = userInfo.documents.length ? Math.max(...userInfo.documents.filter(({ category  })=>category === categoryId
+            ).map(({ order  })=>order
+            )) + 1 : 1;
+        }
+        document.can_be_cited = true;
+        document.user = userInfo.user.email;
+        document.authors = [
+            ...form.current.querySelectorAll('[data-authors]')
+        ].map((aut, index)=>({
+                name: form.current.querySelector(`#aut-name-${index}`).value,
+                surname: form.current.querySelector(`#aut-surname-${index}`).value
+            })
+        );
+        document.title = form.current.querySelector(`#title`).value;
+        document.subtitle = form.current.querySelector(`#subtitle`).value ?? '';
+        document.edition = +form.current.querySelector(`#edition`).value;
+        document.publication_place = +form.current.querySelector(`#publication_place`).value;
+        document.publisher = form.current.querySelector(`#publisher`).value;
+        document.abstract = form.current.querySelector(`#abstract`).value;
+        document.publication_year = +form.current.querySelector(`#publication_year`).value;
+        document.volume = +form.current.querySelector(`#volume`).value;
+        document.doi = form.current.querySelector(`#doi`).value;
+        return document;
+    };
+    const send = async (event)=>{
+        event.preventDefault();
+        try {
+            const newDocument = createDocumentObject();
+            console.log({
+                ...current,
+                ...newDocument
+            });
+            if (!current) {
+                console.log(newDocument);
+                const response = await addDocument(newDocument);
+                const { document_id  } = await response.json();
+                console.log({
+                    user: {
+                        ...userInfo.user
+                    },
+                    documents: [
+                        ...userInfo.documents,
+                        {
+                            ...newDocument,
+                            _id: document_id
+                        }
+                    ]
+                });
+                setUserInfo({
+                    user: {
+                        ...userInfo.user
+                    },
+                    documents: [
+                        ...userInfo.documents,
+                        {
+                            ...newDocument,
+                            _id: document_id
+                        }
+                    ]
+                });
+            } else {
+                const updatedDocuments = [
+                    ...userInfo.documents.filter((doc)=>doc._id !== current._id
+                    ),
+                    {
+                        ...current,
+                        ...newDocument,
+                        _id: current._id,
+                        category: current.category,
+                        order: current.order,
+                        type: current.type
+                    }
+                ];
+                await updateDocument({
+                    ...newDocument,
+                    _id: current._id
+                });
+                console.log({
+                    user: userInfo.user,
+                    documents: updatedDocuments
+                });
+                setUserInfo({
+                    user: userInfo.user,
+                    documents: updatedDocuments
+                });
+            }
+            document.body.removeEventListener('click', closeModal, false);
+            closeModal(false);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+    const addAuthor = ()=>setAuthors([
+            ...authors,
+            Math.max(...authors) + 1
+        ])
+    ;
+    const removeAuthor = (id)=>setAuthors(authors.filter((aut)=>aut !== id
+        ))
+    ;
+    return export_default1.createElement("div", {
+        className: "row"
+    }, export_default1.createElement("span", {
+        className: "modal-label"
+    }, !current ? 'Add new ' : 'Edit ', "Book"), export_default1.createElement("button", {
+        className: "close-modal btn-floating red btn-small",
+        onClick: closeModal
+    }, export_default1.createElement("i", {
+        className: "material-icons right"
+    }, "clear")), export_default1.createElement("form", {
+        className: "col s12",
+        onSubmit: send,
+        ref: form
+    }, export_default1.createElement("div", {
+        className: "row"
+    }, export_default1.createElement("div", {
+        className: "input-field col s12"
+    }, export_default1.createElement("input", {
+        id: "title",
+        type: "text",
+        defaultValue: current?.title,
+        required: true
+    }), export_default1.createElement("label", {
+        htmlFor: "title",
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "Book title")), export_default1.createElement("div", {
+        className: "input-field col s12"
+    }, export_default1.createElement("input", {
+        id: "subtitle",
+        type: "text",
+        defaultValue: current?.subtitle,
+        required: true
+    }), export_default1.createElement("label", {
+        htmlFor: "subtitle",
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "Book subtitle")), export_default1.createElement("div", {
+        id: "authors"
+    }, authors.map((aut)=>{
+        return export_default1.createElement("div", {
+            key: aut,
+            "data-authors": true
+        }, export_default1.createElement("div", {
+            className: "input-field col s6"
+        }, export_default1.createElement("input", {
+            id: `aut-name-${aut}`,
+            type: "text",
+            defaultValue: current?.authors[aut].name,
+            required: true
+        }), export_default1.createElement("label", {
+            htmlFor: `aut-name-${aut}`,
+            className: "active",
+            onClick: ({ target  })=>target.previousElementSibling.focus()
+        }, "Author name")), export_default1.createElement("div", {
+            className: "input-field col s6"
+        }, export_default1.createElement("input", {
+            id: `aut-surname-${aut}`,
+            type: "text",
+            defaultValue: current?.authors[aut].surname,
+            required: true
+        }), export_default1.createElement("label", {
+            htmlFor: `aut-surname-${aut}`,
+            className: "active",
+            onClick: ({ target  })=>target.previousElementSibling.focus()
+        }, "Author surname")), aut !== 1 ? export_default1.createElement("a", {
+            onClick: ()=>removeAuthor(aut)
+            ,
+            className: "button-remove-modal waves-effect waves-light red btn-small"
+        }, export_default1.createElement("i", {
+            className: "material-icons right"
+        }, "delete_forever")) : undefined);
+    }), export_default1.createElement("a", {
+        onClick: addAuthor,
+        className: "button-add-modal waves-effect waves-light btn-small"
+    }, "Add author ", export_default1.createElement("i", {
+        className: "material-icons right"
+    }, "add"))), export_default1.createElement("div", {
+        className: "input-field col s12"
+    }, export_default1.createElement("input", {
+        id: "volume",
+        type: "number",
+        defaultValue: current?.volume
+    }), export_default1.createElement("label", {
+        htmlFor: "volume",
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "Volume")), export_default1.createElement("div", {
+        className: "input-field col s12"
+    }, export_default1.createElement("textarea", {
+        id: "abstract",
+        className: "materialize-textarea",
+        defaultValue: current?.abstract
+    }), export_default1.createElement("label", {
+        htmlFor: "abstract",
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "Abstract")), export_default1.createElement("div", {
+        className: "input-field col s12"
+    }, export_default1.createElement("input", {
+        id: "publisher",
+        type: "text",
+        defaultValue: current?.publisher,
+        required: true
+    }), export_default1.createElement("label", {
+        htmlFor: "publisher",
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "Publisher")), export_default1.createElement("div", {
+        className: "input-field col s12"
+    }, export_default1.createElement("input", {
+        id: "edition",
+        type: "text",
+        defaultValue: current?.edition,
+        required: true
+    }), export_default1.createElement("label", {
+        htmlFor: "edition",
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "Edition")), export_default1.createElement("div", {
+        className: "input-field col s12"
+    }, export_default1.createElement("input", {
+        id: "publication_place",
+        type: "text",
+        defaultValue: current?.publication_place,
+        required: true
+    }), export_default1.createElement("label", {
+        htmlFor: "publication_place",
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "Publication Place")), export_default1.createElement("div", {
+        className: "input-field col s12"
+    }, export_default1.createElement("input", {
+        id: "publication_year",
+        type: "number",
+        defaultValue: current?.publication_year,
+        required: true
+    }), export_default1.createElement("label", {
+        htmlFor: "publication_year",
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "Publication year")), export_default1.createElement("div", {
+        className: "input-field col s12"
+    }, export_default1.createElement("input", {
+        id: "doi",
+        type: "text",
+        defaultValue: current?.doi
+    }), export_default1.createElement("label", {
+        htmlFor: "doi",
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "DOI / URI"))), export_default1.createElement("button", {
+        id: "send-form",
+        className: "btn waves-effect waves-light blue accent-4",
+        type: "submit",
+        name: "action"
+    }, "Submit", export_default1.createElement("i", {
+        className: "material-icons right"
+    }, "send"))));
+};
 class JournalArticle {
     _id;
     type;
@@ -24690,19 +25180,18 @@ class JournalArticle {
     order;
     user;
     can_be_cited;
-    generate_citation;
     authors;
     title;
     journal;
     volume;
-    volume_number;
+    issue;
     publisher;
     start_page;
     end_page;
     publication_year;
     doi;
 }
-const JournalArticleForm = ({ current , userInfo , setUserInfo , setShowModal , setActiveForm , categoryNode  })=>{
+const JournalArticleForm = ({ current , userInfo , setUserInfo , setShowModal , setActiveForm , categoryId  })=>{
     const [authors, setAuthors] = useState([
         0
     ]);
@@ -24722,20 +25211,15 @@ const JournalArticleForm = ({ current , userInfo , setUserInfo , setShowModal , 
             setActiveForm(undefined);
         }
     };
-    const getArticleOrder = (nodes)=>{
-        if (nodes.length === 0) return 1;
-        const orderList = [];
-        for (const node of nodes){
-            orderList.push(node.firstElementChild.getAttribute('data-article-order'));
-        }
-        return Math.max(...orderList) + 1;
-    };
     const createDocumentObject = ()=>{
         const document = new JournalArticle();
         if (!current) {
-            document.category = categoryNode.getAttribute('data-category');
+            document.category = userInfo.user.categories.find(({ id  })=>id === categoryId
+            ).id;
             document.type = 'journalarticle';
-            document.order = getArticleOrder(categoryNode.querySelectorAll('.profile-articles__document'));
+            document.order = userInfo.documents.length ? Math.max(...userInfo.documents.filter(({ category  })=>category === categoryId
+            ).map(({ order  })=>order
+            )) + 1 : 1;
         }
         document.can_be_cited = true;
         document.user = userInfo.user.email;
@@ -24748,14 +25232,14 @@ const JournalArticleForm = ({ current , userInfo , setUserInfo , setShowModal , 
         );
         document.title = form.current.querySelector(`#title`).value;
         document.journal = form.current.querySelector(`#journal`).value;
-        document.volume = +form.current.querySelector(`#volume`).value;
-        document.volume_number = +form.current.querySelector(`#volume_number`).value;
-        document.publisher = form.current.querySelector(`#publisher`).value;
-        document.abstract = form.current.querySelector(`#abstract`).value;
-        document.start_page = +form.current.querySelector(`#start_page`).value;
-        document.end_page = +form.current.querySelector(`#end_page`).value;
-        document.publication_year = +form.current.querySelector(`#publication_year`).value;
-        document.doi = form.current.querySelector(`#doi`).value;
+        document.volume = +form.current.querySelector(`#volume`).value ?? 0;
+        document.issue = +form.current.querySelector(`#issue`).value ?? 0;
+        document.publisher = form.current.querySelector(`#publisher`).value ?? '';
+        document.abstract = form.current.querySelector(`#abstract`).value ?? '';
+        document.start_page = +form.current.querySelector(`#start_page`).value ?? 0;
+        document.end_page = +form.current.querySelector(`#end_page`).value ?? 0;
+        document.publication_year = +form.current.querySelector(`#publication_year`).value ?? 0;
+        document.doi = form.current.querySelector(`#doi`).value ?? '';
         return document;
     };
     const send = async (event)=>{
@@ -24768,6 +25252,7 @@ const JournalArticleForm = ({ current , userInfo , setUserInfo , setShowModal , 
             });
             if (!current) {
                 console.log(newDocument);
+                const response = await addDocument(newDocument);
                 const { document_id  } = await response.json();
                 console.log({
                     user: {
@@ -24887,12 +25372,19 @@ const JournalArticleForm = ({ current , userInfo , setUserInfo , setShowModal , 
             htmlFor: `aut-surname-${aut}`,
             className: "active",
             onClick: ({ target  })=>target.previousElementSibling.focus()
-        }, "Author surname")), aut !== 0 ? export_default1.createElement("span", {
+        }, "Author surname")), aut !== 0 ? export_default1.createElement("a", {
             onClick: ()=>removeAuthor(aut)
-        }, "Remove") : undefined);
-    }), export_default1.createElement("span", {
-        onClick: addAuthor
-    }, "Add author"), export_default1.createElement("div", {
+            ,
+            className: "button-remove-modal waves-effect waves-light red btn-small"
+        }, export_default1.createElement("i", {
+            className: "material-icons right"
+        }, "delete_forever")) : undefined);
+    }), export_default1.createElement("a", {
+        onClick: addAuthor,
+        className: "button-add-modal waves-effect waves-light btn-small"
+    }, "Add author ", export_default1.createElement("i", {
+        className: "material-icons right"
+    }, "add"))), export_default1.createElement("div", {
         className: "input-field col s12"
     }, export_default1.createElement("input", {
         id: "journal",
@@ -24927,15 +25419,15 @@ const JournalArticleForm = ({ current , userInfo , setUserInfo , setShowModal , 
     }, "Abstract")), export_default1.createElement("div", {
         className: "input-field col s12"
     }, export_default1.createElement("input", {
-        id: "volume_number",
+        id: "issue",
         type: "number",
-        defaultValue: current?.volume_number,
+        defaultValue: current?.issue,
         required: true
     }), export_default1.createElement("label", {
-        htmlFor: "volume_number",
+        htmlFor: "issue",
         className: "active",
         onClick: ({ target  })=>target.previousElementSibling.focus()
-    }, "Volume number")), export_default1.createElement("div", {
+    }, "Issue")), export_default1.createElement("div", {
         className: "input-field col s12"
     }, export_default1.createElement("input", {
         id: "publisher",
@@ -24984,15 +25476,1033 @@ const JournalArticleForm = ({ current , userInfo , setUserInfo , setShowModal , 
     }, export_default1.createElement("input", {
         id: "doi",
         type: "text",
+        defaultValue: current?.doi
+    }), export_default1.createElement("label", {
+        htmlFor: "doi",
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "DOI / URI"))), export_default1.createElement("button", {
+        id: "send-form",
+        className: "btn waves-effect waves-light blue accent-4",
+        type: "submit",
+        name: "action"
+    }, "Submit", export_default1.createElement("i", {
+        className: "material-icons right"
+    }, "send"))));
+};
+const BookChapterForm = ({ current , userInfo , setUserInfo , setShowModal , setActiveForm , categoryId  })=>{
+    const [authors, setAuthors] = useState([
+        0
+    ]);
+    const [editors, setEditors] = useState([]);
+    const form = useRef();
+    useEffect(()=>{
+        document.body.classList.add('show-modal-body');
+    }, []);
+    const closeModal = (ask = true)=>{
+        if (!ask || confirm('Cancel current operation?')) {
+            setShowModal(false);
+            document.body.classList.remove('show-modal-body');
+            setActiveForm(undefined);
+        }
+    };
+    const createDocumentObject = ()=>{
+        const document = new BookChapter();
+        if (!current) {
+            document.category = userInfo.user.categories.find(({ id  })=>id === categoryId
+            ).id;
+            document.type = 'bookchapter';
+            document.order = userInfo.documents.length ? Math.max(...userInfo.documents.filter(({ category  })=>category === categoryId
+            ).map(({ order  })=>order
+            )) + 1 : 1;
+        }
+        document.can_be_cited = true;
+        document.user = userInfo.user.email;
+        document.authors = [
+            ...form.current.querySelectorAll('[data-editors]')
+        ].length ? [
+            ...form.current.querySelectorAll('[data-authors]')
+        ].map((aut, index)=>({
+                name: form.current.querySelector(`#aut-name-${index}`).value,
+                surname: form.current.querySelector(`#aut-surname-${index}`).value
+            })
+        ) : [];
+        document.editors = [
+            ...form.current.querySelectorAll('[data-editors]')
+        ].map((ed, index)=>({
+                name: form.current.querySelector(`#ed-name-${index}`).value,
+                surname: form.current.querySelector(`#ed-surname-${index}`).value
+            })
+        );
+        document.title = form.current.querySelector(`#title`).value ?? '';
+        document.subtitle = form.current.querySelector(`#subtitle`).value ?? '';
+        document.edition = +form.current.querySelector(`#edition`).value ?? 0;
+        document.publication_place = +form.current.querySelector(`#publication_place`).value ?? 0;
+        document.publisher = form.current.querySelector(`#publisher`).value ?? '';
+        document.abstract = form.current.querySelector(`#abstract`).value ?? '';
+        document.publication_year = +form.current.querySelector(`#publication_year`).value ?? 0;
+        document.volume = +form.current.querySelector(`#volume`).value ?? 0;
+        document.doi = form.current.querySelector(`#doi`).value ?? '';
+        document.start_page = +form.current.querySelector(`#start_page`).value ?? 0;
+        document.end_page = +form.current.querySelector(`#end_page`).value ?? 0;
+        document.coordinator = +form.current.querySelector(`#coordinator`).value ?? 0;
+        document.number = +form.current.querySelector(`#number`).value ?? 0;
+        document.chapter_title = +form.current.querySelector(`#chapter_title`).value ?? 0;
+        return document;
+    };
+    const send = async (event)=>{
+        event.preventDefault();
+        try {
+            const newDocument = createDocumentObject();
+            console.log({
+                ...current,
+                ...newDocument
+            });
+            if (!current) {
+                console.log(newDocument);
+                const response = await addDocument(newDocument);
+                const { document_id  } = await response.json();
+                console.log({
+                    user: {
+                        ...userInfo.user
+                    },
+                    documents: [
+                        ...userInfo.documents,
+                        {
+                            ...newDocument,
+                            _id: document_id
+                        }
+                    ]
+                });
+                setUserInfo({
+                    user: {
+                        ...userInfo.user
+                    },
+                    documents: [
+                        ...userInfo.documents,
+                        {
+                            ...newDocument,
+                            _id: document_id
+                        }
+                    ]
+                });
+            } else {
+                const updatedDocuments = [
+                    ...userInfo.documents.filter((doc)=>doc._id !== current._id
+                    ),
+                    {
+                        ...current,
+                        ...newDocument,
+                        _id: current._id,
+                        category: current.category,
+                        order: current.order,
+                        type: current.type
+                    }
+                ];
+                await updateDocument({
+                    ...newDocument,
+                    _id: current._id
+                });
+                console.log({
+                    user: userInfo.user,
+                    documents: updatedDocuments
+                });
+                setUserInfo({
+                    user: userInfo.user,
+                    documents: updatedDocuments
+                });
+            }
+            document.body.removeEventListener('click', closeModal, false);
+            closeModal(false);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+    const addAuthor = ()=>setAuthors([
+            ...authors,
+            Math.max(...authors) + 1
+        ])
+    ;
+    const removeAuthor = (id)=>setAuthors(authors.filter((aut)=>aut !== id
+        ))
+    ;
+    const addEditor = ()=>setEditors([
+            ...editors,
+            Math.max(...editors) + 1
+        ])
+    ;
+    const removeEditor = (id)=>setEditors(editors.filter((aut)=>aut !== id
+        ))
+    ;
+    return export_default1.createElement("div", {
+        className: "row"
+    }, export_default1.createElement("span", {
+        className: "modal-label"
+    }, !current ? 'Add new ' : 'Edit ', "Book chapter"), export_default1.createElement("button", {
+        className: "close-modal btn-floating red btn-small",
+        onClick: closeModal
+    }, export_default1.createElement("i", {
+        className: "material-icons right"
+    }, "clear")), export_default1.createElement("form", {
+        className: "col s12",
+        onSubmit: send,
+        ref: form
+    }, export_default1.createElement("div", {
+        className: "row"
+    }, export_default1.createElement("div", {
+        className: "input-field col s12"
+    }, export_default1.createElement("input", {
+        id: "title",
+        type: "text",
+        defaultValue: current?.title,
+        required: true
+    }), export_default1.createElement("label", {
+        htmlFor: "title",
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "Book title")), export_default1.createElement("div", {
+        className: "input-field col s12"
+    }, export_default1.createElement("input", {
+        id: "subtitle",
+        type: "text",
+        defaultValue: current?.subtitle,
+        required: true
+    }), export_default1.createElement("label", {
+        htmlFor: "subtitle",
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "Book subtitle")), export_default1.createElement("div", {
+        className: "input-field col s12"
+    }, export_default1.createElement("input", {
+        id: "chapter_title",
+        type: "text",
+        defaultValue: current?.chapter_title,
+        required: true
+    }), export_default1.createElement("label", {
+        htmlFor: "chapter_title",
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "Chapter title")), export_default1.createElement("div", {
+        id: "authors"
+    }, authors.map((aut)=>{
+        return export_default1.createElement("div", {
+            key: aut,
+            "data-authors": true
+        }, export_default1.createElement("div", {
+            className: "input-field col s6"
+        }, export_default1.createElement("input", {
+            id: `aut-name-${aut}`,
+            type: "text",
+            defaultValue: current?.authors[aut].name,
+            required: true
+        }), export_default1.createElement("label", {
+            htmlFor: `aut-name-${aut}`,
+            className: "active",
+            onClick: ({ target  })=>target.previousElementSibling.focus()
+        }, "Author name")), export_default1.createElement("div", {
+            className: "input-field col s6"
+        }, export_default1.createElement("input", {
+            id: `aut-surname-${aut}`,
+            type: "text",
+            defaultValue: current?.authors[aut].surname,
+            required: true
+        }), export_default1.createElement("label", {
+            htmlFor: `aut-surname-${aut}`,
+            className: "active",
+            onClick: ({ target  })=>target.previousElementSibling.focus()
+        }, "Author surname")), aut !== 1 ? export_default1.createElement("a", {
+            onClick: ()=>removeAuthor(aut)
+            ,
+            className: "button-remove-modal waves-effect waves-light red btn-small"
+        }, export_default1.createElement("i", {
+            className: "material-icons right"
+        }, "delete_forever")) : undefined);
+    }), export_default1.createElement("a", {
+        onClick: addAuthor,
+        className: "button-add-modal waves-effect waves-light btn-small"
+    }, "Add author ", export_default1.createElement("i", {
+        className: "material-icons right"
+    }, "add"))), export_default1.createElement("div", {
+        className: "input-field col s12"
+    }, export_default1.createElement("input", {
+        id: "coordinator",
+        type: "text",
+        defaultValue: current?.coordinator
+    }), export_default1.createElement("label", {
+        htmlFor: "coordinator",
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "Coordinator")), export_default1.createElement("div", {
+        id: "editors"
+    }, editors.map((ed)=>{
+        return export_default1.createElement("div", {
+            key: ed,
+            "data-editors": true
+        }, export_default1.createElement("div", {
+            className: "input-field col s6"
+        }, export_default1.createElement("input", {
+            id: `ed-name-${ed}`,
+            type: "text",
+            defaultValue: current?.editors[ed].name
+        }), export_default1.createElement("label", {
+            htmlFor: `ed-name-${ed}`,
+            className: "active",
+            onClick: ({ target  })=>target.previousElementSibling.focus()
+        }, "Editor name")), export_default1.createElement("div", {
+            className: "input-field col s6"
+        }, export_default1.createElement("input", {
+            id: `ed-surname-${ed}`,
+            type: "text",
+            defaultValue: current?.editors[ed].surname
+        }), export_default1.createElement("label", {
+            htmlFor: `ed-surname-${ed}`,
+            className: "active",
+            onClick: ({ target  })=>target.previousElementSibling.focus()
+        }, "Editor surname")), ed !== 1 ? export_default1.createElement("span", {
+            onClick: ()=>removeEditor(ed)
+        }, "Remove") : undefined);
+    }), export_default1.createElement("span", {
+        onClick: addEditor
+    }, "Add editor")), export_default1.createElement("div", {
+        className: "input-field col s12"
+    }, export_default1.createElement("input", {
+        id: "volume",
+        type: "number",
+        defaultValue: current?.volume
+    }), export_default1.createElement("label", {
+        htmlFor: "volume",
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "Volume")), export_default1.createElement("div", {
+        className: "input-field col s12"
+    }, export_default1.createElement("input", {
+        id: "number",
+        type: "number",
+        defaultValue: current?.number
+    }), export_default1.createElement("label", {
+        htmlFor: "number",
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "Chapter number")), export_default1.createElement("div", {
+        className: "input-field col s12"
+    }, export_default1.createElement("input", {
+        id: "start_page",
+        type: "number",
+        defaultValue: current?.start_page
+    }), export_default1.createElement("label", {
+        htmlFor: "start_page",
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "Start page")), export_default1.createElement("div", {
+        className: "input-field col s12"
+    }, export_default1.createElement("input", {
+        id: "end_page",
+        type: "number",
+        defaultValue: current?.end_page
+    }), export_default1.createElement("label", {
+        htmlFor: "end_page",
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "End page")), export_default1.createElement("div", {
+        className: "input-field col s12"
+    }, export_default1.createElement("textarea", {
+        id: "abstract",
+        className: "materialize-textarea",
+        defaultValue: current?.abstract
+    }), export_default1.createElement("label", {
+        htmlFor: "abstract",
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "Abstract")), export_default1.createElement("div", {
+        className: "input-field col s12"
+    }, export_default1.createElement("input", {
+        id: "publisher",
+        type: "text",
+        defaultValue: current?.publisher,
+        required: true
+    }), export_default1.createElement("label", {
+        htmlFor: "publisher",
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "Publisher")), export_default1.createElement("div", {
+        className: "input-field col s12"
+    }, export_default1.createElement("input", {
+        id: "edition",
+        type: "text",
+        defaultValue: current?.edition
+    }), export_default1.createElement("label", {
+        htmlFor: "edition",
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "Edition")), export_default1.createElement("div", {
+        className: "input-field col s12"
+    }, export_default1.createElement("input", {
+        id: "publication_place",
+        type: "text",
+        defaultValue: current?.publication_place,
+        required: true
+    }), export_default1.createElement("label", {
+        htmlFor: "publication_place",
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "Publication Place")), export_default1.createElement("div", {
+        className: "input-field col s12"
+    }, export_default1.createElement("input", {
+        id: "publication_year",
+        type: "number",
+        defaultValue: current?.publication_year,
+        required: true
+    }), export_default1.createElement("label", {
+        htmlFor: "publication_year",
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "Publication year")), export_default1.createElement("div", {
+        className: "input-field col s12"
+    }, export_default1.createElement("input", {
+        id: "doi",
+        type: "text",
+        defaultValue: current?.doi
+    }), export_default1.createElement("label", {
+        htmlFor: "doi",
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "DOI / URI"))), export_default1.createElement("button", {
+        id: "send-form",
+        className: "btn waves-effect waves-light blue accent-4",
+        type: "submit",
+        name: "action"
+    }, "Submit", export_default1.createElement("i", {
+        className: "material-icons right"
+    }, "send"))));
+};
+class ConferenceProceeding {
+    _id;
+    type;
+    category;
+    order;
+    user;
+    can_be_cited;
+    title;
+    authors;
+    editors;
+    subtitle;
+    conference_year;
+    conference_month;
+    conference_day;
+    publisher;
+    conference_location;
+    publication_place;
+    publication_year;
+    doi;
+}
+const ConferenceProceedingForm = ({ current , userInfo , setUserInfo , setShowModal , setActiveForm , categoryId  })=>{
+    const [authors, setAuthors] = useState([
+        0
+    ]);
+    const [editors, setEditors] = useState([]);
+    const form = useRef();
+    useEffect(()=>{
+        document.body.classList.add('show-modal-body');
+    }, []);
+    const closeModal = (ask = true)=>{
+        if (!ask || confirm('Cancel current operation?')) {
+            setShowModal(false);
+            document.body.classList.remove('show-modal-body');
+            setActiveForm(undefined);
+        }
+    };
+    const createDocumentObject = ()=>{
+        const document = new ConferenceProceeding();
+        if (!current) {
+            document.category = userInfo.user.categories.find(({ id  })=>id === categoryId
+            ).id;
+            document.type = 'conferenceproceeding';
+            document.order = userInfo.documents.length ? Math.max(...userInfo.documents.filter(({ category  })=>category === categoryId
+            ).map(({ order  })=>order
+            )) + 1 : 1;
+        }
+        document.abstract = form.current.querySelector(`#abstract`).value;
+        document.can_be_cited = true;
+        document.user = userInfo.user.email;
+        document.authors = [
+            ...form.current.querySelectorAll('[data-authors]')
+        ].map((aut, index)=>({
+                name: form.current.querySelector(`#aut-name-${index}`).value,
+                surname: form.current.querySelector(`#aut-surname-${index}`).value
+            })
+        );
+        document.editors = [
+            ...form.current.querySelectorAll('[data-editors]')
+        ].map((ed, index)=>({
+                name: form.current.querySelector(`#ed-name-${index}`).value,
+                surname: form.current.querySelector(`#ed-surname-${index}`).value
+            })
+        );
+        document.title = form.current.querySelector(`#title`).value;
+        document.subtitle = form.current.querySelector(`#subtitle`).value ?? '';
+        document.publication_place = form.current.querySelector(`#publication_place`).value ?? '';
+        document.publication_year = +form.current.querySelector(`#publication_year`).value ?? 0;
+        document.conference_year = +form.current.querySelector(`#conference_year`).value ?? 0;
+        document.conference_month = +form.current.querySelector(`#conference_month`).value ?? 0;
+        document.conference_day = +form.current.querySelector(`#conference_day`).value ?? 0;
+        document.publisher = form.current.querySelector(`#publisher`).value ?? '';
+        document.conference_location = form.current.querySelector(`#conference_location`).value ?? '';
+        document.doi = form.current.querySelector(`#doi`).value ?? '';
+        return document;
+    };
+    const send = async (event)=>{
+        event.preventDefault();
+        try {
+            const newDocument = createDocumentObject();
+            console.log({
+                ...current,
+                ...newDocument
+            });
+            if (!current) {
+                console.log(newDocument);
+                const response = await addDocument(newDocument);
+                const { document_id  } = await response.json();
+                console.log({
+                    user: {
+                        ...userInfo.user
+                    },
+                    documents: [
+                        ...userInfo.documents,
+                        {
+                            ...newDocument,
+                            _id: document_id
+                        }
+                    ]
+                });
+                setUserInfo({
+                    user: {
+                        ...userInfo.user
+                    },
+                    documents: [
+                        ...userInfo.documents,
+                        {
+                            ...newDocument,
+                            _id: document_id
+                        }
+                    ]
+                });
+            } else {
+                const updatedDocuments = [
+                    ...userInfo.documents.filter((doc)=>doc._id !== current._id
+                    ),
+                    {
+                        ...current,
+                        ...newDocument,
+                        _id: current._id,
+                        category: current.category,
+                        order: current.order,
+                        type: current.type
+                    }
+                ];
+                await updateDocument({
+                    ...newDocument,
+                    _id: current._id
+                });
+                console.log({
+                    user: userInfo.user,
+                    documents: updatedDocuments
+                });
+                setUserInfo({
+                    user: userInfo.user,
+                    documents: updatedDocuments
+                });
+            }
+            document.body.removeEventListener('click', closeModal, false);
+            closeModal(false);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+    const addAuthor = ()=>setAuthors([
+            ...authors,
+            Math.max(...authors) + 1
+        ])
+    ;
+    const removeAuthor = (id)=>setAuthors(authors.filter((aut)=>aut !== id
+        ))
+    ;
+    const addEditor = ()=>setEditors([
+            ...editors,
+            Math.max(...editors) + 1
+        ])
+    ;
+    const removeEditor = (id)=>setEditors(editors.filter((aut)=>aut !== id
+        ))
+    ;
+    return export_default1.createElement("div", {
+        className: "row"
+    }, export_default1.createElement("span", {
+        className: "modal-label"
+    }, !current ? 'Add new ' : 'Edit ', "Conference proceeding"), export_default1.createElement("button", {
+        className: "close-modal btn-floating red btn-small",
+        onClick: closeModal
+    }, export_default1.createElement("i", {
+        className: "material-icons right"
+    }, "clear")), export_default1.createElement("form", {
+        className: "col s12",
+        onSubmit: send,
+        ref: form
+    }, export_default1.createElement("div", {
+        className: "row"
+    }, export_default1.createElement("div", {
+        className: "input-field col s12"
+    }, export_default1.createElement("input", {
+        id: "title",
+        type: "text",
+        defaultValue: current?.title,
+        required: true
+    }), export_default1.createElement("label", {
+        htmlFor: "title",
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "Conference title")), export_default1.createElement("div", {
+        className: "input-field col s12"
+    }, export_default1.createElement("input", {
+        id: "subtitle",
+        type: "text",
+        defaultValue: current?.subtitle
+    }), export_default1.createElement("label", {
+        htmlFor: "subtitle",
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "Conference subtitle")), export_default1.createElement("div", {
+        id: "authors"
+    }, authors.map((aut)=>{
+        return export_default1.createElement("div", {
+            key: aut,
+            "data-authors": true
+        }, export_default1.createElement("div", {
+            className: "input-field col s6"
+        }, export_default1.createElement("input", {
+            id: `aut-name-${aut}`,
+            type: "text",
+            defaultValue: current?.authors[aut].name,
+            required: true
+        }), export_default1.createElement("label", {
+            htmlFor: `aut-name-${aut}`,
+            className: "active",
+            onClick: ({ target  })=>target.previousElementSibling.focus()
+        }, "Author name")), export_default1.createElement("div", {
+            className: "input-field col s6"
+        }, export_default1.createElement("input", {
+            id: `aut-surname-${aut}`,
+            type: "text",
+            defaultValue: current?.authors[aut].surname,
+            required: true
+        }), export_default1.createElement("label", {
+            htmlFor: `aut-surname-${aut}`,
+            className: "active",
+            onClick: ({ target  })=>target.previousElementSibling.focus()
+        }, "Author surname")), aut !== 1 ? export_default1.createElement("a", {
+            onClick: ()=>removeAuthor(aut)
+            ,
+            className: "button-remove-modal waves-effect waves-light red btn-small"
+        }, export_default1.createElement("i", {
+            className: "material-icons right"
+        }, "delete_forever")) : undefined);
+    }), export_default1.createElement("a", {
+        onClick: addAuthor,
+        className: "button-add-modal waves-effect waves-light btn-small"
+    }, "Add author ", export_default1.createElement("i", {
+        className: "material-icons right"
+    }, "add"))), export_default1.createElement("div", {
+        id: "editors"
+    }, editors.map((ed)=>{
+        return export_default1.createElement("div", {
+            key: ed,
+            "data-editors": true
+        }, export_default1.createElement("div", {
+            className: "input-field col s6"
+        }, export_default1.createElement("input", {
+            id: `ed-name-${ed}`,
+            type: "text",
+            defaultValue: current?.editors[ed].name
+        }), export_default1.createElement("label", {
+            htmlFor: `ed-name-${ed}`,
+            className: "active",
+            onClick: ({ target  })=>target.previousElementSibling.focus()
+        }, "Editor name")), export_default1.createElement("div", {
+            className: "input-field col s6"
+        }, export_default1.createElement("input", {
+            id: `ed-surname-${ed}`,
+            type: "text",
+            defaultValue: current?.editors[ed].surname
+        }), export_default1.createElement("label", {
+            htmlFor: `ed-surname-${ed}`,
+            className: "active",
+            onClick: ({ target  })=>target.previousElementSibling.focus()
+        }, "Editor surname")), ed !== 1 ? export_default1.createElement("span", {
+            onClick: ()=>removeEditor(ed)
+        }, "Remove") : undefined);
+    }), export_default1.createElement("span", {
+        onClick: addEditor
+    }, "Add editor")), export_default1.createElement("div", {
+        className: "input-field col s12"
+    }, export_default1.createElement("textarea", {
+        id: "abstract",
+        className: "materialize-textarea",
+        defaultValue: current?.abstract
+    }), export_default1.createElement("label", {
+        htmlFor: "abstract",
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "Abstract")), export_default1.createElement("div", {
+        className: "input-field col s12"
+    }, export_default1.createElement("input", {
+        id: "conference_place",
+        type: "text",
+        defaultValue: current?.conference_place,
+        required: true
+    }), export_default1.createElement("label", {
+        htmlFor: "conference_place",
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "Conference place")), export_default1.createElement("div", {
+        className: "input-field col s4"
+    }, export_default1.createElement("input", {
+        id: "conference_year",
+        type: "number",
+        defaultValue: current?.conference_year,
+        required: true
+    }), export_default1.createElement("label", {
+        htmlFor: "conference_year",
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "Conference year")), export_default1.createElement("div", {
+        className: "input-field col s4"
+    }, export_default1.createElement("input", {
+        id: "conference_month",
+        type: "number",
+        defaultValue: current?.conference_month,
+        required: true
+    }), export_default1.createElement("label", {
+        htmlFor: "conference_month",
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "Conference month")), export_default1.createElement("div", {
+        className: "input-field col s4"
+    }, export_default1.createElement("input", {
+        id: "conference_day",
+        type: "number",
+        defaultValue: current?.conference_day,
+        required: true
+    }), export_default1.createElement("label", {
+        htmlFor: "conference_day",
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "Conference day")), export_default1.createElement("div", {
+        className: "input-field col s12"
+    }, export_default1.createElement("input", {
+        id: "publisher",
+        type: "text",
+        defaultValue: current?.publisher,
+        required: true
+    }), export_default1.createElement("label", {
+        htmlFor: "publisher",
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "Publisher")), export_default1.createElement("div", {
+        className: "input-field col s12"
+    }, export_default1.createElement("input", {
+        id: "publication_place",
+        type: "text",
+        defaultValue: current?.publication_place,
+        required: true
+    }), export_default1.createElement("label", {
+        htmlFor: "publication_place",
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "Publication Place")), export_default1.createElement("div", {
+        className: "input-field col s12"
+    }, export_default1.createElement("input", {
+        id: "publication_year",
+        type: "number",
+        defaultValue: current?.publication_year,
+        required: true
+    }), export_default1.createElement("label", {
+        htmlFor: "publication_year",
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "Publication year")), export_default1.createElement("div", {
+        className: "input-field col s12"
+    }, export_default1.createElement("input", {
+        id: "doi",
+        type: "text",
         defaultValue: current?.doi,
         required: true
     }), export_default1.createElement("label", {
         htmlFor: "doi",
         className: "active",
         onClick: ({ target  })=>target.previousElementSibling.focus()
-    }, "DOI / URI")))), export_default1.createElement("button", {
+    }, "DOI / URI"))), export_default1.createElement("button", {
         id: "send-form",
-        onClick: send,
+        className: "btn waves-effect waves-light blue accent-4",
+        type: "submit",
+        name: "action"
+    }, "Submit", export_default1.createElement("i", {
+        className: "material-icons right"
+    }, "send"))));
+};
+class Thesis {
+    _id;
+    type;
+    category;
+    order;
+    user;
+    can_be_cited;
+    title;
+    abstract;
+    author;
+    subtitle;
+    university;
+    university_location;
+    publication_year;
+    uri;
+}
+const ThesisForm = ({ current , userInfo , setUserInfo , setShowModal , setActiveForm , categoryId  })=>{
+    const form = useRef();
+    useEffect(()=>{
+        document.body.classList.add('show-modal-body');
+    }, []);
+    const closeModal = (ask = true)=>{
+        if (!ask || confirm('Cancel current operation?')) {
+            setShowModal(false);
+            document.body.classList.remove('show-modal-body');
+            setActiveForm(undefined);
+        }
+    };
+    const getArticleOrder = (nodes)=>{
+        if (nodes.length === 0) return 1;
+        const orderList = [];
+        for (const node of nodes){
+            orderList.push(node.firstElementChild.getAttribute('data-article-order'));
+        }
+        return Math.max(...orderList) + 1;
+    };
+    const createDocumentObject = ()=>{
+        const document = new Thesis();
+        if (!current) {
+            document.category = userInfo.user.categories.find(({ id  })=>id === categoryId
+            ).id;
+            document.type = 'thesis';
+            document.order = userInfo.documents.length ? Math.max(...userInfo.documents.filter(({ category  })=>category === categoryId
+            ).map(({ order  })=>order
+            )) + 1 : 1;
+        }
+        document.can_be_cited = true;
+        document.user = userInfo.user.email;
+        document.author = {
+            name: form.current.querySelector(`#aut-name`).value,
+            surname: form.current.querySelector(`#aut-surname`).value
+        };
+        document.title = form.current.querySelector(`#title`).value ?? '';
+        document.subtitle = +form.current.querySelector(`#subtitle`).value ?? 0;
+        document.university = form.current.querySelector(`#university`).value ?? '';
+        document.university_place = form.current.querySelector(`#university_place`).value ?? '';
+        document.abstract = form.current.querySelector(`#abstract`).value ?? '';
+        document.publication_year = +form.current.querySelector(`#publication_year`).value ?? 0;
+        document.uri = form.current.querySelector(`#uri`).value ?? '';
+        return document;
+    };
+    const send = async (event)=>{
+        event.preventDefault();
+        try {
+            const newDocument = createDocumentObject();
+            console.log({
+                ...current,
+                ...newDocument
+            });
+            if (!current) {
+                console.log(newDocument);
+                const response = await addDocument(newDocument);
+                const { document_id  } = await response.json();
+                console.log({
+                    user: {
+                        ...userInfo.user
+                    },
+                    documents: [
+                        ...userInfo.documents,
+                        {
+                            ...newDocument,
+                            _id: document_id
+                        }
+                    ]
+                });
+                setUserInfo({
+                    user: {
+                        ...userInfo.user
+                    },
+                    documents: [
+                        ...userInfo.documents,
+                        {
+                            ...newDocument,
+                            _id: document_id
+                        }
+                    ]
+                });
+            } else {
+                const updatedDocuments = [
+                    ...userInfo.documents.filter((doc)=>doc._id !== current._id
+                    ),
+                    {
+                        ...current,
+                        ...newDocument,
+                        _id: current._id,
+                        category: current.category,
+                        order: current.order,
+                        type: current.type
+                    }
+                ];
+                await updateDocument({
+                    ...newDocument,
+                    _id: current._id
+                });
+                console.log({
+                    user: userInfo.user,
+                    documents: updatedDocuments
+                });
+                setUserInfo({
+                    user: userInfo.user,
+                    documents: updatedDocuments
+                });
+            }
+            document.body.removeEventListener('click', closeModal, false);
+            closeModal(false);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+    return export_default1.createElement("div", {
+        className: "row"
+    }, export_default1.createElement("span", {
+        className: "modal-label"
+    }, !current ? 'Add new ' : 'Edit ', "Thesis"), export_default1.createElement("button", {
+        className: "close-modal btn-floating red btn-small",
+        onClick: closeModal
+    }, export_default1.createElement("i", {
+        className: "material-icons right"
+    }, "clear")), export_default1.createElement("form", {
+        className: "col s12",
+        onSubmit: send,
+        ref: form
+    }, export_default1.createElement("div", {
+        className: "row"
+    }, export_default1.createElement("div", {
+        className: "input-field col s12"
+    }, export_default1.createElement("input", {
+        id: "title",
+        type: "text",
+        defaultValue: current?.title,
+        required: true
+    }), export_default1.createElement("label", {
+        htmlFor: "title",
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "Title")), export_default1.createElement("div", {
+        className: "input-field col s12"
+    }, export_default1.createElement("input", {
+        id: "subtitle",
+        type: "text",
+        defaultValue: current?.subtitle,
+        required: true
+    }), export_default1.createElement("label", {
+        htmlFor: "subtitle",
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "Subtitle")), export_default1.createElement("div", {
+        className: "input-field col s6"
+    }, export_default1.createElement("input", {
+        id: `aut-name`,
+        type: "text",
+        defaultValue: current?.author?.name,
+        required: true
+    }), export_default1.createElement("label", {
+        htmlFor: `aut-name`,
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "Author name")), export_default1.createElement("div", {
+        className: "input-field col s6"
+    }, export_default1.createElement("input", {
+        id: `aut-surname`,
+        type: "text",
+        defaultValue: current?.author?.surname,
+        required: true
+    }), export_default1.createElement("label", {
+        htmlFor: `aut-surname`,
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "Author surname")), export_default1.createElement("div", {
+        className: "input-field col s12"
+    }, export_default1.createElement("input", {
+        id: "university",
+        type: "text",
+        defaultValue: current?.university,
+        required: true
+    }), export_default1.createElement("label", {
+        htmlFor: "university",
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "University")), export_default1.createElement("div", {
+        className: "input-field col s12"
+    }, export_default1.createElement("input", {
+        id: "university_place",
+        type: "text",
+        defaultValue: current?.university_place,
+        required: true
+    }), export_default1.createElement("label", {
+        htmlFor: "university_place",
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "University place")), export_default1.createElement("div", {
+        className: "input-field col s12"
+    }, export_default1.createElement("textarea", {
+        id: "abstract",
+        className: "materialize-textarea",
+        defaultValue: current?.abstract
+    }), export_default1.createElement("label", {
+        htmlFor: "abstract",
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "Abstract")), export_default1.createElement("div", {
+        className: "input-field col s12"
+    }, export_default1.createElement("input", {
+        id: "publication_place",
+        type: "text",
+        defaultValue: current?.publication_place,
+        required: true
+    }), export_default1.createElement("label", {
+        htmlFor: "publication_place",
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "Publication Place")), export_default1.createElement("div", {
+        className: "input-field col s12"
+    }, export_default1.createElement("input", {
+        id: "publication_year",
+        type: "number",
+        defaultValue: current?.publication_year,
+        required: true
+    }), export_default1.createElement("label", {
+        htmlFor: "publication_year",
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "Publication year")), export_default1.createElement("div", {
+        className: "input-field col s12"
+    }, export_default1.createElement("input", {
+        id: "uri",
+        type: "text",
+        defaultValue: current?.uri,
+        required: true
+    }), export_default1.createElement("label", {
+        htmlFor: "uri",
+        className: "active",
+        onClick: ({ target  })=>target.previousElementSibling.focus()
+    }, "URI"))), export_default1.createElement("button", {
+        id: "send-form",
         className: "btn waves-effect waves-light blue accent-4",
         type: "submit",
         name: "action"
@@ -25010,9 +26520,31 @@ const FreeDocumentRender = ({ doc  })=>{
         "data-article-order": doc.order
     });
 };
+const AuthorCitator = ({ authors  })=>{
+    const formatNames = ()=>{
+        const formatted = [];
+        for (const { name , surname  } of authors){
+            const initials = name.split(' ').reduce((acc, curr)=>acc.substring(0, 1) + curr.substring(0, 1)
+            , "").toUpperCase();
+            formatted.push(`${surname} ${initials}`);
+        }
+        return formatted;
+    };
+    return export_default1.createElement(export_default1.Fragment, null, authors.length && formatNames().map((name, index)=>{
+        return export_default1.createElement(export_default1.Fragment, {
+            key: index
+        }, index < 6 ? export_default1.createElement("span", {
+            className: "documents__aut-name"
+        }, name) : undefined, index < 5 && index !== authors.length - 1 ? export_default1.createElement("span", null, ", ") : undefined, index === 6 ? export_default1.createElement("span", null, " et al.") : undefined);
+    }));
+};
 const JournalArticleRender = ({ doc  })=>{
+    const __abstract = useRef();
     const collapse = ({ target  })=>target.classList.toggle('show')
     ;
+    useEffect(()=>{
+        if (__abstract.current.clientHeight > 50) __abstract.current.classList.add('collapse');
+    });
     return export_default1.createElement("div", {
         "data-article-id": `id-${doc._id}`,
         "data-article-order": doc.order,
@@ -25020,43 +26552,171 @@ const JournalArticleRender = ({ doc  })=>{
     }, export_default1.createElement("div", {
         className: "documents__title"
     }, doc.title), export_default1.createElement("div", {
-        className: "documents__journal"
+        className: "documents__subtitle"
     }, doc.journal), export_default1.createElement("div", {
         className: "documents__authors"
-    }, doc.authors.map(({ name , surname  }, index)=>{
-        return export_default1.createElement(export_default1.Fragment, {
-            key: index
-        }, index < 3 ? export_default1.createElement(export_default1.Fragment, null, export_default1.createElement("span", {
-            className: "documents__aut-name"
-        }, name), export_default1.createElement("span", {
-            className: "documents__aut-surname"
-        }, surname)) : undefined, index !== 2 && index !== doc.authors.length - 1 ? export_default1.createElement("span", null, ", ") : undefined, index > 2 ? export_default1.createElement("span", null, ", et al.") : undefined);
-    })), export_default1.createElement("p", {
-        className: "documents__abstract collapse",
+    }, export_default1.createElement(AuthorCitator, {
+        authors: doc.authors
+    })), export_default1.createElement("div", {
+        ref: __abstract,
+        className: `documents__abstract`,
         onClick: collapse
-    }, doc.abstract));
+    }, export_default1.createElement("div", {
+        className: "documents__subtitle"
+    }, "Abstract"), doc.abstract));
+};
+const BookRender = ({ doc  })=>{
+    const __abstract = useRef();
+    const collapse = ({ target  })=>target.classList.toggle('show')
+    ;
+    useEffect(()=>{
+        if (__abstract.current.clientHeight > 50) __abstract.current.classList.add('collapse');
+    });
+    return export_default1.createElement("div", {
+        "data-article-id": `id-${doc._id}`,
+        "data-article-order": doc.order,
+        className: 'profile-articles__journalArticle'
+    }, export_default1.createElement("div", {
+        className: "documents__title"
+    }, doc.title), export_default1.createElement("div", {
+        className: "documents__authors"
+    }, export_default1.createElement(AuthorCitator, {
+        authors: doc.authors
+    })), export_default1.createElement("div", {
+        ref: __abstract,
+        className: `documents__abstract`,
+        onClick: collapse
+    }, export_default1.createElement("div", {
+        className: "documents__subtitle"
+    }, "Abstract"), doc.abstract));
+};
+const BookChapterRender = ({ doc  })=>{
+    const __abstract = useRef();
+    const collapse = ({ target  })=>target.classList.toggle('show')
+    ;
+    useEffect(()=>{
+        if (__abstract.current.clientHeight > 50) __abstract.current.classList.add('collapse');
+    });
+    return export_default1.createElement("div", {
+        "data-article-id": `id-${doc._id}`,
+        "data-article-order": doc.order,
+        className: 'profile-articles__journalArticle'
+    }, export_default1.createElement("div", {
+        className: "documents__title"
+    }, doc.title), export_default1.createElement("div", {
+        className: "documents__subtitle"
+    }, doc.chapter_title), export_default1.createElement("div", {
+        className: "documents__authors"
+    }, export_default1.createElement(AuthorCitator, {
+        authors: doc.authors
+    })), export_default1.createElement("div", {
+        ref: __abstract,
+        className: `documents__abstract`,
+        onClick: collapse
+    }, export_default1.createElement("div", {
+        className: "documents__subtitle"
+    }, "Abstract"), doc.abstract));
+};
+const ConferenceProceedingRender = ({ doc  })=>{
+    const __abstract = useRef();
+    const collapse = ({ target  })=>target.classList.toggle('show')
+    ;
+    useEffect(()=>{
+        if (__abstract.current.clientHeight > 50) __abstract.current.classList.add('collapse');
+    });
+    return export_default1.createElement("div", {
+        "data-article-id": `id-${doc._id}`,
+        "data-article-order": doc.order,
+        className: 'profile-articles__journalArticle'
+    }, export_default1.createElement("div", {
+        className: "documents__title"
+    }, doc.title), export_default1.createElement("div", {
+        className: "documents__subtitle"
+    }, "Location: ", doc.conference_location), export_default1.createElement("div", {
+        className: "documents__authors"
+    }, export_default1.createElement(AuthorCitator, {
+        authors: doc.authors
+    })), export_default1.createElement("div", {
+        ref: __abstract,
+        className: `documents__abstract`,
+        onClick: collapse
+    }, export_default1.createElement("div", {
+        className: "documents__subtitle"
+    }, "Abstract"), doc.abstract));
+};
+const ThesisRender = ({ doc  })=>{
+    const __abstract = useRef();
+    const collapse = ({ target  })=>target.classList.toggle('show')
+    ;
+    useEffect(()=>{
+        if (__abstract.current.clientHeight > 50) __abstract.current.classList.add('collapse');
+    });
+    return export_default1.createElement("div", {
+        "data-article-id": `id-${doc._id}`,
+        "data-article-order": doc.order,
+        className: 'profile-articles__journalArticle'
+    }, export_default1.createElement("div", {
+        className: "documents__title"
+    }, doc.title), export_default1.createElement("div", {
+        className: "documents__subtitle"
+    }, doc.subtitle), export_default1.createElement("div", {
+        className: "documents__authors"
+    }, doc.author.name, " ", doc.author.surname), export_default1.createElement("div", {
+        ref: __abstract,
+        className: `documents__abstract`,
+        onClick: collapse
+    }, export_default1.createElement("div", {
+        className: "documents__subtitle"
+    }, "Abstract"), doc.abstract));
 };
 const DocumentRender = ({ doc  })=>{
     const [document, setDocument] = useState(undefined);
-    const node = useRef();
+    const [icon, setIcon] = useState(false);
     useEffect(()=>{
         switch(doc.type){
             case 'freedocument':
                 setDocument(export_default1.createElement(FreeDocumentRender, {
                     doc: doc
                 }));
+                setIcon(false);
                 break;
             case 'journalarticle':
                 setDocument(export_default1.createElement(JournalArticleRender, {
                     doc: doc
                 }));
+                setIcon('Journal Article');
+                break;
+            case 'book':
+                setDocument(export_default1.createElement(BookRender, {
+                    doc: doc
+                }));
+                setIcon('Book');
+                break;
+            case 'bookchapter':
+                setDocument(export_default1.createElement(BookChapterRender, {
+                    doc: doc
+                }));
+                setIcon('Book chapter');
+                break;
+            case 'conferenceproceeding':
+                setDocument(export_default1.createElement(ConferenceProceedingRender, {
+                    doc: doc
+                }));
+                setIcon('Conference proceeding');
+                break;
+            case 'thesis':
+                setDocument(export_default1.createElement(ThesisRender, {
+                    doc: doc
+                }));
+                setIcon('Thesis');
                 break;
         }
     }, []);
     return export_default1.createElement("div", {
-        ref: node,
         className: 'profile-articles__document'
-    }, document);
+    }, export_default1.createElement("div", {
+        className: "profile-article__badge"
+    }, icon ? icon : undefined), document);
 };
 const deleteDocument = async (document_id)=>fetch('/deletedocument', {
         method: 'delete',
@@ -25074,25 +26734,172 @@ const deleteCategory = (category, user2)=>fetch('/deletecategory', {
         })
     })
 ;
-const Modal = ({ children , show  })=>{
+const DocumentsModal = ({ activeForm , show  })=>{
     useEffect(()=>{
-        if (show) document.querySelector('.modal').classList.add('show-modal');
-        else document.querySelector('.modal').classList.remove('show-modal');
+        if (show) document.querySelector('#documents-modal').classList.add('show-modal');
+        else document.querySelector('#documents-modal').classList.remove('show-modal');
     }, [
         show
     ]);
     return export_default1.createElement("div", {
         className: 'modal',
+        id: "documents-modal",
         onClick: (event)=>event.stopPropagation()
         ,
         style: {
             marginTop: window.scrollY - 100
         }
-    }, children);
+    }, activeForm);
+};
+const CitationModal = ({ activeCitation , show  })=>{
+    useEffect(()=>{
+        if (show) document.querySelector('#citation-modal').classList.add('show-modal');
+        else document.querySelector('#citation-modal').classList.remove('show-modal');
+    }, [
+        show
+    ]);
+    return export_default1.createElement("div", {
+        className: 'modal',
+        id: "citation-modal",
+        onClick: (event)=>event.stopPropagation()
+        ,
+        style: {
+            marginTop: window.scrollY - 100
+        }
+    }, export_default1.createElement("div", {
+        className: "citation-modal-text"
+    }, activeCitation));
+};
+const JournalArticleCitation = ({ doc , setShowCitation , setActiveCitation  })=>{
+    useEffect(()=>{
+        console.log(doc);
+        document.body.classList.add('show-modal-body');
+        document.body.addEventListener('click', closeModal, false);
+    }, []);
+    const closeModal = ()=>{
+        setShowCitation(false);
+        document.body.classList.remove('show-modal-body');
+        setActiveCitation(undefined);
+        document.body.removeEventListener('click', closeModal, false);
+    };
+    return export_default1.createElement(export_default1.Fragment, null, export_default1.createElement("button", {
+        className: "close-modal btn-floating red btn-small",
+        onClick: closeModal
+    }, export_default1.createElement("i", {
+        className: "material-icons right"
+    }, "clear")), export_default1.createElement(AuthorCitator, {
+        authors: doc.authors
+    }), export_default1.createElement("span", null, " ", doc.title, ". "), export_default1.createElement("span", null, doc.journal, ". "), export_default1.createElement("span", null, doc.publication_year), export_default1.createElement("span", null, doc?.volume ? `; ${doc.volume}` : undefined, doc?.issue ? `(${doc.issue})` : undefined, doc.start_page ? doc.start_page : doc.end_page ? "-" + doc.end_page : undefined, ". "), export_default1.createElement("span", null, doc?.doi ? doc.doi : undefined));
+};
+const BookCitation = ({ doc , setShowCitation , setActiveCitation  })=>{
+    useEffect(()=>{
+        console.log(doc);
+        document.body.classList.add('show-modal-body');
+        document.body.addEventListener('click', closeModal, false);
+    }, []);
+    const closeModal = ()=>{
+        setShowCitation(false);
+        document.body.classList.remove('show-modal-body');
+        setActiveCitation(undefined);
+        document.body.removeEventListener('click', closeModal, false);
+    };
+    return export_default1.createElement(export_default1.Fragment, null, export_default1.createElement("button", {
+        className: "close-modal btn-floating red btn-small",
+        onClick: closeModal
+    }, export_default1.createElement("i", {
+        className: "material-icons right"
+    }, "clear")), export_default1.createElement(AuthorCitator, {
+        authors: doc.authors
+    }), export_default1.createElement("span", null, " ", doc.chapter_title, ". "), export_default1.createElement("span", null, doc.title, doc?.subtitle ? `: ${doc.subtitle}` : undefined, ". "), doc?.edition ? export_default1.createElement("span", null, doc.edition, ". ") : undefined, doc?.edition ? export_default1.createElement("span", null, `Vol. ${doc.edition}`, ". ") : undefined, export_default1.createElement("span", null, doc.publication_place, ": ", doc.publisher, "; ", doc.publication_year), export_default1.createElement("span", null, " ", doc.start_page ? `. p. ${doc.start_page}` : doc.end_page ? "-" + doc.end_page : undefined, ". "), export_default1.createElement("span", null, doc?.doi ? doc.doi : undefined));
+};
+const BookChapterCitation = ({ doc , setShowCitation , setActiveCitation  })=>{
+    useEffect(()=>{
+        console.log(doc);
+        document.body.classList.add('show-modal-body');
+        document.body.addEventListener('click', closeModal, false);
+    }, []);
+    const closeModal = ()=>{
+        setShowCitation(false);
+        document.body.classList.remove('show-modal-body');
+        setActiveCitation(undefined);
+        document.body.removeEventListener('click', closeModal, false);
+    };
+    return export_default1.createElement(export_default1.Fragment, null, export_default1.createElement("button", {
+        className: "close-modal btn-floating red btn-small",
+        onClick: closeModal
+    }, export_default1.createElement("i", {
+        className: "material-icons right"
+    }, "clear")), export_default1.createElement(AuthorCitator, {
+        authors: doc.authors
+    }), export_default1.createElement("span", null, " ", doc.chapter_title, ". "), doc.editors.length ? export_default1.createElement("span", null, "In: ", export_default1.createElement(AuthorCitator, {
+        authors: doc.editors
+    }), ". ") : undefined, export_default1.createElement("span", null, doc.title, doc?.subtitle ? `: ${doc.subtitle}` : undefined, ". "), doc?.edition ? export_default1.createElement("span", null, doc.edition, ". ") : undefined, export_default1.createElement("span", null, doc.publication_place, ": ", doc.publisher, "; ", doc.publication_year), export_default1.createElement("span", null, " ", doc.start_page ? `. p. ${doc.start_page}` : doc.end_page ? "-" + doc.end_page : undefined, ". "), export_default1.createElement("span", null, doc?.doi ? doc.doi : undefined));
+};
+const ConferenceProceedingCitation = ({ doc , setShowCitation , setActiveCitation  })=>{
+    useEffect(()=>{
+        console.log(doc);
+        document.body.classList.add('show-modal-body');
+        document.body.addEventListener('click', closeModal, false);
+    }, []);
+    const closeModal = ()=>{
+        setShowCitation(false);
+        document.body.classList.remove('show-modal-body');
+        setActiveCitation(undefined);
+        document.body.removeEventListener('click', closeModal, false);
+    };
+    return export_default1.createElement(export_default1.Fragment, null, export_default1.createElement("button", {
+        className: "close-modal btn-floating red btn-small",
+        onClick: closeModal
+    }, export_default1.createElement("i", {
+        className: "material-icons right"
+    }, "clear")), export_default1.createElement(AuthorCitator, {
+        authors: doc.authors
+    }), export_default1.createElement("span", null, " ", doc.chapter_title, ". "), doc.editors.length ? export_default1.createElement("span", null, "In: ", export_default1.createElement(AuthorCitator, {
+        authors: doc.editors
+    }), ". ") : undefined, export_default1.createElement("span", null, doc.title, doc?.subtitle ? `: ${doc.subtitle}` : undefined, "; "), export_default1.createElement("span", null, doc.publication_year, " ", doc?.publication_month ? ` ${doc.publication_month}` : undefined, doc?.publication_day ? ` ${doc.publication_day}` : undefined), export_default1.createElement("span", null, "; ", doc.conference_location, ". "), export_default1.createElement("span", null, doc.publication_place, ": ", doc.publisher, "; ", doc.publication_year), export_default1.createElement("span", null, " ", doc.start_page ? `. p. ${doc.start_page}` : doc.end_page ? "-" + doc.end_page : undefined, ". "), export_default1.createElement("span", null, doc?.doi ? doc.doi : undefined));
+};
+const ThesisCitation = ({ doc , setShowCitation , setActiveCitation  })=>{
+    useEffect(()=>{
+        console.log(doc);
+        document.body.classList.add('show-modal-body');
+        document.body.addEventListener('click', closeModal, false);
+    }, []);
+    const closeModal = ()=>{
+        setShowCitation(false);
+        document.body.classList.remove('show-modal-body');
+        setActiveCitation(undefined);
+        document.body.removeEventListener('click', closeModal, false);
+    };
+    return export_default1.createElement(export_default1.Fragment, null, export_default1.createElement("button", {
+        className: "close-modal btn-floating red btn-small",
+        onClick: closeModal
+    }, export_default1.createElement("i", {
+        className: "material-icons right"
+    }, "clear")), export_default1.createElement(AuthorCitator, {
+        authors: [
+            doc.author
+        ]
+    }), export_default1.createElement("span", null, ". ", doc.title, doc?.subtitle ? `: ${doc.subtitle}` : undefined, ". "), export_default1.createElement("span", null, doc.university_location, ": ", doc.university, "; ", doc.publication_year, ". "), export_default1.createElement("span", null, doc?.url ? doc.url : undefined));
+};
+const selectCitation = (type)=>{
+    switch(type){
+        case 'journalarticle':
+            return JournalArticleCitation;
+        case 'book':
+            return BookCitation;
+        case 'bookchapter':
+            return BookChapterCitation;
+        case 'conferenceproceeding':
+            return ConferenceProceedingCitation;
+        case 'thesis':
+            return ThesisCitation;
+    }
 };
 const ProfileDocuments = ({ user: user2  })=>{
     const [userInfo, setUserInfo] = useState(user2);
     const [showModal, setShowModal] = useState(false);
+    const [showCitation, setShowCitation] = useState(false);
+    const [activeCitation, setActiveCitation] = useState(undefined);
     const [activeForm, setActiveForm] = useState(undefined);
     useEffect(()=>{
         const elems = document.querySelectorAll('.dropdown-trigger');
@@ -25110,15 +26917,23 @@ const ProfileDocuments = ({ user: user2  })=>{
             current: category
         }));
     };
-    const addDocument1 = ({ target  }, Form, doc)=>{
+    const addDocument1 = (category_id, Form, doc)=>{
         setShowModal(true);
         setActiveForm(export_default1.createElement(Form, {
             userInfo: userInfo,
             setShowModal: setShowModal,
             setActiveForm: setActiveForm,
             setUserInfo: setUserInfo,
-            categoryNode: target.parentElement.parentElement.parentElement,
+            categoryId: category_id,
             current: doc
+        }));
+    };
+    const citate = (Form, doc)=>{
+        setShowCitation(true);
+        setActiveCitation(export_default1.createElement(Form, {
+            setShowCitation: setShowCitation,
+            setActiveCitation: setActiveCitation,
+            doc: doc
         }));
     };
     const deleteOneDocument = async (id)=>{
@@ -25228,17 +27043,27 @@ const ProfileDocuments = ({ user: user2  })=>{
                 return FreeDocumentForm;
             case 'journalarticle':
                 return JournalArticleForm;
+            case 'book':
+                return BookForm;
+            case 'bookchapter':
+                return BookChapterForm;
+            case 'conferenceproceeding':
+                return ConferenceProceedingForm;
+            case 'thesis':
+                return ThesisForm;
         }
     };
     return export_default1.createElement("div", {
         className: 'profile-articles'
+    }, export_default1.createElement("div", {
+        className: "profile-articles__add-category"
     }, export_default1.createElement("a", {
         className: "btn-floating btn-medium waves-effect waves-light blue dropdown-trigger",
         href: "#",
         "data-target": "dropdownc"
     }, export_default1.createElement("i", {
         className: "material-icons"
-    }, "add")), export_default1.createElement("ul", {
+    }, "add"))), export_default1.createElement("ul", {
         id: "dropdownc",
         className: "dropdown-content"
     }, export_default1.createElement("li", null, export_default1.createElement("a", {
@@ -25246,7 +27071,7 @@ const ProfileDocuments = ({ user: user2  })=>{
     }, "Add category"))), export_default1.createElement("div", {
         className: 'profile-articles__categories'
     }, userInfo.user.categories.sort((a, b)=>orderList(a, b)
-    ).map(({ category_name , order  }, index)=>{
+    ).map(({ id: category_id , category_name , order  }, index)=>{
         return export_default1.createElement("div", {
             className: 'profile-articles__category',
             key: index,
@@ -25289,10 +27114,18 @@ const ProfileDocuments = ({ user: user2  })=>{
             id: `dropdown${index}`,
             className: "dropdown-content"
         }, export_default1.createElement("li", null, export_default1.createElement("a", {
-            onClick: (event)=>addDocument1(event, FreeDocumentForm, undefined)
+            onClick: ()=>addDocument1(category_id, FreeDocumentForm, undefined)
         }, "Add free document")), export_default1.createElement("li", null, export_default1.createElement("a", {
-            onClick: (event)=>addDocument1(event, JournalArticleForm, undefined)
-        }, "Add journal article")))), userInfo.documents.filter(({ category  })=>category === category_name
+            onClick: ()=>addDocument1(category_id, JournalArticleForm, undefined)
+        }, "Add journal article")), export_default1.createElement("li", null, export_default1.createElement("a", {
+            onClick: ()=>addDocument1(category_id, BookForm, undefined)
+        }, "Add book")), export_default1.createElement("li", null, export_default1.createElement("a", {
+            onClick: ()=>addDocument1(category_id, BookChapterForm, undefined)
+        }, "Add book chapter")), export_default1.createElement("li", null, export_default1.createElement("a", {
+            onClick: ()=>addDocument1(category_id, ConferenceProceedingForm, undefined)
+        }, "Add conference proceeding")), export_default1.createElement("li", null, export_default1.createElement("a", {
+            onClick: ()=>addDocument1(category_id, ThesisForm, undefined)
+        }, "Add thesis")))), userInfo.documents.filter(({ category  })=>category === category_id
         ).sort((a, b)=>orderList(a, b)
         ).map((doc, docIndex)=>{
             return export_default1.createElement("div", {
@@ -25301,6 +27134,8 @@ const ProfileDocuments = ({ user: user2  })=>{
             }, export_default1.createElement(DocumentRender, {
                 doc: doc
             }), export_default1.createElement("div", {
+                className: "profile-articles__buttons-group"
+            }, export_default1.createElement("div", {
                 className: "profile-articles__buttons-group1"
             }, export_default1.createElement("button", {
                 id: "delete-document",
@@ -25311,7 +27146,7 @@ const ProfileDocuments = ({ user: user2  })=>{
                 className: "material-icons right"
             }, "delete")), export_default1.createElement("button", {
                 id: "edit-document",
-                onClick: (event)=>addDocument1(event, editDocument(doc.type), doc)
+                onClick: ()=>addDocument1(category_id, editDocument(doc.type), doc)
                 ,
                 className: "btn waves-effect waves-light btn-floating blue btn-small"
             }, export_default1.createElement("i", {
@@ -25323,20 +27158,32 @@ const ProfileDocuments = ({ user: user2  })=>{
             }, export_default1.createElement("i", {
                 className: "material-icons",
                 onClick: ()=>changeDocumentOrder(-1, doc.category, doc.order)
-            }, "expand_less")), docIndex === userInfo.documents.filter(({ category  })=>category === category_name
+            }, "expand_less")), docIndex === 0 && userInfo.documents.filter(({ category  })=>category === category_id
+            ).length <= 1 || docIndex === userInfo.documents.filter(({ category  })=>category === category_id
             ).length - 1 ? undefined : export_default1.createElement("button", {
                 className: "profile-articles__order-button"
             }, export_default1.createElement("i", {
                 className: "material-icons",
                 onClick: ()=>changeDocumentOrder(1, doc.category, doc.order)
-            }, "expand_more")))), docIndex === userInfo.documents.filter(({ category  })=>category === category_name
+            }, "expand_more")))), doc.can_be_cited ? export_default1.createElement("div", {
+                className: "profile-articles__buttons-group2"
+            }, export_default1.createElement("a", {
+                className: "waves-effect waves-light blue btn",
+                onClick: ()=>citate(selectCitation(doc.type), doc)
+            }, export_default1.createElement("i", {
+                className: "material-icons right"
+            }, "book"), "Citate")) : undefined), docIndex === userInfo.documents.filter(({ category  })=>category === category_id
             ).length - 1 ? undefined : export_default1.createElement("div", {
                 className: "profile-articles__document-separator"
             }));
         }));
-    })), export_default1.createElement(Modal, {
-        show: showModal
-    }, activeForm));
+    })), export_default1.createElement(DocumentsModal, {
+        show: showModal,
+        activeForm: activeForm
+    }), export_default1.createElement(CitationModal, {
+        show: showCitation,
+        activeCitation: activeCitation
+    }));
 };
 const Profile = ({ user: user2  })=>{
     return export_default1.createElement("div", {

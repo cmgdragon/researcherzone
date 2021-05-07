@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
+import addDocument from '~/frontend/src/api/addDocument.js';
 import updateDocument from '~/frontend/src/api/updateDocument.js';
 import JournalArticle from '~/models/JournalArticle.ts';
 
-const JournalArticleForm = ({current, userInfo, setUserInfo, setShowModal, setActiveForm, categoryNode}) => {
+const JournalArticleForm = ({current, userInfo, setUserInfo, setShowModal, setActiveForm, categoryId}) => {
 
     const [authors, setAuthors] = useState([0]);
     const form = useRef();
@@ -19,22 +20,14 @@ const JournalArticleForm = ({current, userInfo, setUserInfo, setShowModal, setAc
         }
     }
 
-    const getArticleOrder = nodes => {
-        if (nodes.length === 0) return 1;
-        const orderList = [];
-        for (const node of nodes) {
-            orderList.push(node.firstElementChild.getAttribute('data-article-order'));
-        }
-        return Math.max(...orderList) + 1;
-    }
-
     const createDocumentObject = () => {     
         const document = new JournalArticle();
         //common properties
         if (!current) {
-            document.category = categoryNode.getAttribute('data-category');
+            document.category = userInfo.user.categories.find(({id}) => id === categoryId).id
             document.type = 'journalarticle';
-            document.order = getArticleOrder(categoryNode.querySelectorAll('.profile-articles__document'));
+            document.order = userInfo.documents.length ?
+            Math.max( ...userInfo.documents.filter(({category}) => category === categoryId).map(({order}) => order) )+1 : 1
         }
         document.can_be_cited = true;
         document.user = userInfo.user.email;
@@ -45,14 +38,14 @@ const JournalArticleForm = ({current, userInfo, setUserInfo, setShowModal, setAc
         }));
         document.title = form.current.querySelector(`#title`).value;
         document.journal = form.current.querySelector(`#journal`).value;
-        document.volume = +form.current.querySelector(`#volume`).value;
-        document.volume_number = +form.current.querySelector(`#volume_number`).value;
-        document.publisher = form.current.querySelector(`#publisher`).value;
-        document.abstract = form.current.querySelector(`#abstract`).value;
-        document.start_page = +form.current.querySelector(`#start_page`).value;
-        document.end_page = +form.current.querySelector(`#end_page`).value;
-        document.publication_year = +form.current.querySelector(`#publication_year`).value;
-        document.doi = form.current.querySelector(`#doi`).value;
+        document.volume = +form.current.querySelector(`#volume`).value ?? 0;
+        document.issue = +form.current.querySelector(`#issue`).value ?? 0;
+        document.publisher = form.current.querySelector(`#publisher`).value ?? '';
+        document.abstract = form.current.querySelector(`#abstract`).value ?? '';
+        document.start_page = +form.current.querySelector(`#start_page`).value ?? 0;
+        document.end_page = +form.current.querySelector(`#end_page`).value ?? 0;
+        document.publication_year = +form.current.querySelector(`#publication_year`).value ?? 0;
+        document.doi = form.current.querySelector(`#doi`).value ?? '';
         return document;
     }
 
@@ -65,7 +58,7 @@ const JournalArticleForm = ({current, userInfo, setUserInfo, setShowModal, setAc
             console.log({...current, ...newDocument});
             if (!current) {
                 console.log(newDocument)
-                //const response = await addDocument(newDocument);
+                const response = await addDocument(newDocument);
                 const { document_id } = await response.json();
                 console.log({ user: { ...userInfo.user }, documents: [...userInfo.documents, { ...newDocument, _id: document_id }] });
                 setUserInfo({ user: { ...userInfo.user }, documents: [...userInfo.documents, { ...newDocument, _id: document_id }] });
@@ -122,13 +115,13 @@ const JournalArticleForm = ({current, userInfo, setUserInfo, setShowModal, setAc
                             <label htmlFor={`aut-surname-${aut}`} className="active" onClick={({target}) => target.previousElementSibling.focus()}>Author surname</label>
                         </div>
                         { aut !== 0 ?
-                                <span onClick={() => removeAuthor(aut)}>Remove</span>
+                                <a onClick={() => removeAuthor(aut)} className="button-remove-modal waves-effect waves-light red btn-small"><i className="material-icons right">delete_forever</i></a>
                         : undefined }
                         </div>
                     )
                 })
                 }
-                <span onClick={addAuthor}>Add author</span>
+                <a onClick={addAuthor} className="button-add-modal waves-effect waves-light btn-small">Add author <i className="material-icons right">add</i></a>
                 </div>
                 <div className="input-field col s12">
                     <input id="journal" type="text" defaultValue={current?.journal} required />
@@ -146,8 +139,8 @@ const JournalArticleForm = ({current, userInfo, setUserInfo, setShowModal, setAc
                 </div>
 
                 <div className="input-field col s12">
-                    <input id="volume_number" type="number" defaultValue={current?.volume_number} required />
-                    <label htmlFor="volume_number" className="active" onClick={({target}) => target.previousElementSibling.focus()}>Volume number</label>
+                    <input id="issue" type="number" defaultValue={current?.issue} required />
+                    <label htmlFor="issue" className="active" onClick={({target}) => target.previousElementSibling.focus()}>Issue</label>
                 </div>
 
                 <div className="input-field col s12">
@@ -171,12 +164,12 @@ const JournalArticleForm = ({current, userInfo, setUserInfo, setShowModal, setAc
                 </div>
 
                 <div className="input-field col s12">
-                    <input id="doi" type="text" defaultValue={current?.doi} required />
+                    <input id="doi" type="text" defaultValue={current?.doi} />
                     <label htmlFor="doi" className="active" onClick={({target}) => target.previousElementSibling.focus()}>DOI / URI</label>
                 </div>
             </div>
 
-        <button id="send-form" onClick={send} className="btn waves-effect waves-light blue accent-4" type="submit" name="action"
+        <button id="send-form" className="btn waves-effect waves-light blue accent-4" type="submit" name="action"
         >Submit
             <i className="material-icons right">send</i>
         </button>

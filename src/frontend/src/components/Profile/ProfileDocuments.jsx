@@ -3,17 +3,24 @@ import NewCategoryForm from './DocumentForms/NewCategoryForm.jsx';
 import FreeDocumentForm from './DocumentForms/FreeDocumentForm.jsx';
 import BookForm from './DocumentForms/BookForm.jsx'
 import JournalArticleForm from './DocumentForms/JournalArticleForm.jsx';
+import BookChapterForm from './DocumentForms/BookChapterForm.jsx';
+import ConferenceProceedingForm from './DocumentForms/ConferenceProceedingForm.jsx';
+import ThesisForm from './DocumentForms/ThesisForm.jsx';
 import DocumentRender from './DocumentRenders/index.jsx';
 import deleteDocument from '~/frontend/src/api/deleteDocument.js';
 import deleteCategory from '~/frontend/src/api/deleteCategory.js';
 import updateUser from '~/frontend/src/api/updateUser.js';
 import updateDocument from '~/frontend/src/api/updateDocument.js';
-import Modal from '../Modal.jsx';
+import DocumentsModal from '../DocumentsModal.jsx';
+import CitationModal from './Citations/CitationModal.jsx';
+import selectCitation from './Citations/selectCitation.js';
 
 const ProfileDocuments = ({user}) => {
 
     const [userInfo, setUserInfo] = useState(user);
     const [showModal, setShowModal] = useState(false);
+    const [showCitation, setShowCitation] = useState(false);
+    const [activeCitation, setActiveCitation] = useState(undefined);
     const [activeForm, setActiveForm] = useState(undefined);
 
     useEffect(() => {
@@ -32,15 +39,24 @@ const ProfileDocuments = ({user}) => {
         />);
     }
 
-    const addDocument = ({target}, Form, doc) => {
+    const addDocument = (category_id, Form, doc) => {
         setShowModal(true);
         setActiveForm(<Form
             userInfo={userInfo}
             setShowModal={setShowModal}
             setActiveForm={setActiveForm}
             setUserInfo={setUserInfo}
-            categoryNode={target.parentElement.parentElement.parentElement}
+            categoryId={category_id}
             current={doc}
+        />);
+    }
+
+    const citate = (Form, doc) => {
+        setShowCitation(true);
+        setActiveCitation(<Form
+            setShowCitation={setShowCitation}
+            setActiveCitation={setActiveCitation}
+            doc={doc}
         />);
     }
 
@@ -136,14 +152,24 @@ const ProfileDocuments = ({user}) => {
             case 'freedocument':
                 return FreeDocumentForm;
             case 'journalarticle':
-                return JournalArticleForm
+                return JournalArticleForm;
+            case 'book':
+                return BookForm;
+            case 'bookchapter':
+                return BookChapterForm;
+            case 'conferenceproceeding':
+                return ConferenceProceedingForm;
+            case 'thesis':
+                return ThesisForm;
         }
     }
 
     return (
         <div className={'profile-articles'}>
 
-            <a className='btn-floating btn-medium waves-effect waves-light blue dropdown-trigger' href='#' data-target='dropdownc'><i className="material-icons">add</i></a>
+            <div className="profile-articles__add-category">
+                <a className='btn-floating btn-medium waves-effect waves-light blue dropdown-trigger' href='#' data-target='dropdownc'><i className="material-icons">add</i></a>
+            </div>
 
             <ul id='dropdownc' className='dropdown-content'>
                 <li><a onClick={() => addEditCategory('')}>Add category</a></li>
@@ -153,7 +179,7 @@ const ProfileDocuments = ({user}) => {
         <div className={'profile-articles__categories'}>
         {
             userInfo.user.categories.sort((a, b) => orderList(a, b))
-            .map(({category_name, order}, index) => {
+            .map(({id: category_id, category_name, order}, index) => {
              return (
                  <div className={'profile-articles__category'} key={index} data-category={category_name} data-order={`order-${order}`}>
                      <div className="profile-articles__category-header">
@@ -182,43 +208,56 @@ const ProfileDocuments = ({user}) => {
                         </div>
 
                             <ul id={`dropdown${index}`} className='dropdown-content'>
-                                <li><a onClick={event => addDocument(event, FreeDocumentForm, undefined)}>Add free document</a></li>
-                                <li><a onClick={event => addDocument(event, JournalArticleForm, undefined)}>Add journal article</a></li>
+                                <li><a onClick={() => addDocument(category_id, FreeDocumentForm, undefined)}>Add free document</a></li>
+                                <li><a onClick={() => addDocument(category_id, JournalArticleForm, undefined)}>Add journal article</a></li>
+                                <li><a onClick={() => addDocument(category_id, BookForm, undefined)}>Add book</a></li>
+                                <li><a onClick={() => addDocument(category_id, BookChapterForm, undefined)}>Add book chapter</a></li>
+                                <li><a onClick={() => addDocument(category_id, ConferenceProceedingForm, undefined)}>Add conference proceeding</a></li>
+                                <li><a onClick={() => addDocument(category_id, ThesisForm, undefined)}>Add thesis</a></li>
                             </ul>
                     </div>
                     {
-                        userInfo.documents.filter(({category}) => category === category_name)
+                        userInfo.documents.filter(({category}) => category === category_id)
                         .sort((a, b) => orderList(a, b))
                         .map((doc, docIndex) => {
                             return (
                                 <div className={'profile-articles__category-document'} key={JSON.stringify(doc)}>
                                     <DocumentRender doc={doc} />
-                                    <div className="profile-articles__buttons-group1">
-                                        <button id="delete-document" onClick={() => deleteOneDocument(doc._id)} className="btn waves-effect waves-light btn-floating red btn-small"
-                                        >
-                                            <i className="material-icons right">delete</i>
-                                        </button>
-                                        <button id="edit-document" onClick={event => addDocument(event, editDocument(doc.type), doc)} className="btn waves-effect waves-light btn-floating blue btn-small"
-                                        >
-                                            <i className="material-icons right">edit</i>
-                                        </button>
+                                    <div className="profile-articles__buttons-group">
+                                        <div className="profile-articles__buttons-group1">
+                                            <button id="delete-document" onClick={() => deleteOneDocument(doc._id)} className="btn waves-effect waves-light btn-floating red btn-small"
+                                            >
+                                                <i className="material-icons right">delete</i>
+                                            </button>
+                                            <button id="edit-document" onClick={() => addDocument(category_id, editDocument(doc.type), doc)} className="btn waves-effect waves-light btn-floating blue btn-small"
+                                            >
+                                                <i className="material-icons right">edit</i>
+                                            </button>
 
-                                        <div className="profile-articles__order-controls">
-                                            { docIndex === 0 ? undefined :
-                                            <button className="profile-articles__order-button">
-                                                <i className="material-icons" onClick={() => changeDocumentOrder(-1, doc.category, doc.order)}>expand_less</i>
-                                            </button>
-                                            }
-                                            {docIndex === userInfo.documents.filter(({category}) => category === category_name).length-1 ? undefined :
-                                            <button className="profile-articles__order-button">
-                                                <i className="material-icons" onClick={() => changeDocumentOrder(1, doc.category, doc.order)}>expand_more</i>
-                                            </button>
-                                            }
+                                            <div className="profile-articles__order-controls">
+                                                { docIndex === 0 ? undefined :
+                                                <button className="profile-articles__order-button">
+                                                    <i className="material-icons" onClick={() => changeDocumentOrder(-1, doc.category, doc.order)}>expand_less</i>
+                                                </button>
+                                                }
+                                                {docIndex === 0 && userInfo.documents.filter(({category}) => category === category_id).length <= 1
+                                                || docIndex === userInfo.documents.filter(({category}) => category === category_id).length-1 ? undefined :
+                                                <button className="profile-articles__order-button">
+                                                    <i className="material-icons" onClick={() => changeDocumentOrder(1, doc.category, doc.order)}>expand_more</i>
+                                                </button>
+                                                }
+                                            </div>
+
                                         </div>
-
+                                        { doc.can_be_cited ?
+                                        <div className="profile-articles__buttons-group2">
+                                            <a className="waves-effect waves-light blue btn" onClick={() => citate(selectCitation(doc.type), doc)}>
+                                                <i className="material-icons right">book</i>Citate
+                                            </a>
+                                        </div>
+                                        : undefined}
                                     </div>
-
-                                    {docIndex === userInfo.documents.filter(({category}) => category === category_name).length-1 ? undefined :
+                                    {docIndex === userInfo.documents.filter(({category}) => category === category_id).length-1 ? undefined :
                                         <div className="profile-articles__document-separator"></div>
                                     }
 
@@ -232,9 +271,8 @@ const ProfileDocuments = ({user}) => {
             })
         }
         </div>
-        <Modal show={showModal}>
-            {activeForm}
-        </Modal>
+        <DocumentsModal show={showModal} activeForm={activeForm} />
+        <CitationModal show={showCitation} activeCitation={activeCitation} />
         </div>
     )
 }

@@ -2,7 +2,7 @@ interface IProfileDocument {
     _id?: string;
     type: string;
     can_be_cited: boolean;
-    category: string;
+    category: number;
     order: number;
     user: string;
 }
