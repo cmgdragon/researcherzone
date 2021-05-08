@@ -1,6 +1,6 @@
-const deleteDocument = async document_id => fetch('/deletedocument', {
+const deleteDocument = async (document_id, user) => fetch('/deletedocument', {
     method: 'delete',
-    body: document_id
+    body: JSON.stringify( { document_id, email: user.email } )
 });
 
 export default deleteDocument;

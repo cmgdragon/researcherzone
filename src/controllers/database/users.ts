@@ -24,17 +24,4 @@ const extractFields = (document: Object) => {
 export const updateUser = async (email: any, user: User): Promise<any> => await db_users.updateOne(
     { email },
     { $set: extractFields(user) }
-    /*{ $set: {
-        name: user.name,
-        surname: user.surname,
-        email: user.email,
-        profile_slot_1: user.profile_slot_1,
-        profile_slot_2: user.profile_slot_2,
-        categories: [ ...user.categories ],
-        image: user.image,
-        optional_image: user.optional_image,
-        people_following: [ ...user.people_followers ],
-        people_followers: [ ...user.people_followers ],
-        social_media: [ ...user.social_media ]
-    } }   */ 
 );

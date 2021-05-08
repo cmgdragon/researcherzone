@@ -11,6 +11,7 @@ import login from '~/controllers/authentication/login.ts';
 import * as users_api from '~/controllers/api/users.ts';
 import * as documents_api from '~/controllers/api/documents.ts';
 import register from '~/controllers/authentication/register.ts';
+import logout from '~/controllers/authentication/logout.ts';
 import getTokenInfo from "~/controllers/authentication/getTokenInfo.ts";
 
 const router = new Router();
@@ -20,21 +21,23 @@ const toStringApp = ReactDOMServer.renderToString(<App />);
 
 router.get('/', async (context: Context) => {
     context.response.body = html.replace(
-        '<main id="app" class="container"></main>',
-        `<main id="app" class="container">${toStringApp}</main>`
+        '<main id="app"></main>',
+        `<main id="app">${toStringApp}</main>`
     );
 })
 
-router.get('/user/:id', createGuestToken, async (context) => {
+router.get('/user/:id', async (context) => {
     context.response.body = html.replace(
-        '<main id="app" class="container"></main>',
-        `<main id="app" class="container">${toStringApp}</main>`
+        '<main id="app"></main>',
+        `<main id="app">${toStringApp}</main>`
     );
 })
 
 .post('/login', login)
 
 .post('/register', register)
+
+.get('/logout', logout)
 
 .put('/updateuser', verifyUserCall, users_api.update)
 

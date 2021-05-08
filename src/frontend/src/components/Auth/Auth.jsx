@@ -11,10 +11,10 @@ const Auth = () => {
     return (
             <>
             {
-                router == 'login' ?
-                <><Login /> <span onClick={() => changeRoute('register')}>Register</span> </>
+                router === 'login' || router === 'newuser' ?
+                <><Login registered={router === 'newuser' ? true : false} /> <div className="container">Not yet a member? <a href="#" className="link" onClick={() => changeRoute('register')}>Register</a></div> </>
                 :
-                <><Register changeRoute={changeRoute} /> <span onClick={() => changeRoute('login')}>Log in</span></>
+                <><Register changeRoute={changeRoute} /> <div className="container">Already a member? <a href="#" className="link" onClick={() => changeRoute('login')}>Log in</a ></div></>
             }
             </>
     )

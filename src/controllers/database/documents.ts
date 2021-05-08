@@ -2,9 +2,9 @@ import { db_documents } from '~/database_dev.ts';
 
 export const addNewDocument = async (document: any): Promise<any> => await db_documents.insertOne(document);
 
-export const deleteDocument = async (_id: any): Promise<any> => await db_documents.deleteOne({ _id });
+export const deleteDocument = async (_id: any, user: any): Promise<any> => await db_documents.deleteOne({ _id, user });
 
-export const deleteCategory = async (category: any): Promise<any> => await db_documents.deleteMany({ category });
+export const deleteCategory = async (category: any, user: any): Promise<any> => await db_documents.deleteMany({ category, user });
 
 export const findDocument = async (_id: string): Promise<any> => await db_documents.findOne({ _id });
 
@@ -24,7 +24,7 @@ const extractFields = (document: Object) => {
     return extracted;
 }
 
-export const updateDocument = async (_id: any, document: any): Promise<any> => await db_documents.updateOne(
-    { _id },
+export const updateDocument = async (_id: any, document: any, user: any): Promise<any> => await db_documents.updateOne(
+    { _id, user },
         { $set: extractFields(document) }    
 );

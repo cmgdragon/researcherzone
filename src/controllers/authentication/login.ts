@@ -30,7 +30,7 @@ const login = async ({request, response}: Context) => {
     }
     
     //const token = await create(header, payload, Deno.env.get('SECRET'))
-    const token = await create(header, payload, user.pwd)
+    const token = await create(header, payload, user.pwd+user.email)
 
     response.headers.set('Set-Cookie', cookie.serialize('token', token, {
       httpOnly: true,

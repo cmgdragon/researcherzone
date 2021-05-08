@@ -4,22 +4,18 @@ import cookie from 'cookie';
 
 const verifyToken = async (context, next: any) => {
 
-    const { token } = cookie.parse(context.request.headers.get('cookie') || '');
-
-    if (!token) {
-        throw new Error('No token found');
-    }
-
-    if (token.split('.').length !== 3) {
-        throw new Error('Invalid token syntax');
-    }
+    if( context.request.headers.get('pathname').includes('/user') ) return await next();
 
     try {
 
-        const [ header, payload, signature ] : any = decode(token);
+        const { token } = cookie.parse(context.request.headers.get('cookie') || '');
+
+        if (!token) {
+            throw new Error('No token found');
+        }
     
-        if (payload.iss === 'guest' && context.request.headers.get('pathname') === '/') {
-            throw new Error('Not logged in');
+        if (token.split('.').length !== 3) {
+            throw new Error('Invalid token syntax');
         }
 
     } catch ({message}) {

@@ -66,7 +66,7 @@ const Register = ({changeRoute}) => {
         const response = await request.json();
         switch(response.status) {
           case 200:
-            changeRoute('login');
+            changeRoute('newuser');
           break;
           case 409:
             setError({...errors, form: response.message})
@@ -74,8 +74,8 @@ const Register = ({changeRoute}) => {
     }
 
     return (
-        <div className="row">
-        <span className="red-text">{errors.form}</span>
+        <div className="container row">
+        <pre className="red-text">{errors.form}</pre>
         <form className="col s12" onSubmit={register}>
           <div className="row">
           <div className="input-field col s6">

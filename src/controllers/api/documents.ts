@@ -5,8 +5,8 @@ import { updateUser } from '~/controllers/database/users.ts';
 
 const addDocument = async ({request, response}: Context) => {
 
-    const document = await request.body().value;
-    const result = await addNewDocument(document);
+    const { document, email } = await request.body().value;
+    const result = await addNewDocument({document, user: email});
     console.dir( result.toString() );
     //Bson.ObjectId.toString()
   try {
@@ -19,8 +19,8 @@ const addDocument = async ({request, response}: Context) => {
 
 const removeDocument = async ({request, response}: Context) => {
 
-  const id = await request.body().value;
-  const result = await deleteDocument(new Bson.ObjectID(id));
+  const {id, email} = await request.body().value;
+  const result = await deleteDocument(new Bson.ObjectID(id), email);
   console.log( result, id );
 
   try {
@@ -34,7 +34,7 @@ const removeDocument = async ({request, response}: Context) => {
 const removeCategory = async ({request, response}: Context) => {
 
   const { category, user } = await request.body().value;
-  const result = await deleteCategory(category);
+  const result = await deleteCategory(category, user.email);
   const { matchedCount, modifiedCount, upsertedId } = await updateUser(user.email, user);
 
   console.log( result, category, " | " , matchedCount, modifiedCount, upsertedId );
@@ -49,8 +49,8 @@ const removeCategory = async ({request, response}: Context) => {
 
 const update_document = async ({request, response}: Context) => {
 
-  let document = await request.body().value;
-  const result = await updateDocument(new Bson.ObjectID(document._id), document);
+  const { document, email } = await request.body().value;
+  const result = await updateDocument(new Bson.ObjectID(document._id), document, email);
 
   /*document = {
     ...document, _id: new Bson.ObjectID(document._id)

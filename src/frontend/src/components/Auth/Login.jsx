@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const Login = () => {
+const Login = ({registered}) => {
 
     const [error, setError] = useState('');
 
@@ -28,9 +28,10 @@ const Login = () => {
     }
 
     return (
-        <div className="row">
+        <div className="container row">
         
         <form className="col s12" onSubmit={login}>
+        {registered ? <pre className="green-text">Registration successful! Please log in</pre> : undefined}
         <pre className="red-text">{error}</pre>
           <div className="row">
             <div className="input-field col s12">

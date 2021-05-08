@@ -58,7 +58,7 @@ const ProfileDocuments = ({user}) => {
     const deleteOneDocument = async id => {
         if (confirm('Delete this document?')) {
             try {
-                await deleteDocument(id);
+                await deleteDocument(id, userInfo.user);
                 const updatedDocuments = userInfo.documents.filter(({_id}) => _id !== id);
                 setUserInfo({ user: userInfo.user, documents: updatedDocuments });
             } catch (error) {
@@ -143,7 +143,7 @@ const ProfileDocuments = ({user}) => {
     }
 
     return (
-        <div className={'profile-articles'}>
+        <div className={'profile-articles container'}>
 
             { !user.isGuest ? <>
                 <div className="profile-articles__add-category">
@@ -185,7 +185,7 @@ const ProfileDocuments = ({user}) => {
                                     <i className="material-icons right">delete</i>
                                 </button>
                             </div>
-                        </> : 'undefined'
+                        </> : undefined
                         }
                         </div>
 
@@ -206,6 +206,7 @@ const ProfileDocuments = ({user}) => {
                                 <div className={'profile-articles__category-document'} key={JSON.stringify(doc)}>
                                     <DocumentRender doc={doc} />
                                     <div className="profile-articles__buttons-group">
+                                        { !user.isGuest ?
                                         <div className="profile-articles__buttons-group1">
                                             <button id="delete-document" onClick={() => deleteOneDocument(doc._id)} className="btn waves-effect waves-light btn-floating red btn-small"
                                             >
@@ -229,8 +230,8 @@ const ProfileDocuments = ({user}) => {
                                                 </button>
                                                 }
                                             </div>
-
                                         </div>
+                                        : undefined }
                                         { doc.can_be_cited ?
                                         <div className="profile-articles__buttons-group2">
                                             <a className="waves-effect waves-light blue btn" onClick={() => citate(selectCitation(doc.type), doc)}>

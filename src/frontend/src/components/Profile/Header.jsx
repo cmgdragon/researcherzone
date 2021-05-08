@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import updateUser from '~/frontend/src/api/updateUser.js';
 import ImageHelper from '~/frontend/src/util/imageCrompressor.js';
 import SocialMediaModal from '../SocialMediaModal.jsx';
+import logout from '~/frontend/src/api/logout.js';
 
 const Header = ({user}) => {
 
@@ -34,12 +35,14 @@ const Header = ({user}) => {
         }
     }
     const removeOptionalImage = async () => {
-        try {
-            const updatedUser = { ...userInfo, optional_image: '' };
-            await updateUser(updatedUser);
-            setUserInfo(updatedUser);
-        } catch (error) {
-            console.error(error);
+        if (confirm('Remove optional image?')) {
+            try {
+                const updatedUser = { ...userInfo, optional_image: '' };
+                await updateUser(updatedUser);
+                setUserInfo(updatedUser);
+            } catch (error) {
+                console.error(error);
+            }
         }
     }
     const editField = event => {
@@ -84,26 +87,39 @@ const Header = ({user}) => {
 
     return (
         <>
-        <div className={'profile-header row'}>
+        { !user.isGuest ?
+            <div className="profile-logout waves-effect waves-light red btn-small" onClick={logout}><i className="material-icons left">exit_to_app</i>Logout</div>
+            : <div className="profile-logout waves-effect waves-light blue btn-small" onClick={() => window.location.href = '/'}><i className="material-icons left">login</i>Login</div>
+        }
+        <div className="profile-container container">
+        <div className={'profile-header'}>
             <input id="image" type="file" name="name" style={{display: 'none'}} accept="image/png, image/jpeg" onChange={changeImage} />
-            <img src={userInfo.image} className={'col s4 profile-header__image responsive-img'} onClick={selectImage}  />
-            <div className={'col s8 row profile-header__textgroup'}>
-                <div className={'col s12'}>
-                    <span id="name" className={'col s6 h3 profile-header__name blue-text lighten-2'} onClick={editField}>{userInfo.name}</span>
-                    <span id="surname" className={'col s6 h3 profile-header__name blue-text lighten-2'} onClick={editField}>{userInfo.surname}</span>
+            <img src={userInfo.image !== '' ? userInfo.image : `${window.location.origin}/img/default.png`} className={'profile-header__image'} onClick={selectImage}  />
+            <div className={'profile-header__textgroup'}>
+                <div className={'profile-header__name-group'}>
+                    <span id="name" className={'h3 profile-header__name blue-text lighten-2'} onClick={editField}>{userInfo.name}</span>
+                    <span id="surname" className={'h3 profile-header__name blue-text lighten-2'} onClick={editField}>{userInfo.surname}</span>
                 </div>
-                <input id="optional_image" type="file" name="name" style={{display: 'none'}} accept="image/png, image/jpeg" onChange={changeImage} />
-                <div className={'profile-header__optional-image col'}>
-                    <img id="optional_image" src={userInfo.optional_image} className={'profile-header__image2 responsive-img'} onClick={selectImage} />
-                    {!user.isGuest ? <i className="material-icons right">close</i> : undefined}
-                </div>
-                <div className={'profile-header__slots col s12'}>
-                    <span id="profile_slot_1" className={'col s8 profile-header__slot'} onClick={editField}>{userInfo.profile_slot_1}</span>
-                    <span id="profile_slot_2" className={'col s8 profile-header__slot'} onClick={editField}>{userInfo.profile_slot_2}</span>
+                <div className="profile-header__slotsgroup">
+                    <div className={'profile-header__optional-image'}>
+                        { user.isGuest && userInfo.optional_image !== '' ? undefined : 
+                        <>
+                            <input id="optional_image" type="file" name="name" style={{display: 'none'}} accept="image/png, image/jpeg" onChange={changeImage} />
+                            <img id="optional_image" src={userInfo.optional_image !== '' ? userInfo.optional_image : `${window.location.origin}/img/default.png`} className={'profile-header__image2'} onClick={selectImage} /> </>
+                        
+                        }
+                        {!user.isGuest || userInfo.optional_image === '' ? <i onClick={removeOptionalImage} className="material-icons right">close</i> : undefined}
+                    </div>
+                    <div className={'profile-header__slots'}>
+                        <span id="profile_slot_1" className={'profile-header__slot'} onClick={editField}>{userInfo.profile_slot_1}</span>
+                        <span id="profile_slot_2" className={'profile-header__slot'} onClick={editField}>{userInfo.profile_slot_2}</span>
+                    </div>
                 </div>
             </div>
         </div>
-        <div className="profile__social">
+        </div>
+        <div className="profile__social container">
+            <div className="profile__social-links">
                 {
                     userInfo.social_media.map(({name, url}, index) => {
                         const social_name = name.replace(/\s/g, '').replace(/[^\w\s]/gi, '').toLowerCase();
@@ -131,6 +147,8 @@ const Header = ({user}) => {
                     : undefined
                 }
             </div>
+            <span>Share: <input readOnly type="text" className="profile__share-link" value={`${window.location.origin}/user/${userInfo._id}`} /> </span>
+        </div>
         <SocialMediaModal show={showModal}>
             <SocialMediaForm userInfo={userInfo} setUserInfo={setUserInfo} setShowModal={setShowModal} />
         </SocialMediaModal>
