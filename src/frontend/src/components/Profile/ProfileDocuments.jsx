@@ -150,7 +150,7 @@ const ProfileDocuments = ({user}) => {
                     <a className='btn-floating btn-medium waves-effect waves-light blue dropdown-trigger' href='#' data-target='dropdownc'><i className="material-icons">add</i></a>
                 </div>
                 <ul id='dropdownc' className='dropdown-content'>
-                    <li><a onClick={() => addEditCategory('')}>Add category</a></li>
+                    <li><a onClick={() => addEditCategory(undefined)}>Add category</a></li>
                 </ul>
                 </> : undefined
             }
@@ -179,24 +179,29 @@ const ProfileDocuments = ({user}) => {
                                     </button>
                                 }
                             </div>
-                            <div className="profile-articles__buttons-group2">
-                                <button className='btn-floating btn-small waves-effect waves-light blue dropdown-trigger' href='#' data-target={`dropdown${index}`}><i className="material-icons">add</i></button>
-                                <button id="delete-category" onClick={() => deleteCategoryDocuments(category_name)} className="btn waves-effect waves-light btn-floating red btn-small">
-                                    <i className="material-icons right">delete</i>
-                                </button>
-                            </div>
                         </> : undefined
                         }
                         </div>
+                        { !user.isGuest ? <>  
+                        <div className="profile-articles__buttons-group2">
+                            <button className='btn-floating btn-small waves-effect waves-light blue dropdown-trigger' href='#' data-target={`dropdown${index}`}><i className="material-icons">add</i></button>
+                            <button id="delete-category" onClick={() => deleteCategoryDocuments(category_name)} className="btn waves-effect waves-light btn-floating red btn-small">
+                                <i className="material-icons right">delete</i>
+                            </button>
+                            <button id="edit-document" onClick={() => addEditCategory({id: category_id, category_name, order})} className="profile-articles__edit-category btn waves-effect waves-light btn-floating blue btn-small">
+                                <i className="material-icons right">edit</i>
+                            </button>
+                        </div> </>
+                        : undefined }
 
-                            <ul id={`dropdown${index}`} className='dropdown-content'>
-                                <li><a onClick={() => addDocument(category_id, selectForm('freedocument'), undefined)}>Add free document</a></li>
-                                <li><a onClick={() => addDocument(category_id, selectForm('journalarticle'), undefined)}>Add journal article</a></li>
-                                <li><a onClick={() => addDocument(category_id, selectForm('book'), undefined)}>Add book</a></li>
-                                <li><a onClick={() => addDocument(category_id, selectForm('bookchapter'), undefined)}>Add book chapter</a></li>
-                                <li><a onClick={() => addDocument(category_id, selectForm('conferenceproceeding'), undefined)}>Add conference proceeding</a></li>
-                                <li><a onClick={() => addDocument(category_id, selectForm('thesis'), undefined)}>Add thesis</a></li>
-                            </ul>
+                        <ul id={`dropdown${index}`} className='dropdown-content'>
+                            <li><a onClick={() => addDocument(category_id, selectForm('freedocument'), undefined)}>Add free document</a></li>
+                            <li><a onClick={() => addDocument(category_id, selectForm('journalarticle'), undefined)}>Add journal article</a></li>
+                            <li><a onClick={() => addDocument(category_id, selectForm('book'), undefined)}>Add book</a></li>
+                            <li><a onClick={() => addDocument(category_id, selectForm('bookchapter'), undefined)}>Add book chapter</a></li>
+                            <li><a onClick={() => addDocument(category_id, selectForm('conferenceproceeding'), undefined)}>Add conference proceeding</a></li>
+                            <li><a onClick={() => addDocument(category_id, selectForm('thesis'), undefined)}>Add thesis</a></li>
+                        </ul>
                     </div>
                     {
                         userInfo.documents.filter(({category}) => category === category_id)
@@ -231,7 +236,7 @@ const ProfileDocuments = ({user}) => {
                                                 }
                                             </div>
                                         </div>
-                                        : undefined }
+                                        : <span></span> }
                                         { doc.can_be_cited ?
                                         <div className="profile-articles__buttons-group2">
                                             <a className="waves-effect waves-light blue btn" onClick={() => citate(selectCitation(doc.type), doc)}>

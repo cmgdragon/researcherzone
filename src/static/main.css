@@ -29,7 +29,7 @@ p { word-break: break-word; }
 
 .profile-logout {
     position: absolute;
-    right: 15vw;
+    right: 5vw;
     top: 2%;
 }
 
@@ -50,11 +50,10 @@ p { word-break: break-word; }
 .profile-header__name-group {
     display: flex;
     flex-flow: wrap;
-    padding: .5rem 0;
 }
 
 .profile-header__name {
-    margin-left: 1.7rem;
+    margin-right: 1.7rem;
 }
 
 .profile-header__slotsgroup {
@@ -65,6 +64,16 @@ p { word-break: break-word; }
 .profile-header__slots {
     display: flex;
     flex-direction: column;
+}
+
+.profile-header__slot {
+    font-size: 30px;
+}
+
+.profile-header__slot.empty, .profile-header__name.empty {
+    min-width: 50px;
+    min-height: 1.5em;
+    background-color: rgba(95, 93, 93, 0.192);
 }
 
 .profile-articles__add-category { 
@@ -92,7 +101,7 @@ p { word-break: break-word; }
 .profile-header__image {
     max-width: 15rem !important;
     width: 100%;
-    padding-right: .5rem;
+    margin-right: 1.7rem;
     height: auto;
 }
 
@@ -128,13 +137,9 @@ p { word-break: break-word; }
 
 .profile-header__name {
     font-size: 35px;
-    margin-bottom: 1rem;
+    margin-bottom: .5rem;
     font-weight: bold;
     width: auto !important;
-}
-
-.profile-header__slot {
-    font-size: 30px;
 }
 
 .profile__social {
@@ -150,8 +155,8 @@ p { word-break: break-word; }
 }
 
 .profile__share-link:hover {
-    cursor: pointer;
-    opacity: .7;
+    /* cursor: pointer;
+    opacity: .7; */
 }
 
 .profile__social-links {
@@ -177,7 +182,9 @@ p { word-break: break-word; }
 .profile__social-link:hover { opacity: .7; }
 .profile__social-link > i { margin: 0; }
 
-.updating-field  { background-color: rgba(226, 51, 51, 0.411); }
+.updating-field:focus, .profile-header__slot.empty:focus, .profile-header__name.empty:focus { 
+    background-color: rgba(226, 51, 51, 0.411);
+}
 
 .updated-field  {
 	-webkit-animation: updated-field  2s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
@@ -283,6 +290,7 @@ body.show-modal-body:before {
 .profile-articles__category-header {
     display: flex;
     align-items: center;
+    position: relative;
     justify-content: space-between;
     padding: .5rem;
     margin: 3.5rem 0 1rem 0;
@@ -313,6 +321,13 @@ body.show-modal-body:before {
 .profile-articles__buttons-group2 > button,
 .profile-articles__buttons-group1 > button
 { margin-left: .3rem; }
+
+.profile-articles__edit-category {
+    position: absolute;
+    left: 0;
+    left: -17px;
+    top: -15px;
+}
 
 .profile-articles__order-controls {
     display: flex;

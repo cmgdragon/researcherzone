@@ -97,22 +97,22 @@ const Header = ({user}) => {
             <img src={userInfo.image !== '' ? userInfo.image : `${window.location.origin}/img/default.png`} className={'profile-header__image'} onClick={selectImage}  />
             <div className={'profile-header__textgroup'}>
                 <div className={'profile-header__name-group'}>
-                    <span id="name" className={'h3 profile-header__name blue-text lighten-2'} onClick={editField}>{userInfo.name}</span>
-                    <span id="surname" className={'h3 profile-header__name blue-text lighten-2'} onClick={editField}>{userInfo.surname}</span>
+                    <span id="name" className={`h3 profile-header__name blue-text lighten-2  ${!user.isGuest && userInfo.name === '' ? 'empty' : ''}`} onClick={editField}>{userInfo.name}</span>
+                    <span id="surname" className={`h3 profile-header__name blue-text lighten-2  ${!user.isGuest && userInfo.surname === '' ? 'empty' : ''}`} onClick={editField}>{userInfo.surname}</span>
                 </div>
                 <div className="profile-header__slotsgroup">
                     <div className={'profile-header__optional-image'}>
-                        { user.isGuest && userInfo.optional_image !== '' ? undefined : 
+                        { user.isGuest && userInfo.optional_image === '' ? undefined : 
                         <>
                             <input id="optional_image" type="file" name="name" style={{display: 'none'}} accept="image/png, image/jpeg" onChange={changeImage} />
-                            <img id="optional_image" src={userInfo.optional_image !== '' ? userInfo.optional_image : `${window.location.origin}/img/default.png`} className={'profile-header__image2'} onClick={selectImage} /> </>
+                            <img id="optional_image" src={userInfo.optional_image && userInfo.optional_image !== '' ? userInfo.optional_image : `${window.location.origin}/img/default.png`} className={'profile-header__image2'} onClick={selectImage} /> </>
                         
                         }
-                        {!user.isGuest || userInfo.optional_image === '' ? <i onClick={removeOptionalImage} className="material-icons right">close</i> : undefined}
+                        {!user.isGuest && userInfo.optional_image && userInfo.optional_image !== '' ? <i onClick={removeOptionalImage} className="material-icons right">close</i> : undefined}
                     </div>
                     <div className={'profile-header__slots'}>
-                        <span id="profile_slot_1" className={'profile-header__slot'} onClick={editField}>{userInfo.profile_slot_1}</span>
-                        <span id="profile_slot_2" className={'profile-header__slot'} onClick={editField}>{userInfo.profile_slot_2}</span>
+                        <span id="profile_slot_1" className={`profile-header__slot ${!user.isGuest && userInfo.profile_slot_1 === '' ? 'empty' : ''}`} onClick={editField}>{userInfo.profile_slot_1}</span>
+                        <span id="profile_slot_2" className={`profile-header__slot ${!user.isGuest && userInfo.profile_slot_2 === '' ? 'empty' : ''}`} onClick={editField}>{userInfo.profile_slot_2}</span>
                     </div>
                 </div>
             </div>

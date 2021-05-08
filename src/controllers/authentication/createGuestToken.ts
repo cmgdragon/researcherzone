@@ -33,7 +33,7 @@ const createGuestToken = async (context, next) => {
           context.response.headers.set('Set-Cookie', cookie.serialize('guesttoken', guesttoken, {
             httpOnly: true,
             path: '/user',
-            maxAge: 60 * 60 //* 24 * 7 // 1 week
+            maxAge: 60 * 60 // 1h
           }))
 
           await next();

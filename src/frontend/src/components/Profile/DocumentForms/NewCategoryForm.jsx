@@ -7,7 +7,8 @@ const NewCategoryForm = ({current, userInfo, setUserInfo, setShowModal, setActiv
     useEffect(() => {
         document.body.classList.add('show-modal-body');
         document.body.addEventListener('click', closeModal, false);
-        if (current !== '') form.current.getElementsByTagName('input')[0].value = current;
+        console.log(current)
+        if (current) form.current.getElementsByTagName('input')[0].value = current.category_name;
 
     }, []);
 
@@ -23,19 +24,30 @@ const NewCategoryForm = ({current, userInfo, setUserInfo, setShowModal, setActiv
 
         const category_name = [...event.target].find(input => input.id === 'category_name').value;
         try {
-            const updatedUser = { 
-                ...userInfo.user,
-                categories: [...userInfo.user.categories, {
-                    category_name: category_name,
-                    order: document.querySelectorAll('.profile-articles__category').length ?
-                    document.querySelectorAll('.profile-articles__category').length : 1,
-                    id: document.querySelectorAll('.profile-articles__category').length ?
-                    Math.max( ...userInfo.user.categories.map(({id}) => id) )+1 : 1
-                }] };
 
-            await updateUser(updatedUser);
-            setUserInfo({ user: updatedUser, documents: userInfo.documents });
-            closeModal();
+          let updatedUser;
+          if (!current) {
+            updatedUser = { 
+              ...userInfo.user,
+              categories: [...userInfo.user.categories, {
+                  category_name: category_name,
+                  order: document.querySelectorAll('.profile-articles__category').length ?
+                  document.querySelectorAll('.profile-articles__category').length : 1,
+                  id: document.querySelectorAll('.profile-articles__category').length ?
+                  Math.max( ...userInfo.user.categories.map(({id}) => id) )+1 : 1
+              }]
+            };
+          } else {
+            updatedUser = {
+              ...userInfo.user,
+              categories: [...userInfo.user.categories.filter(({id}) => id !== current.id), 
+              { id: current.id, order: current.order, category_name }]
+            }
+          }
+
+          await updateUser(updatedUser);
+          setUserInfo({ user: updatedUser, documents: userInfo.documents });
+          closeModal();
 
         } catch (error) {
             console.error(error);

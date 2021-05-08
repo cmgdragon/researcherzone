@@ -2,7 +2,7 @@ import { sha256 } from 'sha256';
 
 class User {
     name: string;
-    surname: string;
+    surname: string = "familyname";
     email: string;
     pwd: string;
     profile_slot_1: string = '';
@@ -10,8 +10,6 @@ class User {
     categories: Array<{id: number, category: string, category_order: number}> = [];
     image: any = '';
     optional_image: any = '';
-    people_following: Array<string> = [];
-    people_followers: Array<string> = [];
     social_media: Array<{name: string, url: string}> = [];
 
     constructor(user: {email: string, name: string, surname: string, pwd: string}) {
