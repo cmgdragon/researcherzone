@@ -1,8 +1,8 @@
-const deleteCategory = (category, user) =>
+const deleteCategory = (categoryId, user) =>
 fetch('/deletecategory', {
     method: 'delete',
     headers: { 'Content-Type': "application/json" },
-    body: JSON.stringify({ category, user, email: user.email })
+    body: JSON.stringify({ categoryId, user, email: user.email })
 });
 
 export default deleteCategory;

@@ -9,6 +9,7 @@ import DocumentsModal from './DocumentsModal.jsx';
 import CitationModal from './Citations/CitationModal.jsx';
 import selectCitation from './Citations/selectCitation.js';
 import selectForm from './DocumentForms/selectForm.js';
+import Footer from '../../components/Footer.jsx';
 
 const ProfileDocuments = ({user}) => {
 
@@ -59,7 +60,11 @@ const ProfileDocuments = ({user}) => {
         if (confirm('Delete this document?')) {
             try {
                 await deleteDocument(id, userInfo.user);
-                const updatedDocuments = userInfo.documents.filter(({_id}) => _id !== id);
+                const updatedDocuments = userInfo.documents.filter(({_id}) => _id !== id)
+                                            .sort((a, b) => orderList(a, b))
+                                            .map((doc, index) => ({ ...doc, order: index }));
+
+                                            console.log(updatedDocuments)
                 setUserInfo({ user: userInfo.user, documents: updatedDocuments });
             } catch (error) {
                 console.error(error);
@@ -67,12 +72,16 @@ const ProfileDocuments = ({user}) => {
         }
     }
 
-    const deleteCategoryDocuments = async category => {
+    const deleteCategoryDocuments = async (category, categoryId) => {
         if (confirm(`Delete category "${category}" and all its documents?`)) {
             try {
                 const updatedDocuments = userInfo.documents.filter(({category: currentCat}) => currentCat !== category);
                 const updatedUser = { ...userInfo.user, categories: userInfo.user.categories.filter(({category_name}) => category_name !== category) };
-                await deleteCategory(category, updatedUser);
+                updatedUser.categories = [ ...updatedUser.categories ]
+                                            .sort((a, b) => orderList(a, b))
+                                            .map((cat, index) => ({ ...cat, order: index }));
+                console.log(updatedUser)
+                await deleteCategory(categoryId, updatedUser);
                 setUserInfo({ user: updatedUser, documents: updatedDocuments });
             } catch (error) {
                 console.error(error);
@@ -95,7 +104,8 @@ const ProfileDocuments = ({user}) => {
 
         const updatedCategories = [ ...userInfo.user.categories ];
         const toChangeIndex = updatedCategories.findIndex(({category_name, order}) => 
-                                category_name === currentName && order == currentOrder)
+                                category_name === currentName && order == currentOrder);
+                                console.log(toChangeIndex)
         const toSwitchIndex = updatedCategories.findIndex(cat => cat.order === categoryChangedOrder);
 
         const oldOrder = updatedCategories[toChangeIndex].order;
@@ -143,6 +153,7 @@ const ProfileDocuments = ({user}) => {
     }
 
     return (
+        <>
         <div className={'profile-articles container'}>
 
             { !user.isGuest ? <>
@@ -185,7 +196,7 @@ const ProfileDocuments = ({user}) => {
                         { !user.isGuest ? <>  
                         <div className="profile-articles__buttons-group2">
                             <button className='btn-floating btn-small waves-effect waves-light blue dropdown-trigger' href='#' data-target={`dropdown${index}`}><i className="material-icons">add</i></button>
-                            <button id="delete-category" onClick={() => deleteCategoryDocuments(category_name)} className="btn waves-effect waves-light btn-floating red btn-small">
+                            <button id="delete-category" onClick={() => deleteCategoryDocuments(category_name, category_id)} className="btn waves-effect waves-light btn-floating red btn-small">
                                 <i className="material-icons right">delete</i>
                             </button>
                             <button id="edit-document" onClick={() => addEditCategory({id: category_id, category_name, order})} className="profile-articles__edit-category btn waves-effect waves-light btn-floating blue btn-small">
@@ -262,6 +273,8 @@ const ProfileDocuments = ({user}) => {
         <DocumentsModal show={showModal} activeForm={activeForm} />
         <CitationModal show={showCitation} activeCitation={activeCitation} />
         </div>
+        <Footer styles={{margin: '6rem 0 0 0'}} />
+        </>
     )
 }
 

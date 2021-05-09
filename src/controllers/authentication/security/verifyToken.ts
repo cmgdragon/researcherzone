@@ -1,5 +1,4 @@
 import { Context } from 'oak';
-import { verify, decode } from 'djwt';
 import cookie from 'cookie';
 
 const verifyToken = async (context, next: any) => {

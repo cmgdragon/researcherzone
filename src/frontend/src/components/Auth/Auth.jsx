@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Register from './Register.jsx';
 import Login from './Login.jsx';
+import Footer from '../../components/Footer.jsx';
 
 const Auth = () => {
 
@@ -16,6 +17,7 @@ const Auth = () => {
                 :
                 <><Register changeRoute={changeRoute} /> <div className="container">Already a member? <a href="#" className="link" onClick={() => changeRoute('login')}>Log in</a ></div></>
             }
+            <Footer styles={{position: 'absolute', bottom: '0'}} />
             </>
     )
 }

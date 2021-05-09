@@ -4,7 +4,10 @@ export const addNewDocument = async (document: any): Promise<any> => await db_do
 
 export const deleteDocument = async (_id: any, user: any): Promise<any> => await db_documents.deleteOne({ _id, user });
 
-export const deleteCategory = async (category: any, user: any): Promise<any> => await db_documents.deleteMany({ category, user });
+export const deleteCategory = async (category: any, user: any): Promise<any> => {
+    console.log(category, user)
+    await db_documents.deleteMany({ category, user })
+};
 
 export const findDocument = async (_id: string): Promise<any> => await db_documents.findOne({ _id });
 

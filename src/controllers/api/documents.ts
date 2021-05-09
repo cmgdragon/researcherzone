@@ -20,11 +20,12 @@ const addDocument = async ({request, response}: Context) => {
 
 const removeDocument = async ({request, response}: Context) => {
 
-  const {id, email} = await request.body().value;
-  const result = await deleteDocument(new Bson.ObjectID(id), email);
-  console.log( result, id );
-
   try {
+
+    const { document_id, email } = await request.body().value;
+    const result = await deleteDocument(new Bson.ObjectID(document_id), email);
+    console.log( document_id, email );
+
     response.status = 200;
     response.body = { status: 200, document_id: result.toString() };
   } catch (error) {
@@ -34,11 +35,11 @@ const removeDocument = async ({request, response}: Context) => {
 
 const removeCategory = async ({request, response}: Context) => {
 
-  const { category, user } = await request.body().value;
-  const result = await deleteCategory(category, user.email);
-  const { matchedCount, modifiedCount, upsertedId } = await updateUser(user.email, user);
+  const { categoryId, user: newUser, email } = await request.body().value;
+  const result = await deleteCategory(categoryId, email);
+  const { matchedCount, modifiedCount, upsertedId } = await updateUser(email, newUser);
 
-  console.log( result, category, " | " , matchedCount, modifiedCount, upsertedId );
+  console.log( result, categoryId, " | " , matchedCount, modifiedCount, upsertedId );
 
   try {
     response.status = 200;
