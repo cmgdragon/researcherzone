@@ -268,6 +268,7 @@ p { word-break: break-word; }
 .modal {
     display: none;
     position: fixed;
+    width: 90%;
     top: 15vh;
     z-index: 20;
     padding: 4rem 2rem 1rem 2rem;

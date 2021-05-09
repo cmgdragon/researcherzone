@@ -1,77 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import addDocument from '~/frontend/src/api/addDocument.js';
 import updateDocument from '~/frontend/src/api/updateDocument.js';
 
 const FreeDocumentForm = ({current, userInfo, setUserInfo, setShowModal, setActiveForm, categoryId}) => {
 
-    const [editor, setEditor] = useState('');
     useEffect(() => {
         document.body.classList.add('show-modal-body');
 
-        ClassicEditor
-			.create( document.querySelector( '#editor' ), {
-				
-				toolbar: {
-					items: [
-						'heading',
-						'|',
-						'bold',
-						'italic',
-						'link',
-						'bulletedList',
-						'numberedList',
-						'fontColor',
-						'fontSize',
-						'specialCharacters',
-						'|',
-						'outdent',
-						'indent',
-						'|',
-						'imageInsert',
-						'insertTable',
-						'blockQuote',
-						'mediaEmbed',
-						'undo',
-						'redo',
-						'htmlEmbed',
-						'code',
-						'codeBlock'
-					]
-				},
-				language: 'en',
-				image: {
-					toolbar: [
-						'imageTextAlternative',
-						'imageStyle:full',
-						'imageStyle:side'
-					]
-				},
-				table: {
-					contentToolbar: [
-						'tableColumn',
-						'tableRow',
-						'mergeTableCells'
-					]
-				},
-				licenseKey: '',
-				
-				
-			} )
-			.then( editor => {
-				window.editor = editor;
-		
-                setEditor(editor);
-                if (current) {
-                    editor.setData(current.html);
-                }
-			
-			} )
-			.catch( error => {
-				console.error( 'Oops, something went wrong!' );
-				console.error( 'Please, report the following error on https://github.com/ckeditor/ckeditor5/issues with the build id and the error stack trace:' );
-				console.warn( 'Build id: quv3rfo3pxrj-vm52prjvm8zk' );
-				console.error( error );
-			} );
+        CKEDITOR.replace( 'editor' ,  {
+            allowedContent: true
+        });
+        if (current) {
+            console.log(current)
+            CKEDITOR.instances.editor1.setData(current.html);
+        }
     
     }, []);
 
@@ -85,7 +27,7 @@ const FreeDocumentForm = ({current, userInfo, setUserInfo, setShowModal, setActi
 
     const send = async event => {
         event.preventDefault();
-        if (editor.getData() === "") return;
+        if (CKEDITOR.instances.editor1.getData() === "") return;
 
         try {
 
@@ -95,11 +37,12 @@ const FreeDocumentForm = ({current, userInfo, setUserInfo, setShowModal, setActi
                     category: userInfo.user.categories.find(({id}) => id === categoryId).id,
                     user: userInfo.user.email,
                     type: 'freedocument',
-                    html: editor.getData(),
+                    html: CKEDITOR.instances.editor1.getData(),
                     order: userInfo.documents.length ?
                     Math.max( ...userInfo.documents.filter(({category}) => category === categoryId).map(({order}) => order) )+1 : 1
                 };
     
+                console.log(newDocument)
                 const response = await addDocument(newDocument);
                 const { document_id } = await response.json();
                 console.log({ user: { ...userInfo.user }, documents: [...userInfo.documents, { ...newDocument, _id: document_id }] });
@@ -107,10 +50,10 @@ const FreeDocumentForm = ({current, userInfo, setUserInfo, setShowModal, setActi
             } else {
 
                 const updatedDocuments = [ ...userInfo.documents.filter(doc => doc._id !== current._id),
-                    {...current, html: editor.getData() }
+                    {...current, html: CKEDITOR.instances.editor1.getData() }
                 ];
 
-                await updateDocument({...current, html: editor.getData() });
+                await updateDocument({...current, html: CKEDITOR.instances.editor1.getData() });
                 console.log({ user: userInfo.user, documents: updatedDocuments });
                 setUserInfo({ user: userInfo.user, documents: updatedDocuments });
             }
@@ -128,7 +71,7 @@ const FreeDocumentForm = ({current, userInfo, setUserInfo, setShowModal, setActi
         <div className="row">
             <span className="modal-label">{current ? 'Edit ' : 'Add new '}FreeDocument</span>
             <button className="close-modal btn-floating red btn-small" onClick={closeModal}><i className="material-icons right">clear</i></button>
-            <div id="editor"></div>
+            <textarea name="editor" id="editor1" rows="15" cols="80"></textarea>
         <button id="send-form" onClick={send} className="btn waves-effect waves-light blue accent-4" type="submit" name="action"
         >Submit
             <i className="material-icons right">send</i>

@@ -5,9 +5,10 @@ import { updateUser } from '~/controllers/database/users.ts';
 
 const addDocument = async ({request, response}: Context) => {
 
-    const { document, email } = await request.body().value;
-    const result = await addNewDocument({document, user: email});
-    console.dir( result.toString() );
+    const { newDocument, email } = await request.body().value;
+    console.log(newDocument, email)
+    const result = await addNewDocument({ ...newDocument, user: email });
+    console.log( result.toString() );
 
   try {
     response.status = 200;
