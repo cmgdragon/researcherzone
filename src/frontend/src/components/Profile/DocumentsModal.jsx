@@ -8,7 +8,7 @@ const DocumentsModal = ({activeForm, show}) => {
     }, [show])
 
     return (
-        <div className={'modal'} id="documents-modal" onClick={event => event.stopPropagation()} style={{marginTop: window.scrollY-100}}>
+        <div className={'modal'} id="documents-modal" onClick={event => event.stopPropagation()}>
             {activeForm}
         </div>
     )

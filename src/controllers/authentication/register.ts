@@ -4,16 +4,23 @@ import User from "~/models/User.ts";
 
 const register = async (context: Context) => {
     try {
-        const body = await context.request.body().value;
-        const query = await findUserByEmail(body.email);
+        const user: User = await context.request.body().value;
+        const query = await findUserByEmail(user.email);
 
         if (query) {
-            context.response.body
+            context.response.status = 409;
             context.response.body = { message: 'This email already exists', status: 409 };
             return;
         }
+
+        if (!user.email || !user.pwd || !user.name ||
+            user.email === '' || user.pwd === '' || user.name === '') {
+                context.response.status = 500;
+                context.response.body = { message: 'Invalid form', status: 500 };
+                return;
+        }
         
-        const user = addNewUser(body);
+        await addNewUser(user);
         context.response.status = 200;
         context.response.body = { status: 200 };
 

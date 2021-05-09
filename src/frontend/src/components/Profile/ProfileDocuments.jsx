@@ -5,7 +5,7 @@ import deleteDocument from '~/frontend/src/api/deleteDocument.js';
 import deleteCategory from '~/frontend/src/api/deleteCategory.js';
 import updateUser from '~/frontend/src/api/updateUser.js';
 import updateDocument from '~/frontend/src/api/updateDocument.js';
-import DocumentsModal from '../DocumentsModal.jsx';
+import DocumentsModal from './DocumentsModal.jsx';
 import CitationModal from './Citations/CitationModal.jsx';
 import selectCitation from './Citations/selectCitation.js';
 import selectForm from './DocumentForms/selectForm.js';

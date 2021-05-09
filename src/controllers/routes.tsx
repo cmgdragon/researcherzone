@@ -1,36 +1,52 @@
 import App from '~/frontend/src/App.jsx';
+import Profile from '~/frontend/src/components/Profile/index.jsx';
 import { Router, Context } from "oak";
 import React from "react";
 import ReactDOMServer from "react-dom/server";
 import verifyToken from '~/controllers/authentication/security/verifyToken.ts';
 import verifyUserCall from '~/controllers/authentication/security/verifyUserCall.ts';
-import createGuestToken from '~/controllers/authentication/createGuestToken.ts';
-import cookie from 'cookie';
 
 import login from '~/controllers/authentication/login.ts';
 import * as users_api from '~/controllers/api/users.ts';
 import * as documents_api from '~/controllers/api/documents.ts';
 import register from '~/controllers/authentication/register.ts';
 import logout from '~/controllers/authentication/logout.ts';
-import getTokenInfo from "~/controllers/authentication/getTokenInfo.ts";
+import getUserInfo from "~/controllers/authentication/getUserInfo.ts";
+import getGuestInfo from "~/controllers/authentication/getGuestInfo.ts";
 
 const router = new Router();
 
 const html = await Deno.readTextFile(`${Deno.cwd().replace(/\\/g, "/")}/src/static/index.html`);
-const toStringApp = ReactDOMServer.renderToString(<App />);
+
 
 router.get('/', async (context: Context) => {
-    context.response.body = html.replace(
-        '<main id="app"></main>',
-        `<main id="app">${toStringApp}</main>`
-    );
+
+    try {
+        const toStringApp = ReactDOMServer.renderToString(<App />);    
+        context.response.body = html.replace(
+            '<main id="app"></main>',
+            `<main id="app">${toStringApp}</main>`
+        );   
+    } catch (error) {
+        console.log(error)
+    }
 })
 
-router.get('/user/:id', async (context) => {
-    context.response.body = html.replace(
-        '<main id="app"></main>',
-        `<main id="app">${toStringApp}</main>`
-    );
+router.get('/user/:id', async (context: Context) => {
+
+    const user = await getGuestInfo(context.request.url.pathname);
+
+    try {
+        const toStringProfile = ReactDOMServer.renderToString(<Profile user={user} />);    
+        context.response.body = html.replace(
+            '<main id="app"></main>',
+            `<main id="app">${toStringProfile}</main>`
+        );
+    } catch (error) {
+        console.log(error)
+    }
+
+
 })
 
 .post('/login', login)
@@ -49,10 +65,6 @@ router.get('/user/:id', async (context) => {
 
 .delete('/deletecategory', verifyUserCall, documents_api.removeCategory)
 
-.get('/gettokeninfo', verifyToken, getTokenInfo)
-
-.get('/test2', async(context) => {
-    context.response.body = 'sda';
-})
+.get('/getuserinfo', verifyToken, getUserInfo)
 
 export default router;

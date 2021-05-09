@@ -8,7 +8,7 @@ const addDocument = async ({request, response}: Context) => {
     const { document, email } = await request.body().value;
     const result = await addNewDocument({document, user: email});
     console.dir( result.toString() );
-    //Bson.ObjectId.toString()
+
   try {
     response.status = 200;
     response.body = { status: 200, document_id: result.toString() };
@@ -50,12 +50,7 @@ const removeCategory = async ({request, response}: Context) => {
 const update_document = async ({request, response}: Context) => {
 
   const { document, email } = await request.body().value;
-  const result = await updateDocument(new Bson.ObjectID(document._id), document, email);
-
-  /*document = {
-    ...document, _id: new Bson.ObjectID(document._id)
-  }*/
-  console.log( result, document );
+  await updateDocument(new Bson.ObjectID(document._id), document, email);
 
   try {
     response.status = 200;

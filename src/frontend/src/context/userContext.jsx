@@ -1,16 +1,17 @@
 import React, { useState, useEffect, createContext } from "react";
-import getTokenInfo from '../api/getTokenInfo.js';
+import getUserInfo from '../api/getUserInfo.js';
 
 export const UserContext = createContext(false);
 
-const UserTokenContext = (props) => {
+const UserInfoContext = ({children}) => {
 
     const [user, setUser] = useState(false);
 
-    useEffect(() => {
+    useEffect(async () => {
 
         try {
-            getTokenInfo().then(userInfo => setUser(userInfo));
+            const userInfo = await getUserInfo();
+            setUser(userInfo);
         } catch (error) {
             console.error(error);
         }
@@ -18,9 +19,9 @@ const UserTokenContext = (props) => {
     }, []);
 
     return (
-        <UserContext.Provider value={user}>{props.children}</UserContext.Provider>
+        <UserContext.Provider value={user}>{children}</UserContext.Provider>
     )
 
 }
 
-export default UserTokenContext;
+export default UserInfoContext;

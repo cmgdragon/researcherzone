@@ -8,7 +8,7 @@ const SocialMediaModal = ({children, show}) => {
     }, [show])
 
     return (
-        <div className={'modal'} id="social-modal" onClick={event => event.stopPropagation()} style={{marginTop: window.scrollY-100}}>
+        <div className={'modal'} id="social-modal" onClick={event => event.stopPropagation()}>
             {children}
         </div>
     )

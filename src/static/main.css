@@ -21,10 +21,12 @@ img {
 
 p { word-break: break-word; }
 
+.link { text-decoration: underline; }
 
 /* Profile */
 .profile {
     max-height: 20vh;
+    background-color: var(--primary-color);
 }
 
 .profile-logout {
@@ -33,9 +35,18 @@ p { word-break: break-word; }
     top: 2%;
 }
 
+.profile-logout.logout::after {
+    content: 'Logout';
+}
+
+.profile-logout.login::after {
+    content: 'Login';
+}
+
 .profile-container {
     display: flex;
     justify-content: start;
+    background-color: var(--primary-color);
 }
 
 /* Profile - Header */
@@ -43,7 +54,7 @@ p { word-break: break-word; }
     display: flex;
     clear: both;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     margin-bottom: 0;
 }
 
@@ -59,6 +70,7 @@ p { word-break: break-word; }
 .profile-header__slotsgroup {
     display: flex;
     align-items: center;
+    width: 100%;
 }
 
 .profile-header__slots {
@@ -123,7 +135,7 @@ p { word-break: break-word; }
     color: white;
     border-radius: 5px;
     background-color: rgba(185, 25, 25, 0.815);
-    left: 0;
+    right: .5rem;
 }
 
 .profile-header__image2 + i:hover {
@@ -150,7 +162,7 @@ p { word-break: break-word; }
 }
 
 .profile__share-link {
-    width: 300px !important;
+    width: 100% !important;
     transition: all 1s;
 }
 
@@ -201,6 +213,9 @@ p { word-break: break-word; }
 }
 
 @media (max-width: 600px) {
+
+    .profile-header { margin-top: 1rem; }
+
     .profile-header__name {
         font-size: 20px;
         font-weight: bold;
@@ -216,9 +231,16 @@ p { word-break: break-word; }
         height: auto;
     }
 
+    .profile-header__optional-image {
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
+
     .profile-header__image2 {
         max-width: 75px !important;
         width: 100%;
+        padding-right: 0;
         height: auto;
     }
 
@@ -227,18 +249,26 @@ p { word-break: break-word; }
     .profile-logout {
         position: static;
         margin: 1rem;
-        float: right;
         text-align: center;
     }
 }
 
+@media (max-width: 850px) {
+
+    .profile-logout > i { margin: 0; }
+
+    .profile-logout.logout::after { content: ''; }
+    
+    .profile-logout.login::after { content: ''; }
+
+}
 
 
 /* Modal Component */
 .modal {
     display: none;
-    position: absolute;
-    top: 25vh;
+    position: fixed;
+    top: 15vh;
     z-index: 20;
     padding: 4rem 2rem 1rem 2rem;
 }
@@ -295,7 +325,6 @@ body.show-modal-body:before {
     padding: .5rem;
     margin: 3.5rem 0 1rem 0;
     border-radius: 5px;
-    border: 2px solid #b7dbfa;
     /*box-shadow: 0 1px 4px 0px rgb(0 0 0 / 70%);*/
     background-color: var(--primary-color);
 }

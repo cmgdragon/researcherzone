@@ -5,7 +5,7 @@ import { findDocuments } from '~/controllers/database/documents.ts';
 import { Bson } from 'deno-mongo';
 import cookie from 'cookie';
 
-const getTokenInfo = async context => {
+const getUserInfo = async context => {
 
     try {
 
@@ -45,4 +45,4 @@ const getTokenInfo = async context => {
 
 }
 
-export default getTokenInfo;
+export default getUserInfo;

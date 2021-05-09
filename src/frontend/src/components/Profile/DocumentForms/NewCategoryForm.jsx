@@ -57,7 +57,7 @@ const NewCategoryForm = ({current, userInfo, setUserInfo, setShowModal, setActiv
 
     return (
         <div className="row">
-          <span className="modal-label">{current === '' ? 'Add new ' : 'Edit '}category</span>
+          <span className="modal-label">{!current ? 'Add new ' : 'Edit '}category</span>
           <button className="close-modal btn-floating red btn-small" onClick={closeModal}><i className="material-icons right">clear</i></button>
         <form className="col s12" onSubmit={send} ref={form}>
           <div className="row">

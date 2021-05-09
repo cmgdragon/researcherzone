@@ -1,6 +1,6 @@
-const getTokenInfo = async () => {
+const getUserInfo = async () => {
     try {
-        const request = await fetch('http://localhost:8000/gettokeninfo', {
+        const request = await fetch('http://localhost:8000/getuserinfo', {
             headers: { 'Content-Type': 'application/json',
                 'pathname': window.location.pathname,
                 'pragma': 'no-cache',
@@ -15,4 +15,4 @@ const getTokenInfo = async () => {
     
 }
 
-export default getTokenInfo;
+export default getUserInfo;

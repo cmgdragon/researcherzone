@@ -49,8 +49,19 @@ const Register = ({changeRoute}) => {
 
     }
 
+    const canBeSent = () => {
+      for (const [key, value] of Object.entries(errors)) {
+        if (key === 'form') continue;
+        if (value !== '✓') return false;
+      }
+      return true;
+    }
+
     const register = async (event) => {
         event.preventDefault();
+
+        if (!canBeSent()) return;
+
         const newUser = new User({
             email: [...event.target].find(input => input.id === 'email').value,
             name: [...event.target].find(input => input.id === 'name').value,
@@ -68,7 +79,7 @@ const Register = ({changeRoute}) => {
           case 200:
             changeRoute('newuser');
           break;
-          case 409:
+          default:
             setError({...errors, form: response.message})
         }
     }

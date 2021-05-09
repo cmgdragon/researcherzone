@@ -1,18 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './src/App.jsx';
-import UserTokenContext from './src/context/userContext.jsx';
-
-/*declare global {
-    namespace JSX {
-        interface IntrinsicElements {
-        [key: string]: any;
-        }
-    }
-}*/
+import UserInfoContext from './src/context/userContext.jsx';
 
 ReactDOM.hydrate(
-<UserTokenContext>
+<UserInfoContext>
     <App />
-</UserTokenContext>
+</UserInfoContext>
 , document.getElementById('app'));

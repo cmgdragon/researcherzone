@@ -8,7 +8,7 @@ const CitationModal = ({activeCitation, show}) => {
     }, [show])
 
     return (
-        <div className={'modal'} id="citation-modal" onClick={event => event.stopPropagation()} style={{marginTop: window.scrollY-100}}>
+        <div className={'modal'} id="citation-modal" onClick={event => event.stopPropagation()}>
             <div className="citation-modal-text">{activeCitation}</div>
         </div>
     )
