@@ -20,13 +20,11 @@ const BookCitation = ({doc, setShowCitation, setActiveCitation}) => {
         <button className="close-modal btn-floating red btn-small" onClick={closeModal}><i className="material-icons right">clear</i></button>
         <AuthorCitator authors={doc.authors} /><span> {doc.chapter_title}. </span>
         <span>{doc.title}{doc?.subtitle ? `: ${doc.subtitle}` : undefined}. </span>
-        {doc?.edition ? <span>{doc.edition}. </span> : undefined }
-        {doc?.edition ? <span>{`Vol. ${doc.edition}`}. </span> : undefined }
-        <span>{doc.publication_place}: {doc.publisher}; {doc.publication_year}</span>
-        <span> {
-            doc.start_page ? `. p. ${doc.start_page}` :
-            doc.end_page ? "-"+doc.end_page : undefined
-        }. </span>
+        {doc?.edition ? <span>{doc.edition} - ed. </span> : undefined }
+        <span>{doc.publication_place}: {doc?.publisher ? `${doc.publisher}; ` : undefined} {doc.publication_year}</span>
+        <span>{
+            doc?.start_page ? `:${doc.start_page}` : undefined }
+            {doc?.end_page ? "-"+doc.end_page : undefined}. </span>
         <span>{doc?.doi ? doc.doi : undefined}</span>
     </>)
 }

@@ -84,10 +84,12 @@ p { word-break: break-word; }
 }
 
 .profile-header__slot.empty, .profile-header__name.empty {
-    min-width: 50px;
+    min-width: 100px;
     min-height: 1.5em;
     background-color: rgba(95, 93, 93, 0.192);
 }
+
+.profile-header__slot.empty { margin-bottom: .2rem; }
 
 .profile-articles__add-category { 
     display: flex;
@@ -253,6 +255,10 @@ p { word-break: break-word; }
         margin: 1rem;
         text-align: center;
     }
+
+    .profile-header__name-group { margin-left: 0; }
+    
+
 }
 
 @media (max-width: 850px) {

@@ -5,7 +5,7 @@ const ThesisRender = ({doc}) => {
     const abstract = useRef();
     const collapse = ({target}) => target.classList.toggle('show');
     useEffect(() => {
-        if (abstract.current.clientHeight > 50) abstract.current.classList.add('collapse');
+        if (abstract.current?.clientHeight > 50) abstract.current.classList.add('collapse');
     })
 
     return (
@@ -13,10 +13,12 @@ const ThesisRender = ({doc}) => {
             <div className="documents__title">{doc.title}</div>
             <div className="documents__subtitle">{doc.subtitle}</div>
             <div className="documents__authors">{doc.author.name} {doc.author.surname}</div>
-            <div ref={abstract} className={`documents__abstract`} onClick={collapse}>
-            <div className="documents__subtitle">Abstract</div>
-                {doc.abstract}
-            </div>
+            { doc?.abstract ?
+                <div ref={abstract} className={`documents__abstract`} onClick={collapse}>
+                <div className="documents__subtitle">Abstract</div>
+                    {doc.abstract}
+                </div>
+             : undefined}
         </div>
     )
 }

@@ -24718,7 +24718,7 @@ const JournalArticleRender = ({ doc  })=>{
     const collapse = ({ target  })=>target.classList.toggle('show')
     ;
     useEffect(()=>{
-        if (__abstract.current.clientHeight > 50) __abstract.current.classList.add('collapse');
+        if (__abstract.current?.clientHeight > 50) __abstract.current.classList.add('collapse');
     });
     return export_default1.createElement("div", {
         "data-article-id": `id-${doc._id}`,
@@ -24732,20 +24732,20 @@ const JournalArticleRender = ({ doc  })=>{
         className: "documents__authors"
     }, export_default1.createElement(AuthorCitator, {
         authors: doc.authors
-    })), export_default1.createElement("div", {
+    })), doc?.abstract ? export_default1.createElement("div", {
         ref: __abstract,
         className: `documents__abstract`,
         onClick: collapse
     }, export_default1.createElement("div", {
         className: "documents__subtitle"
-    }, "Abstract"), doc.abstract));
+    }, "Abstract"), doc.abstract) : undefined);
 };
 const BookRender = ({ doc  })=>{
     const __abstract = useRef();
     const collapse = ({ target  })=>target.classList.toggle('show')
     ;
     useEffect(()=>{
-        if (__abstract.current.clientHeight > 50) __abstract.current.classList.add('collapse');
+        if (__abstract.current?.clientHeight > 50) __abstract.current.classList.add('collapse');
     });
     return export_default1.createElement("div", {
         "data-article-id": `id-${doc._id}`,
@@ -24757,20 +24757,20 @@ const BookRender = ({ doc  })=>{
         className: "documents__authors"
     }, export_default1.createElement(AuthorCitator, {
         authors: doc.authors
-    })), export_default1.createElement("div", {
+    })), doc?.abstract ? export_default1.createElement("div", {
         ref: __abstract,
         className: `documents__abstract`,
         onClick: collapse
     }, export_default1.createElement("div", {
         className: "documents__subtitle"
-    }, "Abstract"), doc.abstract));
+    }, "Abstract"), doc.abstract) : undefined);
 };
 const BookChapterRender = ({ doc  })=>{
     const __abstract = useRef();
     const collapse = ({ target  })=>target.classList.toggle('show')
     ;
     useEffect(()=>{
-        if (__abstract.current.clientHeight > 50) __abstract.current.classList.add('collapse');
+        if (__abstract.current?.clientHeight > 50) __abstract.current.classList.add('collapse');
     });
     return export_default1.createElement("div", {
         "data-article-id": `id-${doc._id}`,
@@ -24778,26 +24778,28 @@ const BookChapterRender = ({ doc  })=>{
         className: 'profile-articles__journalArticle'
     }, export_default1.createElement("div", {
         className: "documents__title"
-    }, doc.title), export_default1.createElement("div", {
+    }, doc.title, doc?.subtitle ? export_default1.createElement("span", {
+        className: "documents__title"
+    }, ": ", doc.subtitle) : undefined), export_default1.createElement("div", {
         className: "documents__subtitle"
     }, doc.chapter_title), export_default1.createElement("div", {
         className: "documents__authors"
     }, export_default1.createElement(AuthorCitator, {
         authors: doc.authors
-    })), export_default1.createElement("div", {
+    })), doc?.abstract ? export_default1.createElement("div", {
         ref: __abstract,
         className: `documents__abstract`,
         onClick: collapse
     }, export_default1.createElement("div", {
         className: "documents__subtitle"
-    }, "Abstract"), doc.abstract));
+    }, "Abstract"), doc.abstract) : undefined);
 };
 const ConferenceProceedingRender = ({ doc  })=>{
     const __abstract = useRef();
     const collapse = ({ target  })=>target.classList.toggle('show')
     ;
     useEffect(()=>{
-        if (__abstract.current.clientHeight > 50) __abstract.current.classList.add('collapse');
+        if (__abstract.current?.clientHeight > 50) __abstract.current.classList.add('collapse');
     });
     return export_default1.createElement("div", {
         "data-article-id": `id-${doc._id}`,
@@ -24811,20 +24813,20 @@ const ConferenceProceedingRender = ({ doc  })=>{
         className: "documents__authors"
     }, export_default1.createElement(AuthorCitator, {
         authors: doc.authors
-    })), export_default1.createElement("div", {
+    })), doc?.abstract ? export_default1.createElement("div", {
         ref: __abstract,
         className: `documents__abstract`,
         onClick: collapse
     }, export_default1.createElement("div", {
         className: "documents__subtitle"
-    }, "Abstract"), doc.abstract));
+    }, "Abstract"), doc.abstract) : undefined);
 };
 const ThesisRender = ({ doc  })=>{
     const __abstract = useRef();
     const collapse = ({ target  })=>target.classList.toggle('show')
     ;
     useEffect(()=>{
-        if (__abstract.current.clientHeight > 50) __abstract.current.classList.add('collapse');
+        if (__abstract.current?.clientHeight > 50) __abstract.current.classList.add('collapse');
     });
     return export_default1.createElement("div", {
         "data-article-id": `id-${doc._id}`,
@@ -24836,13 +24838,13 @@ const ThesisRender = ({ doc  })=>{
         className: "documents__subtitle"
     }, doc.subtitle), export_default1.createElement("div", {
         className: "documents__authors"
-    }, doc.author.name, " ", doc.author.surname), export_default1.createElement("div", {
+    }, doc.author.name, " ", doc.author.surname), doc?.abstract ? export_default1.createElement("div", {
         ref: __abstract,
         className: `documents__abstract`,
         onClick: collapse
     }, export_default1.createElement("div", {
         className: "documents__subtitle"
-    }, "Abstract"), doc.abstract));
+    }, "Abstract"), doc.abstract) : undefined);
 };
 const DocumentRender = ({ doc  })=>{
     const [document, setDocument] = useState(undefined);
@@ -25068,7 +25070,7 @@ const JournalArticleCitation = ({ doc , setShowCitation , setActiveCitation  })=
         className: "material-icons right"
     }, "clear")), export_default1.createElement(AuthorCitator, {
         authors: doc.authors
-    }), export_default1.createElement("span", null, " ", doc.title, ". "), export_default1.createElement("span", null, doc.journal, ". "), export_default1.createElement("span", null, doc.publication_year), export_default1.createElement("span", null, doc?.volume ? `; ${doc.volume}` : undefined, doc?.issue ? `(${doc.issue})` : undefined, doc.start_page ? doc.start_page : doc.end_page ? "-" + doc.end_page : undefined, ". "), export_default1.createElement("span", null, doc?.doi ? doc.doi : undefined));
+    }), export_default1.createElement("span", null, " ", doc.title, ". "), export_default1.createElement("span", null, doc.journal, ". "), export_default1.createElement("span", null, doc.publication_year), export_default1.createElement("span", null, doc?.volume ? `; ${doc.volume}` : undefined, doc?.issue ? `(${doc.issue})` : undefined), export_default1.createElement("span", null, doc?.start_page ? `:${doc.start_page}` : undefined, doc?.end_page ? "-" + doc.end_page : undefined, ". "), export_default1.createElement("span", null, doc?.doi ? doc.doi : undefined));
 };
 const BookCitation = ({ doc , setShowCitation , setActiveCitation  })=>{
     useEffect(()=>{
@@ -25089,7 +25091,7 @@ const BookCitation = ({ doc , setShowCitation , setActiveCitation  })=>{
         className: "material-icons right"
     }, "clear")), export_default1.createElement(AuthorCitator, {
         authors: doc.authors
-    }), export_default1.createElement("span", null, " ", doc.chapter_title, ". "), export_default1.createElement("span", null, doc.title, doc?.subtitle ? `: ${doc.subtitle}` : undefined, ". "), doc?.edition ? export_default1.createElement("span", null, doc.edition, ". ") : undefined, doc?.edition ? export_default1.createElement("span", null, `Vol. ${doc.edition}`, ". ") : undefined, export_default1.createElement("span", null, doc.publication_place, ": ", doc.publisher, "; ", doc.publication_year), export_default1.createElement("span", null, " ", doc.start_page ? `. p. ${doc.start_page}` : doc.end_page ? "-" + doc.end_page : undefined, ". "), export_default1.createElement("span", null, doc?.doi ? doc.doi : undefined));
+    }), export_default1.createElement("span", null, " ", doc.chapter_title, ". "), export_default1.createElement("span", null, doc.title, doc?.subtitle ? `: ${doc.subtitle}` : undefined, ". "), doc?.edition ? export_default1.createElement("span", null, doc.edition, " - ed. ") : undefined, export_default1.createElement("span", null, doc.publication_place, ": ", doc?.publisher ? `${doc.publisher}; ` : undefined, " ", doc.publication_year), export_default1.createElement("span", null, doc?.start_page ? `:${doc.start_page}` : undefined, doc?.end_page ? "-" + doc.end_page : undefined, ". "), export_default1.createElement("span", null, doc?.doi ? doc.doi : undefined));
 };
 const BookChapterCitation = ({ doc , setShowCitation , setActiveCitation  })=>{
     useEffect(()=>{
@@ -25112,7 +25114,7 @@ const BookChapterCitation = ({ doc , setShowCitation , setActiveCitation  })=>{
         authors: doc.authors
     }), export_default1.createElement("span", null, " ", doc.chapter_title, ". "), doc.editors.length ? export_default1.createElement("span", null, "In: ", export_default1.createElement(AuthorCitator, {
         authors: doc.editors
-    }), ". ") : undefined, export_default1.createElement("span", null, doc.title, doc?.subtitle ? `: ${doc.subtitle}` : undefined, ". "), doc?.edition ? export_default1.createElement("span", null, doc.edition, ". ") : undefined, export_default1.createElement("span", null, doc.publication_place, ": ", doc.publisher, "; ", doc.publication_year), export_default1.createElement("span", null, " ", doc.start_page ? `. p. ${doc.start_page}` : doc.end_page ? "-" + doc.end_page : undefined, ". "), export_default1.createElement("span", null, doc?.doi ? doc.doi : undefined));
+    }), ". ") : undefined, export_default1.createElement("span", null, doc.title, doc?.subtitle ? `: ${doc.subtitle}` : undefined, ". "), doc?.edition ? export_default1.createElement("span", null, doc.edition, ". ") : undefined, export_default1.createElement("span", null, doc.publication_place, ": ", doc?.publisher ? `${doc.publisher} ;` : undefined, " ", doc.publication_year), export_default1.createElement("span", null, doc?.start_page ? `:${doc.start_page}` : undefined, doc?.end_page ? "-" + doc.end_page : undefined, ". "), export_default1.createElement("span", null, doc?.doi ? doc.doi : undefined));
 };
 const ConferenceProceedingCitation = ({ doc , setShowCitation , setActiveCitation  })=>{
     useEffect(()=>{
@@ -25135,7 +25137,7 @@ const ConferenceProceedingCitation = ({ doc , setShowCitation , setActiveCitatio
         authors: doc.authors
     }), export_default1.createElement("span", null, " ", doc.chapter_title, ". "), doc.editors.length ? export_default1.createElement("span", null, "In: ", export_default1.createElement(AuthorCitator, {
         authors: doc.editors
-    }), ". ") : undefined, export_default1.createElement("span", null, doc.title, doc?.subtitle ? `: ${doc.subtitle}` : undefined, "; "), export_default1.createElement("span", null, doc.publication_year, " ", doc?.publication_month ? ` ${doc.publication_month}` : undefined, doc?.publication_day ? ` ${doc.publication_day}` : undefined), export_default1.createElement("span", null, "; ", doc.conference_location, ". "), export_default1.createElement("span", null, doc.publication_place, ": ", doc.publisher, "; ", doc.publication_year), export_default1.createElement("span", null, " ", doc.start_page ? `. p. ${doc.start_page}` : doc.end_page ? "-" + doc.end_page : undefined, ". "), export_default1.createElement("span", null, doc?.doi ? doc.doi : undefined));
+    }), ". ") : undefined, export_default1.createElement("span", null, doc.title, doc?.subtitle ? `: ${doc.subtitle}` : undefined, "; "), export_default1.createElement("span", null, doc.publication_year, " ", doc?.publication_month ? ` ${doc.publication_month}` : undefined, doc?.publication_day ? ` ${doc.publication_day}` : undefined), export_default1.createElement("span", null, "; ", doc.conference_location, ". "), export_default1.createElement("span", null, doc.publication_place, ": ", doc?.publisher ? `${doc.publisher}; ` : undefined, " ", doc.publication_year), export_default1.createElement("span", null, doc?.start_page ? `:${doc.start_page}` : undefined, doc?.end_page ? "-" + doc.end_page : undefined, ". "), export_default1.createElement("span", null, doc?.doi ? doc.doi : undefined));
 };
 const ThesisCitation = ({ doc , setShowCitation , setActiveCitation  })=>{
     useEffect(()=>{
@@ -25472,13 +25474,12 @@ const BookForm = ({ current , userInfo , setUserInfo , setShowModal , setActiveF
         htmlFor: "title",
         className: "active",
         onClick: ({ target  })=>target.previousElementSibling.focus()
-    }, "Book title")), export_default1.createElement("div", {
+    }, "Book title *")), export_default1.createElement("div", {
         className: "input-field col s12"
     }, export_default1.createElement("input", {
         id: "subtitle",
         type: "text",
-        defaultValue: current?.subtitle,
-        required: true
+        defaultValue: current?.subtitle
     }), export_default1.createElement("label", {
         htmlFor: "subtitle",
         className: "active",
@@ -25500,7 +25501,7 @@ const BookForm = ({ current , userInfo , setUserInfo , setShowModal , setActiveF
             htmlFor: `aut-name-${aut}`,
             className: "active",
             onClick: ({ target  })=>target.previousElementSibling.focus()
-        }, "Author name")), export_default1.createElement("div", {
+        }, "Author name *")), export_default1.createElement("div", {
             className: "input-field col s6"
         }, export_default1.createElement("input", {
             id: `aut-surname-${aut}`,
@@ -25511,7 +25512,7 @@ const BookForm = ({ current , userInfo , setUserInfo , setShowModal , setActiveF
             htmlFor: `aut-surname-${aut}`,
             className: "active",
             onClick: ({ target  })=>target.previousElementSibling.focus()
-        }, "Author surname")), aut !== 1 ? export_default1.createElement("a", {
+        }, "Author surname *")), aut !== 1 ? export_default1.createElement("a", {
             onClick: ()=>removeAuthor(aut)
             ,
             className: "button-remove-modal waves-effect waves-light red btn-small"
@@ -25548,8 +25549,7 @@ const BookForm = ({ current , userInfo , setUserInfo , setShowModal , setActiveF
     }, export_default1.createElement("input", {
         id: "publisher",
         type: "text",
-        defaultValue: current?.publisher,
-        required: true
+        defaultValue: current?.publisher
     }), export_default1.createElement("label", {
         htmlFor: "publisher",
         className: "active",
@@ -25559,8 +25559,7 @@ const BookForm = ({ current , userInfo , setUserInfo , setShowModal , setActiveF
     }, export_default1.createElement("input", {
         id: "edition",
         type: "text",
-        defaultValue: current?.edition,
-        required: true
+        defaultValue: current?.edition
     }), export_default1.createElement("label", {
         htmlFor: "edition",
         className: "active",
@@ -25576,7 +25575,7 @@ const BookForm = ({ current , userInfo , setUserInfo , setShowModal , setActiveF
         htmlFor: "publication_place",
         className: "active",
         onClick: ({ target  })=>target.previousElementSibling.focus()
-    }, "Publication Place")), export_default1.createElement("div", {
+    }, "Publication Place *")), export_default1.createElement("div", {
         className: "input-field col s12"
     }, export_default1.createElement("input", {
         id: "publication_year",
@@ -25587,7 +25586,7 @@ const BookForm = ({ current , userInfo , setUserInfo , setShowModal , setActiveF
         htmlFor: "publication_year",
         className: "active",
         onClick: ({ target  })=>target.previousElementSibling.focus()
-    }, "Publication year")), export_default1.createElement("div", {
+    }, "Publication year *")), export_default1.createElement("div", {
         className: "input-field col s12"
     }, export_default1.createElement("input", {
         id: "doi",
@@ -25619,7 +25618,6 @@ class JournalArticle {
     journal;
     volume;
     issue;
-    publisher;
     start_page;
     end_page;
     publication_year;
@@ -25668,7 +25666,6 @@ const JournalArticleForm = ({ current , userInfo , setUserInfo , setShowModal , 
         document.journal = form.current.querySelector(`#journal`).value;
         document.volume = +form.current.querySelector(`#volume`).value ?? 0;
         document.issue = +form.current.querySelector(`#issue`).value ?? 0;
-        document.publisher = form.current.querySelector(`#publisher`).value ?? '';
         document.abstract = form.current.querySelector(`#abstract`).value ?? '';
         document.start_page = +form.current.querySelector(`#start_page`).value ?? 0;
         document.end_page = +form.current.querySelector(`#end_page`).value ?? 0;
@@ -25778,7 +25775,7 @@ const JournalArticleForm = ({ current , userInfo , setUserInfo , setShowModal , 
         htmlFor: "title",
         className: "active",
         onClick: ({ target  })=>target.previousElementSibling.focus()
-    }, "Article title")), export_default1.createElement("div", {
+    }, "Article title *")), export_default1.createElement("div", {
         id: "authors"
     }, authors.map((aut)=>{
         return export_default1.createElement("div", {
@@ -25795,7 +25792,7 @@ const JournalArticleForm = ({ current , userInfo , setUserInfo , setShowModal , 
             htmlFor: `aut-name-${aut}`,
             className: "active",
             onClick: ({ target  })=>target.previousElementSibling.focus()
-        }, "Author name")), export_default1.createElement("div", {
+        }, "Author name *")), export_default1.createElement("div", {
             className: "input-field col s6"
         }, export_default1.createElement("input", {
             id: `aut-surname-${aut}`,
@@ -25806,7 +25803,7 @@ const JournalArticleForm = ({ current , userInfo , setUserInfo , setShowModal , 
             htmlFor: `aut-surname-${aut}`,
             className: "active",
             onClick: ({ target  })=>target.previousElementSibling.focus()
-        }, "Author surname")), aut !== 0 ? export_default1.createElement("a", {
+        }, "Author surname *")), aut !== 0 ? export_default1.createElement("a", {
             onClick: ()=>removeAuthor(aut)
             ,
             className: "button-remove-modal waves-effect waves-light red btn-small"
@@ -25829,18 +25826,7 @@ const JournalArticleForm = ({ current , userInfo , setUserInfo , setShowModal , 
         htmlFor: "journal",
         className: "active",
         onClick: ({ target  })=>target.previousElementSibling.focus()
-    }, "Journal")), export_default1.createElement("div", {
-        className: "input-field col s12"
-    }, export_default1.createElement("input", {
-        id: "volume",
-        type: "number",
-        defaultValue: current?.volume,
-        required: true
-    }), export_default1.createElement("label", {
-        htmlFor: "volume",
-        className: "active",
-        onClick: ({ target  })=>target.previousElementSibling.focus()
-    }, "Volume")), export_default1.createElement("div", {
+    }, "Journal *")), export_default1.createElement("div", {
         className: "input-field col s12"
     }, export_default1.createElement("textarea", {
         id: "abstract",
@@ -25855,8 +25841,7 @@ const JournalArticleForm = ({ current , userInfo , setUserInfo , setShowModal , 
     }, export_default1.createElement("input", {
         id: "issue",
         type: "number",
-        defaultValue: current?.issue,
-        required: true
+        defaultValue: current?.issue
     }), export_default1.createElement("label", {
         htmlFor: "issue",
         className: "active",
@@ -25864,21 +25849,19 @@ const JournalArticleForm = ({ current , userInfo , setUserInfo , setShowModal , 
     }, "Issue")), export_default1.createElement("div", {
         className: "input-field col s12"
     }, export_default1.createElement("input", {
-        id: "publisher",
-        type: "text",
-        defaultValue: current?.publisher,
-        required: true
+        id: "volume",
+        type: "number",
+        defaultValue: current?.volume
     }), export_default1.createElement("label", {
-        htmlFor: "publisher",
+        htmlFor: "volume",
         className: "active",
         onClick: ({ target  })=>target.previousElementSibling.focus()
-    }, "Publisher")), export_default1.createElement("div", {
+    }, "Volume")), export_default1.createElement("div", {
         className: "input-field col s12"
     }, export_default1.createElement("input", {
         id: "start_page",
         type: "number",
-        defaultValue: current?.start_page,
-        required: true
+        defaultValue: current?.start_page
     }), export_default1.createElement("label", {
         htmlFor: "start_page",
         className: "active",
@@ -25888,8 +25871,7 @@ const JournalArticleForm = ({ current , userInfo , setUserInfo , setShowModal , 
     }, export_default1.createElement("input", {
         id: "end_page",
         type: "number",
-        defaultValue: current?.end_page,
-        required: true
+        defaultValue: current?.end_page
     }), export_default1.createElement("label", {
         htmlFor: "end_page",
         className: "active",
@@ -25905,7 +25887,7 @@ const JournalArticleForm = ({ current , userInfo , setUserInfo , setShowModal , 
         htmlFor: "publication_year",
         className: "active",
         onClick: ({ target  })=>target.previousElementSibling.focus()
-    }, "Publication year")), export_default1.createElement("div", {
+    }, "Publication year *")), export_default1.createElement("div", {
         className: "input-field col s12"
     }, export_default1.createElement("input", {
         id: "doi",
@@ -25981,7 +25963,7 @@ const BookChapterForm = ({ current , userInfo , setUserInfo , setShowModal , set
         document.end_page = +form.current.querySelector(`#end_page`).value ?? 0;
         document.coordinator = +form.current.querySelector(`#coordinator`).value ?? 0;
         document.number = +form.current.querySelector(`#number`).value ?? 0;
-        document.chapter_title = +form.current.querySelector(`#chapter_title`).value ?? 0;
+        document.chapter_title = form.current.querySelector(`#chapter_title`).value ?? '';
         return document;
     };
     const send = async (event)=>{
@@ -26060,9 +26042,11 @@ const BookChapterForm = ({ current , userInfo , setUserInfo , setShowModal , set
     const removeAuthor = (id)=>setAuthors(authors.filter((aut)=>aut !== id
         ))
     ;
-    const addEditor = ()=>setEditors([
+    const addEditor = ()=>setEditors(editors.length ? [
             ...editors,
             Math.max(...editors) + 1
+        ] : [
+            0
         ])
     ;
     const removeEditor = (id)=>setEditors(editors.filter((aut)=>aut !== id
@@ -26094,7 +26078,7 @@ const BookChapterForm = ({ current , userInfo , setUserInfo , setShowModal , set
         htmlFor: "title",
         className: "active",
         onClick: ({ target  })=>target.previousElementSibling.focus()
-    }, "Book title")), export_default1.createElement("div", {
+    }, "Book title *")), export_default1.createElement("div", {
         className: "input-field col s12"
     }, export_default1.createElement("input", {
         id: "subtitle",
@@ -26105,7 +26089,7 @@ const BookChapterForm = ({ current , userInfo , setUserInfo , setShowModal , set
         htmlFor: "subtitle",
         className: "active",
         onClick: ({ target  })=>target.previousElementSibling.focus()
-    }, "Book subtitle")), export_default1.createElement("div", {
+    }, "Book subtitle *")), export_default1.createElement("div", {
         className: "input-field col s12"
     }, export_default1.createElement("input", {
         id: "chapter_title",
@@ -26116,7 +26100,7 @@ const BookChapterForm = ({ current , userInfo , setUserInfo , setShowModal , set
         htmlFor: "chapter_title",
         className: "active",
         onClick: ({ target  })=>target.previousElementSibling.focus()
-    }, "Chapter title")), export_default1.createElement("div", {
+    }, "Chapter title *")), export_default1.createElement("div", {
         id: "authors"
     }, authors.map((aut)=>{
         return export_default1.createElement("div", {
@@ -26133,7 +26117,7 @@ const BookChapterForm = ({ current , userInfo , setUserInfo , setShowModal , set
             htmlFor: `aut-name-${aut}`,
             className: "active",
             onClick: ({ target  })=>target.previousElementSibling.focus()
-        }, "Author name")), export_default1.createElement("div", {
+        }, "Author name *")), export_default1.createElement("div", {
             className: "input-field col s6"
         }, export_default1.createElement("input", {
             id: `aut-surname-${aut}`,
@@ -26144,7 +26128,7 @@ const BookChapterForm = ({ current , userInfo , setUserInfo , setShowModal , set
             htmlFor: `aut-surname-${aut}`,
             className: "active",
             onClick: ({ target  })=>target.previousElementSibling.focus()
-        }, "Author surname")), aut !== 1 ? export_default1.createElement("a", {
+        }, "Author surname *")), aut !== 1 ? export_default1.createElement("a", {
             onClick: ()=>removeAuthor(aut)
             ,
             className: "button-remove-modal waves-effect waves-light red btn-small"
@@ -26154,7 +26138,7 @@ const BookChapterForm = ({ current , userInfo , setUserInfo , setShowModal , set
     }), export_default1.createElement("a", {
         onClick: addAuthor,
         className: "button-add-modal waves-effect waves-light btn-small"
-    }, "Add author ", export_default1.createElement("i", {
+    }, "Add author", export_default1.createElement("i", {
         className: "material-icons right"
     }, "add"))), export_default1.createElement("div", {
         className: "input-field col s12"
@@ -26192,12 +26176,19 @@ const BookChapterForm = ({ current , userInfo , setUserInfo , setShowModal , set
             htmlFor: `ed-surname-${ed}`,
             className: "active",
             onClick: ({ target  })=>target.previousElementSibling.focus()
-        }, "Editor surname")), ed !== 1 ? export_default1.createElement("span", {
+        }, "Editor surname")), export_default1.createElement("a", {
             onClick: ()=>removeEditor(ed)
-        }, "Remove") : undefined);
-    }), export_default1.createElement("span", {
-        onClick: addEditor
-    }, "Add editor")), export_default1.createElement("div", {
+            ,
+            className: "button-remove-modal waves-effect waves-light red btn-small"
+        }, export_default1.createElement("i", {
+            className: "material-icons right"
+        }, "delete_forever")));
+    }), export_default1.createElement("a", {
+        onClick: addEditor,
+        className: "button-add-modal waves-effect waves-light btn-small"
+    }, "Add editor", export_default1.createElement("i", {
+        className: "material-icons right"
+    }, "add"))), export_default1.createElement("div", {
         className: "input-field col s12"
     }, export_default1.createElement("input", {
         id: "volume",
@@ -26252,8 +26243,7 @@ const BookChapterForm = ({ current , userInfo , setUserInfo , setShowModal , set
     }, export_default1.createElement("input", {
         id: "publisher",
         type: "text",
-        defaultValue: current?.publisher,
-        required: true
+        defaultValue: current?.publisher
     }), export_default1.createElement("label", {
         htmlFor: "publisher",
         className: "active",
@@ -26279,7 +26269,7 @@ const BookChapterForm = ({ current , userInfo , setUserInfo , setShowModal , set
         htmlFor: "publication_place",
         className: "active",
         onClick: ({ target  })=>target.previousElementSibling.focus()
-    }, "Publication Place")), export_default1.createElement("div", {
+    }, "Publication Place *")), export_default1.createElement("div", {
         className: "input-field col s12"
     }, export_default1.createElement("input", {
         id: "publication_year",
@@ -26290,7 +26280,7 @@ const BookChapterForm = ({ current , userInfo , setUserInfo , setShowModal , set
         htmlFor: "publication_year",
         className: "active",
         onClick: ({ target  })=>target.previousElementSibling.focus()
-    }, "Publication year")), export_default1.createElement("div", {
+    }, "Publication year *")), export_default1.createElement("div", {
         className: "input-field col s12"
     }, export_default1.createElement("input", {
         id: "doi",
@@ -26460,9 +26450,11 @@ const ConferenceProceedingForm = ({ current , userInfo , setUserInfo , setShowMo
     const removeAuthor = (id)=>setAuthors(authors.filter((aut)=>aut !== id
         ))
     ;
-    const addEditor = ()=>setEditors([
+    const addEditor = ()=>setEditors(editors.length ? [
             ...editors,
             Math.max(...editors) + 1
+        ] : [
+            0
         ])
     ;
     const removeEditor = (id)=>setEditors(editors.filter((aut)=>aut !== id
@@ -26494,7 +26486,7 @@ const ConferenceProceedingForm = ({ current , userInfo , setUserInfo , setShowMo
         htmlFor: "title",
         className: "active",
         onClick: ({ target  })=>target.previousElementSibling.focus()
-    }, "Conference title")), export_default1.createElement("div", {
+    }, "Conference title *")), export_default1.createElement("div", {
         className: "input-field col s12"
     }, export_default1.createElement("input", {
         id: "subtitle",
@@ -26521,7 +26513,7 @@ const ConferenceProceedingForm = ({ current , userInfo , setUserInfo , setShowMo
             htmlFor: `aut-name-${aut}`,
             className: "active",
             onClick: ({ target  })=>target.previousElementSibling.focus()
-        }, "Author name")), export_default1.createElement("div", {
+        }, "Author name *")), export_default1.createElement("div", {
             className: "input-field col s6"
         }, export_default1.createElement("input", {
             id: `aut-surname-${aut}`,
@@ -26532,7 +26524,7 @@ const ConferenceProceedingForm = ({ current , userInfo , setUserInfo , setShowMo
             htmlFor: `aut-surname-${aut}`,
             className: "active",
             onClick: ({ target  })=>target.previousElementSibling.focus()
-        }, "Author surname")), aut !== 1 ? export_default1.createElement("a", {
+        }, "Author surname *")), aut !== 1 ? export_default1.createElement("a", {
             onClick: ()=>removeAuthor(aut)
             ,
             className: "button-remove-modal waves-effect waves-light red btn-small"
@@ -26570,9 +26562,13 @@ const ConferenceProceedingForm = ({ current , userInfo , setUserInfo , setShowMo
             htmlFor: `ed-surname-${ed}`,
             className: "active",
             onClick: ({ target  })=>target.previousElementSibling.focus()
-        }, "Editor surname")), ed !== 1 ? export_default1.createElement("span", {
+        }, "Editor surname")), export_default1.createElement("a", {
             onClick: ()=>removeEditor(ed)
-        }, "Remove") : undefined);
+            ,
+            className: "button-remove-modal waves-effect waves-light red btn-small"
+        }, export_default1.createElement("i", {
+            className: "material-icons right"
+        }, "delete_forever")));
     }), export_default1.createElement("span", {
         onClick: addEditor
     }, "Add editor")), export_default1.createElement("div", {
@@ -26596,7 +26592,7 @@ const ConferenceProceedingForm = ({ current , userInfo , setUserInfo , setShowMo
         htmlFor: "conference_place",
         className: "active",
         onClick: ({ target  })=>target.previousElementSibling.focus()
-    }, "Conference place")), export_default1.createElement("div", {
+    }, "Conference place *")), export_default1.createElement("div", {
         className: "input-field col s4"
     }, export_default1.createElement("input", {
         id: "conference_year",
@@ -26607,7 +26603,7 @@ const ConferenceProceedingForm = ({ current , userInfo , setUserInfo , setShowMo
         htmlFor: "conference_year",
         className: "active",
         onClick: ({ target  })=>target.previousElementSibling.focus()
-    }, "Conference year")), export_default1.createElement("div", {
+    }, "Conference year *")), export_default1.createElement("div", {
         className: "input-field col s4"
     }, export_default1.createElement("input", {
         id: "conference_month",
@@ -26618,7 +26614,7 @@ const ConferenceProceedingForm = ({ current , userInfo , setUserInfo , setShowMo
         htmlFor: "conference_month",
         className: "active",
         onClick: ({ target  })=>target.previousElementSibling.focus()
-    }, "Conference month")), export_default1.createElement("div", {
+    }, "Conference month *")), export_default1.createElement("div", {
         className: "input-field col s4"
     }, export_default1.createElement("input", {
         id: "conference_day",
@@ -26629,13 +26625,12 @@ const ConferenceProceedingForm = ({ current , userInfo , setUserInfo , setShowMo
         htmlFor: "conference_day",
         className: "active",
         onClick: ({ target  })=>target.previousElementSibling.focus()
-    }, "Conference day")), export_default1.createElement("div", {
+    }, "Conference day *")), export_default1.createElement("div", {
         className: "input-field col s12"
     }, export_default1.createElement("input", {
         id: "publisher",
         type: "text",
-        defaultValue: current?.publisher,
-        required: true
+        defaultValue: current?.publisher
     }), export_default1.createElement("label", {
         htmlFor: "publisher",
         className: "active",
@@ -26651,7 +26646,7 @@ const ConferenceProceedingForm = ({ current , userInfo , setUserInfo , setShowMo
         htmlFor: "publication_place",
         className: "active",
         onClick: ({ target  })=>target.previousElementSibling.focus()
-    }, "Publication Place")), export_default1.createElement("div", {
+    }, "Publication Place *")), export_default1.createElement("div", {
         className: "input-field col s12"
     }, export_default1.createElement("input", {
         id: "publication_year",
@@ -26662,13 +26657,12 @@ const ConferenceProceedingForm = ({ current , userInfo , setUserInfo , setShowMo
         htmlFor: "publication_year",
         className: "active",
         onClick: ({ target  })=>target.previousElementSibling.focus()
-    }, "Publication year")), export_default1.createElement("div", {
+    }, "Publication year *")), export_default1.createElement("div", {
         className: "input-field col s12"
     }, export_default1.createElement("input", {
         id: "doi",
         type: "text",
-        defaultValue: current?.doi,
-        required: true
+        defaultValue: current?.doi
     }), export_default1.createElement("label", {
         htmlFor: "doi",
         className: "active",
@@ -26735,7 +26729,7 @@ const ThesisForm = ({ current , userInfo , setUserInfo , setShowModal , setActiv
             surname: form.current.querySelector(`#aut-surname`).value
         };
         document.title = form.current.querySelector(`#title`).value ?? '';
-        document.subtitle = +form.current.querySelector(`#subtitle`).value ?? 0;
+        document.subtitle = form.current.querySelector(`#subtitle`).value ?? '';
         document.university = form.current.querySelector(`#university`).value ?? '';
         document.university_place = form.current.querySelector(`#university_place`).value ?? '';
         document.abstract = form.current.querySelector(`#abstract`).value ?? '';
@@ -26837,7 +26831,7 @@ const ThesisForm = ({ current , userInfo , setUserInfo , setShowModal , setActiv
         htmlFor: "title",
         className: "active",
         onClick: ({ target  })=>target.previousElementSibling.focus()
-    }, "Title")), export_default1.createElement("div", {
+    }, "Title *")), export_default1.createElement("div", {
         className: "input-field col s12"
     }, export_default1.createElement("input", {
         id: "subtitle",
@@ -26848,7 +26842,7 @@ const ThesisForm = ({ current , userInfo , setUserInfo , setShowModal , setActiv
         htmlFor: "subtitle",
         className: "active",
         onClick: ({ target  })=>target.previousElementSibling.focus()
-    }, "Subtitle")), export_default1.createElement("div", {
+    }, "Subtitle *")), export_default1.createElement("div", {
         className: "input-field col s6"
     }, export_default1.createElement("input", {
         id: `aut-name`,
@@ -26859,7 +26853,7 @@ const ThesisForm = ({ current , userInfo , setUserInfo , setShowModal , setActiv
         htmlFor: `aut-name`,
         className: "active",
         onClick: ({ target  })=>target.previousElementSibling.focus()
-    }, "Author name")), export_default1.createElement("div", {
+    }, "Author name *")), export_default1.createElement("div", {
         className: "input-field col s6"
     }, export_default1.createElement("input", {
         id: `aut-surname`,
@@ -26870,7 +26864,7 @@ const ThesisForm = ({ current , userInfo , setUserInfo , setShowModal , setActiv
         htmlFor: `aut-surname`,
         className: "active",
         onClick: ({ target  })=>target.previousElementSibling.focus()
-    }, "Author surname")), export_default1.createElement("div", {
+    }, "Author surname *")), export_default1.createElement("div", {
         className: "input-field col s12"
     }, export_default1.createElement("input", {
         id: "university",
@@ -26881,7 +26875,7 @@ const ThesisForm = ({ current , userInfo , setUserInfo , setShowModal , setActiv
         htmlFor: "university",
         className: "active",
         onClick: ({ target  })=>target.previousElementSibling.focus()
-    }, "University")), export_default1.createElement("div", {
+    }, "University *")), export_default1.createElement("div", {
         className: "input-field col s12"
     }, export_default1.createElement("input", {
         id: "university_place",
@@ -26892,7 +26886,7 @@ const ThesisForm = ({ current , userInfo , setUserInfo , setShowModal , setActiv
         htmlFor: "university_place",
         className: "active",
         onClick: ({ target  })=>target.previousElementSibling.focus()
-    }, "University place")), export_default1.createElement("div", {
+    }, "University place *")), export_default1.createElement("div", {
         className: "input-field col s12"
     }, export_default1.createElement("textarea", {
         id: "abstract",
@@ -26913,7 +26907,7 @@ const ThesisForm = ({ current , userInfo , setUserInfo , setShowModal , setActiv
         htmlFor: "publication_place",
         className: "active",
         onClick: ({ target  })=>target.previousElementSibling.focus()
-    }, "Publication Place")), export_default1.createElement("div", {
+    }, "Publication Place *")), export_default1.createElement("div", {
         className: "input-field col s12"
     }, export_default1.createElement("input", {
         id: "publication_year",
@@ -26924,13 +26918,12 @@ const ThesisForm = ({ current , userInfo , setUserInfo , setShowModal , setActiv
         htmlFor: "publication_year",
         className: "active",
         onClick: ({ target  })=>target.previousElementSibling.focus()
-    }, "Publication year")), export_default1.createElement("div", {
+    }, "Publication year *")), export_default1.createElement("div", {
         className: "input-field col s12"
     }, export_default1.createElement("input", {
         id: "uri",
         type: "text",
-        defaultValue: current?.uri,
-        required: true
+        defaultValue: current?.uri
     }), export_default1.createElement("label", {
         htmlFor: "uri",
         className: "active",

@@ -6,7 +6,7 @@ const ConferenceProceedingRender = ({doc}) => {
     const abstract = useRef();
     const collapse = ({target}) => target.classList.toggle('show');
     useEffect(() => {
-        if (abstract.current.clientHeight > 50) abstract.current.classList.add('collapse');
+        if (abstract.current?.clientHeight > 50) abstract.current.classList.add('collapse');
     })
 
     return (
@@ -16,10 +16,12 @@ const ConferenceProceedingRender = ({doc}) => {
             <div className="documents__authors">
                 <AuthorCitator authors={doc.authors} />
             </div>
-            <div ref={abstract} className={`documents__abstract`} onClick={collapse}>
-            <div className="documents__subtitle">Abstract</div>
-                {doc.abstract}
-            </div>
+            { doc?.abstract ?
+                <div ref={abstract} className={`documents__abstract`} onClick={collapse}>
+                <div className="documents__subtitle">Abstract</div>
+                    {doc.abstract}
+                </div>
+             : undefined}
         </div>
     )
 }

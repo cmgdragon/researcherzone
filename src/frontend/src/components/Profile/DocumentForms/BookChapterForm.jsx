@@ -54,7 +54,7 @@ const BookChapterForm = ({current, userInfo, setUserInfo, setShowModal, setActiv
         document.end_page = +form.current.querySelector(`#end_page`).value  ?? 0;
         document.coordinator = +form.current.querySelector(`#coordinator`).value  ?? 0;
         document.number = +form.current.querySelector(`#number`).value  ?? 0;
-        document.chapter_title = +form.current.querySelector(`#chapter_title`).value  ?? 0;
+        document.chapter_title = form.current.querySelector(`#chapter_title`).value ?? '';
         return document;
     }
 
@@ -99,7 +99,7 @@ const BookChapterForm = ({current, userInfo, setUserInfo, setShowModal, setActiv
     const addAuthor = () => setAuthors([...authors, Math.max(...authors) + 1]);
     const removeAuthor = id => setAuthors(authors.filter(aut => aut !== id));
 
-    const addEditor = () => setEditors([...editors, Math.max(...editors) + 1]);
+    const addEditor = () => setEditors(editors.length ? [...editors, Math.max(...editors) + 1] : [0])
     const removeEditor = id => setEditors(editors.filter(aut => aut !== id));
 
     return (
@@ -111,17 +111,17 @@ const BookChapterForm = ({current, userInfo, setUserInfo, setShowModal, setActiv
 
             <div className="input-field col s12">
               <input id="title" type="text" defaultValue={current?.title} required />
-              <label htmlFor="title" className="active" onClick={({target}) => target.previousElementSibling.focus()}>Book title</label>
+              <label htmlFor="title" className="active" onClick={({target}) => target.previousElementSibling.focus()}>Book title *</label>
             </div>
 
             <div className="input-field col s12">
               <input id="subtitle" type="text" defaultValue={current?.subtitle} required />
-              <label htmlFor="subtitle" className="active" onClick={({target}) => target.previousElementSibling.focus()}>Book subtitle</label>
+              <label htmlFor="subtitle" className="active" onClick={({target}) => target.previousElementSibling.focus()}>Book subtitle *</label>
             </div>
 
             <div className="input-field col s12">
               <input id="chapter_title" type="text" defaultValue={current?.chapter_title} required />
-              <label htmlFor="chapter_title" className="active" onClick={({target}) => target.previousElementSibling.focus()}>Chapter title</label>
+              <label htmlFor="chapter_title" className="active" onClick={({target}) => target.previousElementSibling.focus()}>Chapter title *</label>
             </div>
 
             <div id="authors">
@@ -130,11 +130,11 @@ const BookChapterForm = ({current, userInfo, setUserInfo, setShowModal, setActiv
                         <div key={aut} data-authors>
                         <div className="input-field col s6">
                             <input id={`aut-name-${aut}`} type="text" defaultValue={current?.authors[aut].name} required />
-                            <label htmlFor={`aut-name-${aut}`} className="active" onClick={({target}) => target.previousElementSibling.focus()}>Author name</label>
+                            <label htmlFor={`aut-name-${aut}`} className="active" onClick={({target}) => target.previousElementSibling.focus()}>Author name *</label>
                         </div>
                         <div className="input-field col s6">
                             <input id={`aut-surname-${aut}`} type="text" defaultValue={current?.authors[aut].surname} required />
-                            <label htmlFor={`aut-surname-${aut}`} className="active" onClick={({target}) => target.previousElementSibling.focus()}>Author surname</label>
+                            <label htmlFor={`aut-surname-${aut}`} className="active" onClick={({target}) => target.previousElementSibling.focus()}>Author surname *</label>
                         </div>
                         { aut !== 1 ?
                                 <a onClick={() => removeAuthor(aut)} className="button-remove-modal waves-effect waves-light red btn-small"><i className="material-icons right">delete_forever</i></a>
@@ -143,7 +143,7 @@ const BookChapterForm = ({current, userInfo, setUserInfo, setShowModal, setActiv
                     )
                 })
                 }
-                <a onClick={addAuthor} className="button-add-modal waves-effect waves-light btn-small">Add author <i className="material-icons right">add</i></a>
+                <a onClick={addAuthor} className="button-add-modal waves-effect waves-light btn-small">Add author<i className="material-icons right">add</i></a>
                 </div>
                 <div className="input-field col s12">
                     <input id="coordinator" type="text" defaultValue={current?.coordinator}  />
@@ -162,14 +162,12 @@ const BookChapterForm = ({current, userInfo, setUserInfo, setShowModal, setActiv
                             <input id={`ed-surname-${ed}`} type="text" defaultValue={current?.editors[ed].surname} />
                             <label htmlFor={`ed-surname-${ed}`} className="active" onClick={({target}) => target.previousElementSibling.focus()}>Editor surname</label>
                         </div>
-                        { ed !== 1 ?
-                                <span onClick={() => removeEditor(ed)}>Remove</span>
-                        : undefined }
+                            <a onClick={() => removeEditor(ed)} className="button-remove-modal waves-effect waves-light red btn-small"><i className="material-icons right">delete_forever</i></a>
                         </div>
                     )
                 })
                 }
-                <span onClick={addEditor}>Add editor</span>
+                <a onClick={addEditor} className="button-add-modal waves-effect waves-light btn-small">Add editor<i className="material-icons right">add</i></a>
             </div>
 
                 <div className="input-field col s12">
@@ -198,7 +196,7 @@ const BookChapterForm = ({current, userInfo, setUserInfo, setShowModal, setActiv
                 </div>
 
                 <div className="input-field col s12">
-                    <input id="publisher" type="text" defaultValue={current?.publisher} required />
+                    <input id="publisher" type="text" defaultValue={current?.publisher} />
                     <label htmlFor="publisher" className="active" onClick={({target}) => target.previousElementSibling.focus()}>Publisher</label>
                 </div>
 
@@ -209,12 +207,12 @@ const BookChapterForm = ({current, userInfo, setUserInfo, setShowModal, setActiv
 
                 <div className="input-field col s12">
                     <input id="publication_place" type="text" defaultValue={current?.publication_place} required />
-                    <label htmlFor="publication_place" className="active" onClick={({target}) => target.previousElementSibling.focus()}>Publication Place</label>
+                    <label htmlFor="publication_place" className="active" onClick={({target}) => target.previousElementSibling.focus()}>Publication Place *</label>
                 </div>
 
                 <div className="input-field col s12">
                     <input id="publication_year" type="number" defaultValue={current?.publication_year} required />
-                    <label htmlFor="publication_year" className="active" onClick={({target}) => target.previousElementSibling.focus()}>Publication year</label>
+                    <label htmlFor="publication_year" className="active" onClick={({target}) => target.previousElementSibling.focus()}>Publication year *</label>
                 </div>
 
                 <div className="input-field col s12">

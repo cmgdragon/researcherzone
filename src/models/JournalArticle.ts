@@ -13,7 +13,6 @@ class JournalArticle implements IProfileDocument {
     journal: string;
     volume: number;
     issue: number;
-    publisher: string;
     start_page: number;
     end_page: number;
     publication_year: number;

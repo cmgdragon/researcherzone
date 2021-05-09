@@ -40,7 +40,6 @@ const JournalArticleForm = ({current, userInfo, setUserInfo, setShowModal, setAc
         document.journal = form.current.querySelector(`#journal`).value;
         document.volume = +form.current.querySelector(`#volume`).value ?? 0;
         document.issue = +form.current.querySelector(`#issue`).value ?? 0;
-        document.publisher = form.current.querySelector(`#publisher`).value ?? '';
         document.abstract = form.current.querySelector(`#abstract`).value ?? '';
         document.start_page = +form.current.querySelector(`#start_page`).value ?? 0;
         document.end_page = +form.current.querySelector(`#end_page`).value ?? 0;
@@ -99,7 +98,7 @@ const JournalArticleForm = ({current, userInfo, setUserInfo, setShowModal, setAc
 
             <div className="input-field col s12">
               <input id="title" type="text" defaultValue={current?.title} required />
-              <label htmlFor="title" className="active" onClick={({target}) => target.previousElementSibling.focus()}>Article title</label>
+              <label htmlFor="title" className="active" onClick={({target}) => target.previousElementSibling.focus()}>Article title *</label>
             </div>
 
             <div id="authors">
@@ -108,11 +107,11 @@ const JournalArticleForm = ({current, userInfo, setUserInfo, setShowModal, setAc
                         <div key={aut} data-authors>
                         <div className="input-field col s6">
                             <input id={`aut-name-${aut}`} type="text" defaultValue={current?.authors[aut]?.name} required />
-                            <label htmlFor={`aut-name-${aut}`} className="active" onClick={({target}) => target.previousElementSibling.focus()}>Author name</label>
+                            <label htmlFor={`aut-name-${aut}`} className="active" onClick={({target}) => target.previousElementSibling.focus()}>Author name *</label>
                         </div>
                         <div className="input-field col s6">
                             <input id={`aut-surname-${aut}`} type="text" defaultValue={current?.authors[aut]?.surname} required />
-                            <label htmlFor={`aut-surname-${aut}`} className="active" onClick={({target}) => target.previousElementSibling.focus()}>Author surname</label>
+                            <label htmlFor={`aut-surname-${aut}`} className="active" onClick={({target}) => target.previousElementSibling.focus()}>Author surname *</label>
                         </div>
                         { aut !== 0 ?
                                 <a onClick={() => removeAuthor(aut)} className="button-remove-modal waves-effect waves-light red btn-small"><i className="material-icons right">delete_forever</i></a>
@@ -125,12 +124,7 @@ const JournalArticleForm = ({current, userInfo, setUserInfo, setShowModal, setAc
                 </div>
                 <div className="input-field col s12">
                     <input id="journal" type="text" defaultValue={current?.journal} required />
-                    <label htmlFor="journal" className="active" onClick={({target}) => target.previousElementSibling.focus()}>Journal</label>
-                </div>
-
-                <div className="input-field col s12">
-                    <input id="volume" type="number" defaultValue={current?.volume} required />
-                    <label htmlFor="volume" className="active" onClick={({target}) => target.previousElementSibling.focus()}>Volume</label>
+                    <label htmlFor="journal" className="active" onClick={({target}) => target.previousElementSibling.focus()}>Journal *</label>
                 </div>
 
                 <div className="input-field col s12">
@@ -139,28 +133,28 @@ const JournalArticleForm = ({current, userInfo, setUserInfo, setShowModal, setAc
                 </div>
 
                 <div className="input-field col s12">
-                    <input id="issue" type="number" defaultValue={current?.issue} required />
+                    <input id="issue" type="number" defaultValue={current?.issue} />
                     <label htmlFor="issue" className="active" onClick={({target}) => target.previousElementSibling.focus()}>Issue</label>
                 </div>
 
                 <div className="input-field col s12">
-                    <input id="publisher" type="text" defaultValue={current?.publisher} required />
-                    <label htmlFor="publisher" className="active" onClick={({target}) => target.previousElementSibling.focus()}>Publisher</label>
+                    <input id="volume" type="number" defaultValue={current?.volume} />
+                    <label htmlFor="volume" className="active" onClick={({target}) => target.previousElementSibling.focus()}>Volume</label>
                 </div>
 
                 <div className="input-field col s12">
-                    <input id="start_page" type="number" defaultValue={current?.start_page} required />
+                    <input id="start_page" type="number" defaultValue={current?.start_page} />
                     <label htmlFor="start_page" className="active" onClick={({target}) => target.previousElementSibling.focus()}>Start page</label>
                 </div>
 
                 <div className="input-field col s12">
-                    <input id="end_page" type="number" defaultValue={current?.end_page} required />
+                    <input id="end_page" type="number" defaultValue={current?.end_page} />
                     <label htmlFor="end_page" className="active" onClick={({target}) => target.previousElementSibling.focus()}>End page</label>
                 </div>
 
                 <div className="input-field col s12">
                     <input id="publication_year" type="number" defaultValue={current?.publication_year} required />
-                    <label htmlFor="publication_year" className="active" onClick={({target}) => target.previousElementSibling.focus()}>Publication year</label>
+                    <label htmlFor="publication_year" className="active" onClick={({target}) => target.previousElementSibling.focus()}>Publication year *</label>
                 </div>
 
                 <div className="input-field col s12">

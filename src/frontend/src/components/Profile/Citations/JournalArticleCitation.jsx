@@ -27,11 +27,10 @@ const JournalArticleCitation = ({doc, setShowCitation, setActiveCitation}) => {
         <AuthorCitator authors={doc.authors} /><span> {doc.title}. </span>
         <span>{doc.journal}. </span><span>{doc.publication_year}</span>
         <span>{doc?.volume ? `; ${doc.volume}` : undefined}
-            {doc?.issue ? `(${doc.issue})` : undefined}
-        {
-            doc.start_page ? doc.start_page :
-            doc.end_page ? "-"+doc.end_page : undefined
-        }. </span>
+            {doc?.issue ? `(${doc.issue})` : undefined}</span>
+            <span>{
+            doc?.start_page ? `:${doc.start_page}` : undefined }
+            {doc?.end_page ? "-"+doc.end_page : undefined}. </span>
         <span>{doc?.doi ? doc.doi : undefined}</span>
     </>)
 }

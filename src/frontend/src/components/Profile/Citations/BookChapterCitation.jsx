@@ -22,11 +22,10 @@ const BookChapterCitation = ({doc, setShowCitation, setActiveCitation}) => {
         {doc.editors.length ? <span>In: <AuthorCitator authors={doc.editors} />. </span> : undefined }
         <span>{doc.title}{doc?.subtitle ? `: ${doc.subtitle}` : undefined}. </span>
         {doc?.edition ? <span>{doc.edition}. </span> : undefined }
-        <span>{doc.publication_place}: {doc.publisher}; {doc.publication_year}</span>
-        <span> {
-            doc.start_page ? `. p. ${doc.start_page}` :
-            doc.end_page ? "-"+doc.end_page : undefined
-        }. </span>
+        <span>{doc.publication_place}: {doc?.publisher ? `${doc.publisher} ;` : undefined} {doc.publication_year}</span>
+        <span>{
+            doc?.start_page ? `:${doc.start_page}` : undefined }
+            {doc?.end_page ? "-"+doc.end_page : undefined}. </span>
         <span>{doc?.doi ? doc.doi : undefined}</span>
     </>)
 }

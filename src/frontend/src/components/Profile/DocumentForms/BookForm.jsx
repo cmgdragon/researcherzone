@@ -97,11 +97,11 @@ const BookForm = ({current, userInfo, setUserInfo, setShowModal, setActiveForm, 
 
             <div className="input-field col s12">
               <input id="title" type="text" defaultValue={current?.title} required />
-              <label htmlFor="title" className="active" onClick={({target}) => target.previousElementSibling.focus()}>Book title</label>
+              <label htmlFor="title" className="active" onClick={({target}) => target.previousElementSibling.focus()}>Book title *</label>
             </div>
 
             <div className="input-field col s12">
-              <input id="subtitle" type="text" defaultValue={current?.subtitle} required />
+              <input id="subtitle" type="text" defaultValue={current?.subtitle} />
               <label htmlFor="subtitle" className="active" onClick={({target}) => target.previousElementSibling.focus()}>Book subtitle</label>
             </div>
 
@@ -111,11 +111,11 @@ const BookForm = ({current, userInfo, setUserInfo, setShowModal, setActiveForm, 
                         <div key={aut} data-authors>
                         <div className="input-field col s6">
                             <input id={`aut-name-${aut}`} type="text" defaultValue={current?.authors[aut].name} required />
-                            <label htmlFor={`aut-name-${aut}`} className="active" onClick={({target}) => target.previousElementSibling.focus()}>Author name</label>
+                            <label htmlFor={`aut-name-${aut}`} className="active" onClick={({target}) => target.previousElementSibling.focus()}>Author name *</label>
                         </div>
                         <div className="input-field col s6">
                             <input id={`aut-surname-${aut}`} type="text" defaultValue={current?.authors[aut].surname} required />
-                            <label htmlFor={`aut-surname-${aut}`} className="active" onClick={({target}) => target.previousElementSibling.focus()}>Author surname</label>
+                            <label htmlFor={`aut-surname-${aut}`} className="active" onClick={({target}) => target.previousElementSibling.focus()}>Author surname *</label>
                         </div>
                         { aut !== 1 ?
                                 <a onClick={() => removeAuthor(aut)} className="button-remove-modal waves-effect waves-light red btn-small"><i className="material-icons right">delete_forever</i></a>
@@ -137,23 +137,23 @@ const BookForm = ({current, userInfo, setUserInfo, setShowModal, setActiveForm, 
                 </div>
 
                 <div className="input-field col s12">
-                    <input id="publisher" type="text" defaultValue={current?.publisher} required />
+                    <input id="publisher" type="text" defaultValue={current?.publisher} />
                     <label htmlFor="publisher" className="active" onClick={({target}) => target.previousElementSibling.focus()}>Publisher</label>
                 </div>
 
                 <div className="input-field col s12">
-                    <input id="edition" type="text" defaultValue={current?.edition} required />
+                    <input id="edition" type="text" defaultValue={current?.edition} />
                     <label htmlFor="edition" className="active" onClick={({target}) => target.previousElementSibling.focus()}>Edition</label>
                 </div>
 
                 <div className="input-field col s12">
                     <input id="publication_place" type="text" defaultValue={current?.publication_place} required />
-                    <label htmlFor="publication_place" className="active" onClick={({target}) => target.previousElementSibling.focus()}>Publication Place</label>
+                    <label htmlFor="publication_place" className="active" onClick={({target}) => target.previousElementSibling.focus()}>Publication Place *</label>
                 </div>
 
                 <div className="input-field col s12">
                     <input id="publication_year" type="number" defaultValue={current?.publication_year} required />
-                    <label htmlFor="publication_year" className="active" onClick={({target}) => target.previousElementSibling.focus()}>Publication year</label>
+                    <label htmlFor="publication_year" className="active" onClick={({target}) => target.previousElementSibling.focus()}>Publication year *</label>
                 </div>
 
                 <div className="input-field col s12">

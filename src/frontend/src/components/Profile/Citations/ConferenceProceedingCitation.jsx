@@ -25,11 +25,10 @@ const ConferenceProceedingCitation = ({doc, setShowCitation, setActiveCitation})
               {doc?.publication_day ? ` ${doc.publication_day}` : undefined }
         </span>
         <span>; {doc.conference_location}. </span>
-        <span>{doc.publication_place}: {doc.publisher}; {doc.publication_year}</span>
-        <span> {
-            doc.start_page ? `. p. ${doc.start_page}` :
-            doc.end_page ? "-"+doc.end_page : undefined
-        }. </span>
+        <span>{doc.publication_place}: {doc?.publisher ? `${doc.publisher}; ` : undefined} {doc.publication_year}</span>
+        <span>{
+            doc?.start_page ? `:${doc.start_page}` : undefined }
+            {doc?.end_page ? "-"+doc.end_page : undefined}. </span>
         <span>{doc?.doi ? doc.doi : undefined}</span>
     </>)
 }
