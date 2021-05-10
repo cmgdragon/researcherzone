@@ -22047,17 +22047,18 @@ const getUserInfo = async ()=>{
 };
 const UserContext = createContext(false);
 const UserInfoContext = ({ children  })=>{
-    const [user1, setUser] = useState(false);
+    const [userInfo, setUserInfo] = useState(false);
     useEffect(async ()=>{
         try {
-            const userInfo = await getUserInfo();
-            setUser(userInfo);
+            const userInfo1 = await getUserInfo();
+            setUserInfo(userInfo1);
+            console.log(userInfo1);
         } catch (error) {
             console.error(error);
         }
     }, []);
     return export_default1.createElement(UserContext.Provider, {
-        value: user1
+        value: userInfo
     }, children);
 };
 const updateUser = async (newUser)=>fetch('/updateuser', {
@@ -23926,13 +23927,13 @@ function K() {
                     try {
                         return cn(t = o[1], s.type, s.name, s.lastModified).then(function(l7) {
                             try {
-                                return (n = l7, $(t), fn(n).then(function(c) {
+                                return n = l7, $(t), fn(n).then(function(c) {
                                     try {
-                                        return (e = c[0], K.result = e.width === 1 && e.height === 2, r(K.result));
+                                        return e = c[0], K.result = e.width === 1 && e.height === 2, r(K.result);
                                     } catch (A) {
                                         return a(A);
                                     }
-                                }, a));
+                                }, a);
                             } catch (c) {
                                 return a(c);
                             }
@@ -23987,10 +23988,10 @@ function fn(r) {
     return new Promise(function(a, s) {
         var t, n, e = function() {
             try {
-                return (n = pn(t), a([
+                return n = pn(t), a([
                     t,
                     n
-                ]));
+                ]);
             } catch (l7) {
                 return s(l7);
             }
@@ -24000,7 +24001,7 @@ function fn(r) {
                     try {
                         return wn(c).then(function(A) {
                             try {
-                                return (t = A, e());
+                                return t = A, e();
                             } catch (h) {
                                 return s(h);
                             }
@@ -24016,7 +24017,7 @@ function fn(r) {
         try {
             return createImageBitmap(r).then(function(o) {
                 try {
-                    return (t = o, e());
+                    return t = o, e();
                 } catch (l7) {
                     return i7();
                 }
@@ -24030,13 +24031,13 @@ function cn(r, a, s, t) {
     var n = arguments.length > 4 && arguments[4] !== void 0 ? arguments[4] : 1;
     return new Promise(function(e, i7) {
         var o, l7, c;
-        if (a === "image/png") return (l7 = r.getContext("2d").getImageData(0, 0, r.width, r.height).data, c = w.encode([
+        if (a === "image/png") return l7 = r.getContext("2d").getImageData(0, 0, r.width, r.height).data, c = w.encode([
             l7
         ], r.width, r.height, 256 * n), (o = new Blob([
             c
         ], {
             type: a
-        })).name = s, o.lastModified = t, A.call(this));
+        })).name = s, o.lastModified = t, A.call(this);
         {
             let h = function() {
                 return A.call(this);
@@ -24150,7 +24151,7 @@ function un(r, a) {
         function F(y) {
             e = Math.min(Math.max(y, e), 100), a.onProgress(e);
         }
-        return (e = s, i7 = a.maxIteration || 10, o = 1024 * a.maxSizeMB * 1024, U(), fn(r).then((function(y) {
+        return e = s, i7 = a.maxIteration || 10, o = 1024 * a.maxSizeMB * 1024, U(), fn(r).then((function(y) {
             try {
                 var N = J(y, 2);
                 return N[0], l8 = N[1], U(), c = Un(l8, a), U(), new Promise(function(C, B) {
@@ -24176,19 +24177,19 @@ function un(r, a) {
                                             let R = function() {
                                                 if ((i7--) && (p > o || p > I)) {
                                                     var x, z, D = J(en(x = g ? 0.95 * b.width : b.width, z = g ? 0.95 * b.height : b.height), 2);
-                                                    return (_ = D[0], D[1].drawImage(b, 0, 0, x, z), u *= 0.95, cn(_, d, r.name, r.lastModified, u).then(function(V) {
+                                                    return _ = D[0], D[1].drawImage(b, 0, 0, x, z), u *= 0.95, cn(_, d, r.name, r.lastModified, u).then(function(V) {
                                                         try {
-                                                            return (H = V, $(b), b = _, p = H.size, F(Math.min(99, Math.floor((E - p) / (E - o) * 100))), R);
+                                                            return H = V, $(b), b = _, p = H.size, F(Math.min(99, Math.floor((E - p) / (E - o) * 100))), R;
                                                         } catch (q) {
                                                             return n(q);
                                                         }
-                                                    }, n));
+                                                    }, n);
                                                 }
                                                 return [
                                                     1
                                                 ];
                                             }, M = function() {
-                                                return ($(b), $(_), $(c), $(h), $(l8), F(100), t(H));
+                                                return $(b), $(_), $(c), $(h), $(l8), F(100), t(H);
                                             };
                                             if (m = P, U(), g = m.size > o, v = m.size > r.size, !g && !v) return F(100), t(m);
                                             var Q;
@@ -24221,7 +24222,7 @@ function un(r, a) {
             } catch (C) {
                 return n(C);
             }
-        }).bind(this), n));
+        }).bind(this), n);
     });
 }
 on && (Number.isInteger = Number.isInteger || function(r) {
@@ -24254,7 +24255,7 @@ function yn(o) {
         if (typeof value == "string" && value.startsWith("BIC_FN:::")) try {
             result[key] = eval(value.replace(/^BIC_FN:::/, ""));
         } catch (r) {
-            throw (console.log(key, r), r);
+            throw console.log(key, r), r;
         }
         else result[key] = yn(value);
     }), result;
@@ -24269,7 +24270,7 @@ function zn(r, a) {
     return new Promise(function(s, t) {
         return new Promise(function(n, e) {
             var i7 = Wn++;
-            return (dn || (dn = Rn()), nn || (nn = Tn()), nn.addEventListener("message", function o(l8) {
+            return dn || (dn = Rn()), nn || (nn = Tn()), nn.addEventListener("message", function o(l8) {
                 if (l8.data.id === i7) {
                     if (l8.data.progress !== void 0) return void a.onProgress(l8.data.progress);
                     nn.removeEventListener("message", o), l8.data.error && t(new Error(l8.data.error)), s(l8.data.file);
@@ -24283,18 +24284,18 @@ function zn(r, a) {
                 }, {
                     onProgress: void 0
                 })
-            }), n());
+            }), n();
         });
     });
 }
 function Z(r, a) {
     return new Promise(function(s, t) {
         var n, e, i7, o, l8;
-        if ((e = 0, a.maxSizeMB = a.maxSizeMB || Number.POSITIVE_INFINITY, o = typeof a.useWebWorker != "boolean" || a.useWebWorker, delete a.useWebWorker, i7 = a.onProgress, a.onProgress = function(u) {
+        if (e = 0, a.maxSizeMB = a.maxSizeMB || Number.POSITIVE_INFINITY, o = typeof a.useWebWorker != "boolean" || a.useWebWorker, delete a.useWebWorker, i7 = a.onProgress, a.onProgress = function(u) {
             e = u, typeof i7 == "function" && i7(e);
-        }, !(r instanceof Blob || r instanceof Mn))) return t(new Error("The file given is not an instance of Blob or File"));
+        }, !(r instanceof Blob || r instanceof Mn)) return t(new Error("The file given is not an instance of Blob or File"));
         if (!/^image/.test(r.type)) return t(new Error("The file given is not an image"));
-        if ((l8 = typeof WorkerGlobalScope != "undefined" && self instanceof WorkerGlobalScope, !o || typeof Worker != "function" || l8)) return un(r, a).then((function(u) {
+        if (l8 = typeof WorkerGlobalScope != "undefined" && self instanceof WorkerGlobalScope, !o || typeof Worker != "function" || l8) return un(r, a).then((function(u) {
             try {
                 return n = u, h.call(this);
             } catch (d) {
@@ -24311,7 +24312,7 @@ function Z(r, a) {
             try {
                 return un(r, a).then(function(m) {
                     try {
-                        return (n = m, c());
+                        return n = m, c();
                     } catch (g) {
                         return t(g);
                     }
@@ -24323,7 +24324,7 @@ function Z(r, a) {
         try {
             return zn(r, a).then(function(u) {
                 try {
-                    return (n = u, c());
+                    return n = u, c();
                 } catch (d) {
                     return A();
                 }
@@ -24374,8 +24375,7 @@ const logout = async ()=>fetch('/logout', {
     }).then(()=>window.location.href = '/'
     )
 ;
-const Header = ({ user: user1  })=>{
-    const [userInfo, setUserInfo] = useState(user1.user);
+const Header = ({ userInfo , setUserInfo  })=>{
     const [showModal, setShowModal] = useState(false);
     const editInfo = {
         isEditing: false,
@@ -24388,7 +24388,7 @@ const Header = ({ user: user1  })=>{
         'youtube'
     ];
     const selectImage = ({ target  })=>{
-        if (user1.isGuest) return;
+        if (userInfo.isGuest) return;
         target.previousElementSibling.click();
     };
     const changeImage = ({ target  })=>{
@@ -24402,11 +24402,14 @@ const Header = ({ user: user1  })=>{
             target.nextElementSibling.src = compressedContent;
             try {
                 const updatedUser = {
-                    ...userInfo,
+                    ...userInfo.user,
                     [target.id]: compressedContent
                 };
                 await updateUser(updatedUser);
-                setUserInfo(updatedUser);
+                setUserInfo({
+                    ...userInfo,
+                    user: updatedUser
+                });
             } catch (error) {
                 console.error(error);
             }
@@ -24416,37 +24419,43 @@ const Header = ({ user: user1  })=>{
         if (confirm('Remove optional image?')) {
             try {
                 const updatedUser = {
-                    ...userInfo,
+                    ...userInfo.user,
                     optional_image: ''
                 };
                 await updateUser(updatedUser);
-                setUserInfo(updatedUser);
+                setUserInfo({
+                    ...userInfo,
+                    user: updatedUser
+                });
             } catch (error) {
                 console.error(error);
             }
         }
     };
     const editField = (event)=>{
-        if (user1.isGuest) return;
+        if (userInfo.isGuest) return;
         editInfo.currentElement?.classList.remove('updating-field');
         event.target.setAttribute('contenteditable', true);
         event.target.focus();
-        if (editInfo.currentElement?.innerText !== userInfo[editInfo.currentElement?.id]) {
+        if (editInfo.currentElement?.innerText !== userInfo.user[editInfo.currentElement?.id]) {
             document.body.click();
         }
         event.target.classList.add('updating-field');
         editInfo.currentElement = event.target;
-        const oldValue = userInfo[event.target.id];
+        const oldValue = userInfo.user[event.target.id];
         const fireEvent = async ()=>{
             event.target.classList.remove('updated-field');
             if (event.target.innerText !== oldValue) {
                 try {
                     const updatedUser = {
-                        ...userInfo,
+                        ...userInfo.user,
                         [event.target.id]: event.target.innerText
                     };
                     await updateUser(updatedUser);
-                    setUserInfo(updatedUser);
+                    setUserInfo({
+                        ...userInfo,
+                        user: updatedUser
+                    });
                     event.target.classList.add('updated-field');
                     setTimeout(()=>{
                         event.target.classList.remove('updated-field');
@@ -24460,10 +24469,13 @@ const Header = ({ user: user1  })=>{
             event.target.setAttribute('contenteditable', false);
             editInfo.isEditing = false;
         };
-        if (!editInfo.isEditing) document.body.addEventListener('click', fireEvent, false);
+        if (!editInfo.isEditing) {
+            document.body.addEventListener('click', fireEvent, false);
+            editInfo.isEditing = true;
+        }
         event.stopPropagation();
     };
-    return export_default1.createElement(export_default1.Fragment, null, !user1.isGuest ? export_default1.createElement("div", {
+    return export_default1.createElement(export_default1.Fragment, null, !userInfo.isGuest ? export_default1.createElement("div", {
         className: "profile-logout logout waves-effect waves-light red btn-small",
         onClick: logout
     }, export_default1.createElement("i", {
@@ -24487,7 +24499,7 @@ const Header = ({ user: user1  })=>{
         accept: "image/png, image/jpeg",
         onChange: changeImage
     }), export_default1.createElement("img", {
-        src: userInfo.image !== '' ? userInfo.image : `http://localhost:8000/img/default.png`,
+        src: userInfo.user.image !== '' ? userInfo.user.image : `http://localhost:8000/img/default.png`,
         className: 'profile-header__image',
         onClick: selectImage
     }), export_default1.createElement("div", {
@@ -24496,17 +24508,17 @@ const Header = ({ user: user1  })=>{
         className: 'profile-header__name-group'
     }, export_default1.createElement("span", {
         id: "name",
-        className: `h3 profile-header__name blue-text lighten-2  ${!user1.isGuest && userInfo.name === '' ? 'empty' : ''}`,
+        className: `h3 profile-header__name blue-text lighten-2  ${!userInfo.isGuest && userInfo.user.name === '' ? 'empty' : ''}`,
         onClick: editField
-    }, userInfo.name), export_default1.createElement("span", {
+    }, userInfo.user.name), export_default1.createElement("span", {
         id: "surname",
-        className: `h3 profile-header__name blue-text lighten-2  ${!user1.isGuest && userInfo.surname === '' ? 'empty' : ''}`,
+        className: `h3 profile-header__name blue-text lighten-2  ${!userInfo.isGuest && userInfo.user.surname === '' ? 'empty' : ''}`,
         onClick: editField
-    }, userInfo.surname)), export_default1.createElement("div", {
+    }, userInfo.user.surname)), export_default1.createElement("div", {
         className: "profile-header__slotsgroup"
     }, export_default1.createElement("div", {
         className: 'profile-header__optional-image'
-    }, user1.isGuest && userInfo.optional_image === '' ? undefined : export_default1.createElement(export_default1.Fragment, null, export_default1.createElement("input", {
+    }, userInfo.user.isGufest && userInfo.user.optional_image === '' ? undefined : export_default1.createElement(export_default1.Fragment, null, export_default1.createElement("input", {
         id: "optional_image",
         type: "file",
         name: "name",
@@ -24517,27 +24529,27 @@ const Header = ({ user: user1  })=>{
         onChange: changeImage
     }), export_default1.createElement("img", {
         id: "optional_image",
-        src: userInfo.optional_image && userInfo.optional_image !== '' ? userInfo.optional_image : `http://localhost:8000/img/default.png`,
+        src: userInfo.user.optional_image && userInfo.user.optional_image !== '' ? userInfo.user.optional_image : `http://localhost:8000/img/default.png`,
         className: 'profile-header__image2',
         onClick: selectImage
-    }), " "), !user1.isGuest && userInfo.optional_image && userInfo.optional_image !== '' ? export_default1.createElement("i", {
+    }), " "), !userInfo.isGuest && userInfo.user.optional_image && userInfo.user.optional_image !== '' ? export_default1.createElement("i", {
         onClick: removeOptionalImage,
         className: "material-icons right"
     }, "close") : undefined), export_default1.createElement("div", {
         className: 'profile-header__slots'
     }, export_default1.createElement("span", {
         id: "profile_slot_1",
-        className: `profile-header__slot ${!user1.isGuest && userInfo.profile_slot_1 === '' ? 'empty' : ''}`,
+        className: `profile-header__slot ${!userInfo.isGuest && userInfo.user.profile_slot_1 === '' ? 'empty' : ''}`,
         onClick: editField
-    }, userInfo.profile_slot_1), export_default1.createElement("span", {
+    }, userInfo.user.profile_slot_1), export_default1.createElement("span", {
         id: "profile_slot_2",
-        className: `profile-header__slot ${!user1.isGuest && userInfo.profile_slot_2 === '' ? 'empty' : ''}`,
+        className: `profile-header__slot ${!userInfo.isGuest && userInfo.user.profile_slot_2 === '' ? 'empty' : ''}`,
         onClick: editField
-    }, userInfo.profile_slot_2)))))), export_default1.createElement("div", {
+    }, userInfo.user.profile_slot_2)))))), export_default1.createElement("div", {
         className: "profile__social container"
     }, export_default1.createElement("div", {
         className: "profile__social-links"
-    }, userInfo.social_media.map(({ name , url  }, index)=>{
+    }, userInfo.user.social_media.map(({ name , url  }, index)=>{
         const social_name = name.replace(/\s/g, '').replace(/[^\w\s]/gi, '').toLowerCase();
         let image;
         for (const network of social_networks){
@@ -24557,7 +24569,7 @@ const Header = ({ user: user1  })=>{
         }) : export_default1.createElement("i", {
             className: "material-icons right"
         }, "link"));
-    }), !user1.isGuest ? export_default1.createElement("div", {
+    }), !userInfo.isGuest ? export_default1.createElement("div", {
         className: "btn waves-effect waves-light btn-floating blue btn-small",
         onClick: ()=>{
             document.body.classList.add('show-modal-body');
@@ -24569,7 +24581,7 @@ const Header = ({ user: user1  })=>{
         readOnly: true,
         type: "text",
         className: "profile__share-link",
-        value: `http://localhost:8000/user/${userInfo._id}`
+        value: `http://localhost:8000/user/${userInfo.user._id}`
     }), " ")), export_default1.createElement(SocialMediaModal, {
         show: showModal
     }, export_default1.createElement(SocialMediaForm, {
@@ -24580,7 +24592,7 @@ const Header = ({ user: user1  })=>{
 };
 const SocialMediaForm = ({ userInfo , setShowModal , setUserInfo  })=>{
     const form = useRef();
-    const { social_media  } = userInfo;
+    const { social_media  } = userInfo.user;
     const [links, setLinks] = useState([
         ...Array(social_media.length ? social_media.length : 1).keys()
     ]);
@@ -24607,16 +24619,19 @@ const SocialMediaForm = ({ userInfo , setShowModal , setUserInfo  })=>{
         );
         try {
             console.log({
-                ...userInfo,
+                ...userInfo.user,
                 social_media: newSocialMedia
             });
             await updateUser({
-                ...userInfo,
+                ...userInfo.user,
                 social_media: newSocialMedia
             });
             setUserInfo({
                 ...userInfo,
-                social_media: newSocialMedia
+                user: {
+                    ...userInfo.user,
+                    social_media: newSocialMedia
+                }
             });
             closeModal(false);
         } catch (error) {
@@ -26953,8 +26968,7 @@ const selectForm = (type)=>{
             return ThesisForm;
     }
 };
-const ProfileDocuments = ({ user: user2  })=>{
-    const [userInfo, setUserInfo] = useState(user2);
+const ProfileDocuments = ({ userInfo , setUserInfo  })=>{
     const [showModal, setShowModal] = useState(false);
     const [showCitation, setShowCitation] = useState(false);
     const [activeCitation, setActiveCitation] = useState(undefined);
@@ -27113,7 +27127,7 @@ const ProfileDocuments = ({ user: user2  })=>{
     };
     return export_default1.createElement(export_default1.Fragment, null, export_default1.createElement("div", {
         className: 'profile-articles container'
-    }, !user2.isGuest ? export_default1.createElement(export_default1.Fragment, null, export_default1.createElement("div", {
+    }, !userInfo.isGuest ? export_default1.createElement(export_default1.Fragment, null, export_default1.createElement("div", {
         className: "profile-articles__add-category"
     }, export_default1.createElement("a", {
         className: "btn-floating btn-medium waves-effect waves-light blue dropdown-trigger",
@@ -27141,7 +27155,7 @@ const ProfileDocuments = ({ user: user2  })=>{
             className: "profile-articles__buttons-group1"
         }, export_default1.createElement("span", {
             className: 'profile-articles__category-name'
-        }, category_name), !user2.isGuest ? export_default1.createElement(export_default1.Fragment, null, export_default1.createElement("div", {
+        }, category_name), !userInfo.isGuest ? export_default1.createElement(export_default1.Fragment, null, export_default1.createElement("div", {
             className: "profile-articles__order-controls"
         }, index === 0 ? undefined : export_default1.createElement("button", {
             className: "profile-articles__order-button"
@@ -27153,7 +27167,7 @@ const ProfileDocuments = ({ user: user2  })=>{
         }, export_default1.createElement("i", {
             className: "material-icons",
             onClick: ()=>changeCategoryOrder(1, category_name, order)
-        }, "expand_more")))) : undefined), !user2.isGuest ? export_default1.createElement(export_default1.Fragment, null, export_default1.createElement("div", {
+        }, "expand_more")))) : undefined), !userInfo.isGuest ? export_default1.createElement(export_default1.Fragment, null, export_default1.createElement("div", {
             className: "profile-articles__buttons-group2"
         }, export_default1.createElement("button", {
             className: "btn-floating btn-small waves-effect waves-light blue dropdown-trigger",
@@ -27204,7 +27218,7 @@ const ProfileDocuments = ({ user: user2  })=>{
                 doc: doc
             }), export_default1.createElement("div", {
                 className: "profile-articles__buttons-group"
-            }, !user2.isGuest ? export_default1.createElement("div", {
+            }, !userInfo.isGuest ? export_default1.createElement("div", {
                 className: "profile-articles__buttons-group1"
             }, export_default1.createElement("button", {
                 id: "delete-document",
@@ -27258,18 +27272,25 @@ const ProfileDocuments = ({ user: user2  })=>{
         }
     }));
 };
-const Profile = ({ user: user2  })=>export_default1.createElement("div", {
+const Profile = ({ userInfo  })=>{
+    const [profileUserInfo, setUserInfo] = useState(userInfo);
+    useEffect(()=>{
+        console.log(userInfo);
+    }, []);
+    return export_default1.createElement("div", {
         className: "profile"
     }, export_default1.createElement(Header, {
-        user: user2
+        userInfo: profileUserInfo,
+        setUserInfo: setUserInfo
     }), export_default1.createElement(ProfileDocuments, {
-        user: user2
-    }))
-;
+        userInfo: profileUserInfo,
+        setUserInfo: setUserInfo
+    }));
+};
 const App = ()=>{
     const userInfo = useContext(UserContext);
-    return export_default1.createElement(export_default1.Fragment, null, userInfo.user ? export_default1.createElement(Profile, {
-        user: userInfo
+    return export_default1.createElement(export_default1.Fragment, null, userInfo?.user ? export_default1.createElement(Profile, {
+        userInfo: userInfo
     }) : export_default1.createElement(Auth, null));
 };
 export_default3.hydrate(export_default1.createElement(UserInfoContext, null, export_default1.createElement(App, null)), document.getElementById('app'));

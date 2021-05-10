@@ -4,15 +4,14 @@ import ImageHelper from '~/frontend/src/util/imageCrompressor.js';
 import SocialMediaModal from './SocialMediaModal.jsx';
 import logout from '~/frontend/src/api/logout.js';
 
-const Header = ({user}) => {
+const Header = ({userInfo, setUserInfo}) => {
 
-    const [userInfo, setUserInfo] = useState(user.user);
     const [showModal, setShowModal] = useState(false);
     const editInfo = { isEditing: false, currentElement: undefined };
     const social_networks = ['youtube', 'twitter', 'instagram', 'youtube'];
 
     const selectImage = ({target}) => {
-        if (user.isGuest) return;
+        if (userInfo.isGuest) return;
         target.previousElementSibling.click()
     };
     const changeImage = ({target}) => {
@@ -25,9 +24,9 @@ const Header = ({user}) => {
             const compressedContent = await imageHelper.resizeBase64Image(content);
             target.nextElementSibling.src = compressedContent;
             try {
-                const updatedUser = { ...userInfo, [target.id]: compressedContent };
+                const updatedUser = { ...userInfo.user, [target.id]: compressedContent };
                 await updateUser(updatedUser);
-                setUserInfo(updatedUser);            
+                setUserInfo({ ...userInfo, user: updatedUser });          
             } catch (error) {
                 console.error(error);
             }
@@ -37,9 +36,9 @@ const Header = ({user}) => {
     const removeOptionalImage = async () => {
         if (confirm('Remove optional image?')) {
             try {
-                const updatedUser = { ...userInfo, optional_image: '' };
+                const updatedUser = { ...userInfo.user, optional_image: '' };
                 await updateUser(updatedUser);
-                setUserInfo(updatedUser);
+                setUserInfo({ ...userInfo, user: updatedUser });
             } catch (error) {
                 console.error(error);
             }
@@ -47,26 +46,26 @@ const Header = ({user}) => {
     }
     const editField = event => {
     
-        if (user.isGuest) return;
+        if (userInfo.isGuest) return;
 
         editInfo.currentElement?.classList.remove('updating-field');
         event.target.setAttribute('contenteditable', true);
         event.target.focus();
         
-        if (editInfo.currentElement?.innerText !== userInfo[editInfo.currentElement?.id]) {
+        if (editInfo.currentElement?.innerText !== userInfo.user[editInfo.currentElement?.id]) {
             document.body.click();
         }
 
         event.target.classList.add('updating-field');
         editInfo.currentElement = event.target;
-        const oldValue = userInfo[event.target.id];
+        const oldValue = userInfo.user[event.target.id];
         const fireEvent = async () => {
             event.target.classList.remove('updated-field');
             if (event.target.innerText !== oldValue) {
                 try {
-                    const updatedUser = { ...userInfo, [event.target.id]: event.target.innerText };
+                    const updatedUser = { ...userInfo.user, [event.target.id]: event.target.innerText };
                     await updateUser(updatedUser);
-                    setUserInfo(updatedUser);
+                    setUserInfo({ ...userInfo, user: updatedUser });
                     event.target.classList.add('updated-field');
                     setTimeout(() => {
                         event.target.classList.remove('updated-field');
@@ -81,38 +80,41 @@ const Header = ({user}) => {
             editInfo.isEditing = false;
         }
         
-        if (!editInfo.isEditing) document.body.addEventListener('click', fireEvent, false);
+        if (!editInfo.isEditing) { 
+            document.body.addEventListener('click', fireEvent, false);
+            editInfo.isEditing = true;
+        }
         event.stopPropagation();
     }
 
     return (
         <>
-        { !user.isGuest ?
+        { !userInfo.isGuest ?
             <div className="profile-logout logout waves-effect waves-light red btn-small" onClick={logout}><i className="material-icons left">exit_to_app</i></div>
             : <div className="profile-logout login waves-effect waves-light blue btn-small" onClick={() => window.location.href = '/'}><i className="material-icons left">login</i></div>
         }
         <div className="profile-container">
         <div className="profile-header container">
             <input id="image" type="file" name="name" style={{display: 'none'}} accept="image/png, image/jpeg" onChange={changeImage} />
-            <img src={userInfo.image !== '' ? userInfo.image : `http://localhost:8000/img/default.png`} className={'profile-header__image'} onClick={selectImage}  />
+            <img src={userInfo.user.image !== '' ? userInfo.user.image : `http://localhost:8000/img/default.png`} className={'profile-header__image'} onClick={selectImage}  />
             <div className={'profile-header__textgroup'}>
                 <div className={'profile-header__name-group'}>
-                    <span id="name" className={`h3 profile-header__name blue-text lighten-2  ${!user.isGuest && userInfo.name === '' ? 'empty' : ''}`} onClick={editField}>{userInfo.name}</span>
-                    <span id="surname" className={`h3 profile-header__name blue-text lighten-2  ${!user.isGuest && userInfo.surname === '' ? 'empty' : ''}`} onClick={editField}>{userInfo.surname}</span>
+                    <span id="name" className={`h3 profile-header__name blue-text lighten-2  ${!userInfo.isGuest && userInfo.user.name === '' ? 'empty' : ''}`} onClick={editField}>{userInfo.user.name}</span>
+                    <span id="surname" className={`h3 profile-header__name blue-text lighten-2  ${!userInfo.isGuest && userInfo.user.surname === '' ? 'empty' : ''}`} onClick={editField}>{userInfo.user.surname}</span>
                 </div>
                 <div className="profile-header__slotsgroup">
                     <div className={'profile-header__optional-image'}>
-                        { user.isGuest && userInfo.optional_image === '' ? undefined : 
+                        { userInfo.user.isGufest && userInfo.user.optional_image === '' ? undefined : 
                         <>
                             <input id="optional_image" type="file" name="name" style={{display: 'none'}} accept="image/png, image/jpeg" onChange={changeImage} />
-                            <img id="optional_image" src={userInfo.optional_image && userInfo.optional_image !== '' ? userInfo.optional_image : `http://localhost:8000/img/default.png`} className={'profile-header__image2'} onClick={selectImage} /> </>
+                            <img id="optional_image" src={userInfo.user.optional_image && userInfo.user.optional_image !== '' ? userInfo.user.optional_image : `http://localhost:8000/img/default.png`} className={'profile-header__image2'} onClick={selectImage} /> </>
                         
                         }
-                        {!user.isGuest && userInfo.optional_image && userInfo.optional_image !== '' ? <i onClick={removeOptionalImage} className="material-icons right">close</i> : undefined}
+                        {!userInfo.isGuest && userInfo.user.optional_image && userInfo.user.optional_image !== '' ? <i onClick={removeOptionalImage} className="material-icons right">close</i> : undefined}
                     </div>
                     <div className={'profile-header__slots'}>
-                        <span id="profile_slot_1" className={`profile-header__slot ${!user.isGuest && userInfo.profile_slot_1 === '' ? 'empty' : ''}`} onClick={editField}>{userInfo.profile_slot_1}</span>
-                        <span id="profile_slot_2" className={`profile-header__slot ${!user.isGuest && userInfo.profile_slot_2 === '' ? 'empty' : ''}`} onClick={editField}>{userInfo.profile_slot_2}</span>
+                        <span id="profile_slot_1" className={`profile-header__slot ${!userInfo.isGuest && userInfo.user.profile_slot_1 === '' ? 'empty' : ''}`} onClick={editField}>{userInfo.user.profile_slot_1}</span>
+                        <span id="profile_slot_2" className={`profile-header__slot ${!userInfo.isGuest && userInfo.user.profile_slot_2 === '' ? 'empty' : ''}`} onClick={editField}>{userInfo.user.profile_slot_2}</span>
                     </div>
                 </div>
             </div>
@@ -121,7 +123,7 @@ const Header = ({user}) => {
         <div className="profile__social container">
             <div className="profile__social-links">
                 {
-                    userInfo.social_media.map(({name, url}, index) => {
+                    userInfo.user.social_media.map(({name, url}, index) => {
                         const social_name = name.replace(/\s/g, '').replace(/[^\w\s]/gi, '').toLowerCase();
                         let image;
                         for (const network of social_networks) {
@@ -140,14 +142,14 @@ const Header = ({user}) => {
                         )
                     })
                 }
-                { !user.isGuest ? 
+                { !userInfo.isGuest ? 
                     <div className="btn waves-effect waves-light btn-floating blue btn-small" onClick={() => {document.body.classList.add('show-modal-body'); setShowModal(true)}}>
                         <i className="material-icons right">add</i>
                     </div>
                     : undefined
                 }
             </div>
-            <span>Share: <input readOnly type="text" className="profile__share-link" value={`http://localhost:8000/user/${userInfo._id}`} /> </span>
+            <span>Share: <input readOnly type="text" className="profile__share-link" value={`http://localhost:8000/user/${userInfo.user._id}`} /> </span>
         </div>
         <SocialMediaModal show={showModal}>
             <SocialMediaForm userInfo={userInfo} setUserInfo={setUserInfo} setShowModal={setShowModal} />
@@ -159,7 +161,7 @@ const Header = ({user}) => {
 const SocialMediaForm = ({userInfo, setShowModal, setUserInfo}) => {
 
     const form = useRef();
-    const { social_media } = userInfo;
+    const { social_media } = userInfo.user;
     const [links, setLinks] = useState([...Array(social_media.length ? social_media.length : 1).keys()]);
     const addLink = () => setLinks([...links, Math.max(...links) + 1]);
 
@@ -179,9 +181,9 @@ const SocialMediaForm = ({userInfo, setShowModal, setUserInfo}) => {
 
         try {
 
-            console.log({...userInfo, social_media: newSocialMedia});
-            await updateUser({...userInfo, social_media: newSocialMedia});
-            setUserInfo({...userInfo, social_media: newSocialMedia});
+            console.log({...userInfo.user, social_media: newSocialMedia});
+            await updateUser({...userInfo.user, social_media: newSocialMedia});
+            setUserInfo({ ...userInfo, user: {...userInfo.user, social_media: newSocialMedia} });
             closeModal(false);
 
         } catch (error) {

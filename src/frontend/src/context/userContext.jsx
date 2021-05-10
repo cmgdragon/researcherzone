@@ -5,13 +5,13 @@ export const UserContext = createContext(false);
 
 const UserInfoContext = ({children}) => {
 
-    const [user, setUser] = useState(false);
+    const [userInfo, setUserInfo] = useState(false);
 
     useEffect(async () => {
-
         try {
             const userInfo = await getUserInfo();
-            setUser(userInfo);
+            setUserInfo(userInfo);
+            console.log(userInfo)
         } catch (error) {
             console.error(error);
         }
@@ -19,7 +19,7 @@ const UserInfoContext = ({children}) => {
     }, []);
 
     return (
-        <UserContext.Provider value={user}>{children}</UserContext.Provider>
+        <UserContext.Provider value={userInfo}>{children}</UserContext.Provider>
     )
 
 }

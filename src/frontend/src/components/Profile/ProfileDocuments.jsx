@@ -11,9 +11,9 @@ import selectCitation from './Citations/selectCitation.js';
 import selectForm from './DocumentForms/selectForm.js';
 import Footer from '../../components/Footer.jsx';
 
-const ProfileDocuments = ({user}) => {
+const ProfileDocuments = ({userInfo, setUserInfo}) => {
 
-    const [userInfo, setUserInfo] = useState(user);
+    //const [userInfo, setUserInfo] = useState(user);
     const [showModal, setShowModal] = useState(false);
     const [showCitation, setShowCitation] = useState(false);
     const [activeCitation, setActiveCitation] = useState(undefined);
@@ -156,7 +156,7 @@ const ProfileDocuments = ({user}) => {
         <>
         <div className={'profile-articles container'}>
 
-            { !user.isGuest ? <>
+            { !userInfo.isGuest ? <>
                 <div className="profile-articles__add-category">
                     <a className='btn-floating btn-medium waves-effect waves-light blue dropdown-trigger' href='#' data-target='dropdownc'><i className="material-icons">add</i></a>
                 </div>
@@ -176,7 +176,7 @@ const ProfileDocuments = ({user}) => {
 
                         <div className="profile-articles__buttons-group1">
                         <span className={'profile-articles__category-name'}>{category_name}</span>
-                        { !user.isGuest ? <>              
+                        { !userInfo.isGuest ? <>              
                             <div className="profile-articles__order-controls">
                                 { index === 0 ? undefined :
                                 <button className="profile-articles__order-button">
@@ -193,7 +193,7 @@ const ProfileDocuments = ({user}) => {
                         </> : undefined
                         }
                         </div>
-                        { !user.isGuest ? <>  
+                        { !userInfo.isGuest ? <>  
                         <div className="profile-articles__buttons-group2">
                             <button className='btn-floating btn-small waves-effect waves-light blue dropdown-trigger' href='#' data-target={`dropdown${index}`}><i className="material-icons">add</i></button>
                             <button id="delete-category" onClick={() => deleteCategoryDocuments(category_name, category_id)} className="btn waves-effect waves-light btn-floating red btn-small">
@@ -222,7 +222,7 @@ const ProfileDocuments = ({user}) => {
                                 <div className={'profile-articles__category-document'} key={JSON.stringify(doc)}>
                                     <DocumentRender doc={doc} />
                                     <div className="profile-articles__buttons-group">
-                                        { !user.isGuest ?
+                                        { !userInfo.isGuest ?
                                         <div className="profile-articles__buttons-group1">
                                             <button id="delete-document" onClick={() => deleteOneDocument(doc._id)} className="btn waves-effect waves-light btn-floating red btn-small"
                                             >

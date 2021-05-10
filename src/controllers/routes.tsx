@@ -34,10 +34,10 @@ router.get('/', async (context: Context) => {
 
 router.get('/user/:id', async (context: Context) => {
 
-    const user = await getGuestInfo(context.request.url.pathname);
+    const userInfo = await getGuestInfo(context.request.url.pathname);
 
     try {
-        const toStringProfile = ReactDOMServer.renderToString(<Profile user={user} />);    
+        const toStringProfile = ReactDOMServer.renderToString(<Profile userInfo={userInfo} />);    
         context.response.body = html.replace(
             '<main id="app"></main>',
             `<main id="app">${toStringProfile}</main>`
