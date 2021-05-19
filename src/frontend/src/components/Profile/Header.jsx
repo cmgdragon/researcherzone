@@ -46,7 +46,7 @@ const Header = ({userInfo, setUserInfo}) => {
     }
     const editField = event => {
     
-        if (userInfo.isGuest) return;
+        if (userInfo.isGuest || editInfo.isEditing) return;
 
         editInfo.currentElement?.classList.remove('updating-field');
         event.target.setAttribute('contenteditable', true);
