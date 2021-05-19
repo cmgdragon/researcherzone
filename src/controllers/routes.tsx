@@ -13,6 +13,7 @@ import register from '~/controllers/authentication/register.ts';
 import logout from '~/controllers/authentication/logout.ts';
 import getUserInfo from "~/controllers/authentication/getUserInfo.ts";
 import getGuestInfo from "~/controllers/authentication/getGuestInfo.ts";
+import verifyAccount from "~/controllers/authentication/verify_account.ts";
 
 const router = new Router();
 
@@ -66,5 +67,7 @@ router.get('/user/:id', async (context: Context) => {
 .delete('/deletecategory', verifyUserCall, documents_api.removeCategory)
 
 .get('/getuserinfo', verifyToken, getUserInfo)
+
+.get('/verify_account/:id', verifyAccount)
 
 export default router;

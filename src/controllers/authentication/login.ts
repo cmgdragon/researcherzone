@@ -10,6 +10,15 @@ const login = async ({request, response}: Context) => {
     const body = await request.body().value;
     const user = await findUserByEmail(body.email);
 
+    if (!user.verified) {
+      response.status = 401;
+      response.body = {
+        message: 'You must verify your account before log in!',
+        status: 401
+      }
+      return;
+    }
+
     if (user.pwd !== sha256(body.pwd, "utf8", "hex") as string) {
       response.status = 401;
       response.body = {

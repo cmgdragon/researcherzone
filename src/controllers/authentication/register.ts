@@ -1,6 +1,7 @@
 import { Context } from "oak";
 import { addNewUser, findUserByEmail } from '~/controllers/database/users.ts';
 import User from "~/models/User.ts";
+import { SmtpClient } from 'smtp';
 
 const register = async (context: Context) => {
     try {
@@ -20,7 +21,27 @@ const register = async (context: Context) => {
                 return;
         }
         
-        await addNewUser(user);
+        const userId = (await addNewUser(user)).toString();
+        const client = new SmtpClient();
+
+        await client.connectTLS({
+            hostname: "smtp.gmail.com",
+            port: 465,
+            username: Deno.env.get('SMTP_USER'),
+            password: Deno.env.get('SMTP_PASSWORD'),
+        });
+
+        await client.send({
+            from: Deno.env.get('SMTP_USER'),
+            to: user.email,
+            subject: "ResearcherZone – Verification",
+            content: '',
+            html: `Thank you for registering! Please, click on the following link to verify your account:
+            <a href="http://localhost:8000/verify_account/${userId}">http://localhost:8000/verify_account/${userId}</a>`
+        });
+
+        await client.close();
+
         context.response.status = 200;
         context.response.body = { status: 200 };
 

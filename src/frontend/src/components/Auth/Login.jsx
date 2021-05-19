@@ -1,12 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const Login = ({registered}) => {
 
     const [error, setError] = useState('');
+    const [message, setMessage] = useState(undefined);
+
+    useEffect(() => {
+      if (registered) {
+        setMessage('We have sent a message to your email. Please, verify you account before log in');
+      }
+      if (window.location.search.includes('verification_successful')) {
+        setMessage('Verification successful! Please, log in');
+      }
+    }, []);
 
     const login = async (event) => {
         event.preventDefault();        
-
+        setMessage(undefined);
+        
         const login = {};
         login.email = [...event.target].find(input => input.id === 'email').value;
         login.pwd = [...event.target].find(input => input.id === 'password').value;
@@ -31,7 +42,7 @@ const Login = ({registered}) => {
         <div className="container row">
         
         <form className="col s12" onSubmit={login}>
-        {registered ? <pre className="green-text">Registration successful! Please log in</pre> : undefined}
+        <pre className="green-text">{message}</pre>
         <pre className="red-text">{error}</pre>
           <div className="row">
             <div className="input-field col s12">

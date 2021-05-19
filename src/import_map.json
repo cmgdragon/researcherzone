@@ -11,7 +11,8 @@
     "sha256": "https://deno.land/x/sha256@v1.0.2/mod.ts",
     "djwt": "https://deno.land/x/djwt@v2.2/mod.ts",
     "cookie": "https://esm.sh/cookie@0.4.1",
-    "browser-image-compression": "https://esm.sh/browser-image-compression@1.0.14"
+    "browser-image-compression": "https://esm.sh/browser-image-compression@1.0.14",
+    "smtp": "https://deno.land/x/smtp/mod.ts"
   },
   "scopes": {}
 }

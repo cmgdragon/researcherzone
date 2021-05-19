@@ -5,43 +5,53 @@ const Register = ({changeRoute}) => {
 
     const [inputs, setInputs] = useState({email: '', name: '', password: '', password2: ''});
     const [errors, setError] = useState({email: '', name: '', password: '', password2: '', form: ''});
+    const [sending, setSending] = useState(false);
 
     const validate = ({target}) => {
         setInputs({...inputs, [target.id]: target.value});
 
-        if (target.id === 'name') {
-
+        switch(target.id) {
+          case 'name':
             if (target.value.length < 3) {
-                target.classList.add('invalid');
-                setError({...errors, [target.id]: 'Too short! Min. 3 chars.'})
-                return;
+              target.classList.add('invalid');
+              setError({...errors, [target.id]: 'Too short! Min. 3 chars.'})
+              return;
             }
             setError({...errors, [target.id]: '✓'})
             target.classList.remove('invalid');
-
-        } else if (target.id === 'password') {
+            break;
+          case 'password':
             if (target.value.length < 8) {
-                target.classList.add('invalid');
-                setError({...errors, [target.id]: 'Too short! Min. 8 chars.'})
+              target.classList.add('invalid');
+              setError({...errors, [target.id]: 'Too short! Min. 8 chars.'})
+              return;
+            } else {
+              if (target.value !== document.getElementById('password2').value) {
+                target.classList.remove('invalid');
+                document.getElementById('password2').classList.add('invalid');
+                setError({...errors, password2: 'Passwords must match!', [target.id]: '✓'})
                 return;
+              }
             }
-            setError({...errors, [target.id]: '✓'})
-            target.classList.remove('invalid');
 
-        } else if (target.id === 'password2') {
+            setError({...errors, password2: '✓', [target.id]: '✓'})
+            document.getElementById('password2').classList.remove('invalid');
+            classList.remove('invalid');
+            break;
+          case 'password2':
             if (target.value !== document.getElementById('password').value) {
-                target.classList.add('invalid');
-                setError({...errors, [target.id]: 'Passwords must match!'})
-                return;
+              target.classList.add('invalid');
+              setError({...errors, [target.id]: 'Passwords must match!'})
+              return;
             }
             setError({...errors, [target.id]: '✓'})
             target.classList.remove('invalid');
-
-        } else if (target.id === 'email') {
+            break;
+          case 'email':
             if (!/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(target.value)) {
-                target.classList.add('invalid');
-                setError({...errors, [target.id]: 'Invalid email'})
-                return;
+              target.classList.add('invalid');
+              setError({...errors, [target.id]: 'Invalid email'})
+              return;
             }
             setError({...errors, [target.id]: '✓'})
             target.classList.remove('invalid');
@@ -59,6 +69,7 @@ const Register = ({changeRoute}) => {
 
     const register = async (event) => {
         event.preventDefault();
+        setSending(true);
 
         if (!canBeSent()) return;
 
@@ -80,7 +91,8 @@ const Register = ({changeRoute}) => {
             changeRoute('newuser');
           break;
           default:
-            setError({...errors, form: response.message})
+            setError({...errors, form: response.message});
+            setSending(false);
         }
     }
 
@@ -121,7 +133,7 @@ const Register = ({changeRoute}) => {
             </div>
           </div>
         <button id="send-form" className="btn waves-effect waves-light green accent-4" type="submit" name="action"
-         disabled={!(errors.name === '✓' && errors.password === '✓' && errors.password2 === '✓' && errors.email === '✓')}>Register
+         disabled={!(errors.name === '✓' && errors.password === '✓' && errors.password2 === '✓' && errors.email === '✓') || sending}>{ sending ? 'Registering...' : 'Register' }
             <i className="material-icons right">done</i>
         </button>
         </form>

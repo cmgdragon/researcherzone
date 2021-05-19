@@ -21703,8 +21703,9 @@ function sha256(msg, inputEncoding, outputEncoding) {
     return new SHA256().update(msg, inputEncoding).digest(outputEncoding);
 }
 class User {
+    _id;
     name;
-    surname = "familyname";
+    surname = '';
     email;
     pwd;
     profile_slot_1 = '';
@@ -21713,10 +21714,12 @@ class User {
     image = '';
     optional_image = '';
     social_media = [];
+    verified;
     constructor(user1){
         this.email = user1.email;
         this.name = user1.name;
         this.surname = user1.surname;
+        this.verified = false;
         this.pwd = sha256(user1.pwd, "utf8", "hex");
     }
 }
@@ -21734,67 +21737,85 @@ const Register = ({ changeRoute  })=>{
         password2: '',
         form: ''
     });
+    const [sending, setSending] = useState(false);
     const validate = ({ target  })=>{
         setInputs({
             ...inputs,
             [target.id]: target.value
         });
-        if (target.id === 'name') {
-            if (target.value.length < 3) {
-                target.classList.add('invalid');
+        switch(target.id){
+            case 'name':
+                if (target.value.length < 3) {
+                    target.classList.add('invalid');
+                    setError({
+                        ...errors,
+                        [target.id]: 'Too short! Min. 3 chars.'
+                    });
+                    return;
+                }
                 setError({
                     ...errors,
-                    [target.id]: 'Too short! Min. 3 chars.'
+                    [target.id]: '✓'
                 });
-                return;
-            }
-            setError({
-                ...errors,
-                [target.id]: '✓'
-            });
-            target.classList.remove('invalid');
-        } else if (target.id === 'password') {
-            if (target.value.length < 8) {
-                target.classList.add('invalid');
+                target.classList.remove('invalid');
+                break;
+            case 'password':
+                if (target.value.length < 8) {
+                    target.classList.add('invalid');
+                    setError({
+                        ...errors,
+                        [target.id]: 'Too short! Min. 8 chars.'
+                    });
+                    return;
+                } else {
+                    if (target.value !== document.getElementById('password2').value) {
+                        target.classList.remove('invalid');
+                        document.getElementById('password2').classList.add('invalid');
+                        setError({
+                            ...errors,
+                            password2: 'Passwords must match!',
+                            [target.id]: '✓'
+                        });
+                        return;
+                    }
+                }
                 setError({
                     ...errors,
-                    [target.id]: 'Too short! Min. 8 chars.'
+                    password2: '✓',
+                    [target.id]: '✓'
                 });
-                return;
-            }
-            setError({
-                ...errors,
-                [target.id]: '✓'
-            });
-            target.classList.remove('invalid');
-        } else if (target.id === 'password2') {
-            if (target.value !== document.getElementById('password').value) {
-                target.classList.add('invalid');
+                document.getElementById('password2').classList.remove('invalid');
+                classList.remove('invalid');
+                break;
+            case 'password2':
+                if (target.value !== document.getElementById('password').value) {
+                    target.classList.add('invalid');
+                    setError({
+                        ...errors,
+                        [target.id]: 'Passwords must match!'
+                    });
+                    return;
+                }
                 setError({
                     ...errors,
-                    [target.id]: 'Passwords must match!'
+                    [target.id]: '✓'
                 });
-                return;
-            }
-            setError({
-                ...errors,
-                [target.id]: '✓'
-            });
-            target.classList.remove('invalid');
-        } else if (target.id === 'email') {
-            if (!/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(target.value)) {
-                target.classList.add('invalid');
+                target.classList.remove('invalid');
+                break;
+            case 'email':
+                if (!/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(target.value)) {
+                    target.classList.add('invalid');
+                    setError({
+                        ...errors,
+                        [target.id]: 'Invalid email'
+                    });
+                    return;
+                }
                 setError({
                     ...errors,
-                    [target.id]: 'Invalid email'
+                    [target.id]: '✓'
                 });
-                return;
-            }
-            setError({
-                ...errors,
-                [target.id]: '✓'
-            });
-            target.classList.remove('invalid');
+                target.classList.remove('invalid');
         }
     };
     const canBeSent = ()=>{
@@ -21806,6 +21827,7 @@ const Register = ({ changeRoute  })=>{
     };
     const register = async (event)=>{
         event.preventDefault();
+        setSending(true);
         if (!canBeSent()) return;
         const newUser = new User({
             email: [
@@ -21842,6 +21864,7 @@ const Register = ({ changeRoute  })=>{
                     ...errors,
                     form: response.message
                 });
+                setSending(false);
         }
     };
     return export_default1.createElement("div", {
@@ -21911,15 +21934,25 @@ const Register = ({ changeRoute  })=>{
         className: "btn waves-effect waves-light green accent-4",
         type: "submit",
         name: "action",
-        disabled: !(errors.name === '✓' && errors.password === '✓' && errors.password2 === '✓' && errors.email === '✓')
-    }, "Register", export_default1.createElement("i", {
+        disabled: !(errors.name === '✓' && errors.password === '✓' && errors.password2 === '✓' && errors.email === '✓') || sending
+    }, sending ? 'Registering...' : 'Register', export_default1.createElement("i", {
         className: "material-icons right"
     }, "done"))));
 };
 const Login = ({ registered  })=>{
     const [error, setError] = useState('');
+    const [message, setMessage] = useState(undefined);
+    useEffect(()=>{
+        if (registered) {
+            setMessage('We have sent a message to your email. Please, verify you account before log in');
+        }
+        if (window.location.search.includes('verification_successful')) {
+            setMessage('Verification successful! Please, log in');
+        }
+    }, []);
     const login = async (event)=>{
         event.preventDefault();
+        setMessage(undefined);
         const login1 = {
         };
         login1.email = [
@@ -21952,9 +21985,9 @@ const Login = ({ registered  })=>{
     }, export_default1.createElement("form", {
         className: "col s12",
         onSubmit: login
-    }, registered ? export_default1.createElement("pre", {
+    }, export_default1.createElement("pre", {
         className: "green-text"
-    }, "Registration successful! Please log in") : undefined, export_default1.createElement("pre", {
+    }, message), export_default1.createElement("pre", {
         className: "red-text"
     }, error), export_default1.createElement("div", {
         className: "row"
