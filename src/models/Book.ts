@@ -8,10 +8,10 @@ export class Book implements IProfileDocument {
     type: string = 'book';
     can_be_cited: boolean;
     volume: number;
-    author: {name: string, surname: string};
+    authors: Array<{name: string, surname: string}>;
     title: string;
     subtitle: string;
-    edition: string;
+    edition: number;
     publication_place: string;
     publisher: string;
     publication_year: number;
@@ -20,7 +20,7 @@ export class Book implements IProfileDocument {
 }
 
 export class BookChapter extends Book {
-    editors: {name: string, surname: string};
+    editors: Array<{name: string, surname: string}>;
     number: number;
     start_page: number;
     end_page: number;
