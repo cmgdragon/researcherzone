@@ -4,6 +4,7 @@ deno run --lock=lock.json --lock-write imports.ts
 
 deno run --allow-env --allow-read --allow-net --config ./tsconfig.json  src/main.ts
 
+deno test --import-map=src/import_map.json --config ./tsconfig.json -A
 
 //docker
 docker build -t deno_server .

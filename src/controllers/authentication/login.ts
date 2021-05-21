@@ -4,11 +4,22 @@ import { findUserByEmail } from '~/controllers/database/users.ts';
 import { sha256 } from 'sha256';
 import cookie from 'cookie';
 
+import { db_users } from '~/database.ts';
+
 const login = async ({request, response}: Context) => {
 
   try {
     const body = await request.body().value;
     const user = await findUserByEmail(body.email);
+
+    if (!user) {
+      response.status = 401;
+      response.body = {
+        message: 'This user does not exists. Please, register',
+        status: 401
+      }
+      return;
+    }
 
     if (!user.verified) {
       response.status = 401;

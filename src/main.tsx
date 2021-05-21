@@ -13,7 +13,6 @@ declare global {
 //dotenv
 config({export: true, safe: true});
 
-
 const app = new Application();
 
 app.use(router.routes())

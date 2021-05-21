@@ -1,17 +1,18 @@
-import { db_documents } from '~/database_dev.ts';
+import { db_documents } from '~/database.ts';
+//import { db_documents } from '~/database_dev.ts';
 
 export const addNewDocument = async (document: any): Promise<any> => await db_documents.insertOne(document);
 
 export const deleteDocument = async (_id: any, user: any): Promise<any> => await db_documents.deleteOne({ _id, user });
 
-export const deleteCategory = async (category: any, user: any): Promise<any> => {
-    console.log(category, user)
-    await db_documents.deleteMany({ category, user })
-};
+export const deleteCategory = async (category: any, user: any): Promise<any> => 
+    await db_documents.deleteMany({ category, user });
 
-export const findDocument = async (_id: string): Promise<any> => await db_documents.findOne({ _id });
+export const findDocument = async (_id: any): Promise<any> => 
+    await db_documents.findOne({ _id },  { noCursorTimeout: false } as any);
 
-export const findDocuments = async (user: string) => await db_documents.find({ user }).toArray();
+export const findDocuments = async (user: string) => 
+    await db_documents.find({ user },  { noCursorTimeout: false } as any).toArray();
 
 const extractFields = (document: Object) => {
     const keys = Object.keys(document);

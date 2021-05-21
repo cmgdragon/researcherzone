@@ -1,11 +1,16 @@
-import { db_users } from '~/database_dev.ts';
+import { db_users } from '~/database.ts';
+//import { db_users } from '~/database_dev.ts';
 import User from '~/models/User.ts';
 
 export const addNewUser = async (user: User): Promise<any> => await db_users.insertOne(user);
 
-export const findUserByEmail = async (param: any): Promise<any> => await db_users.findOne({email: param});
+export const findUserByEmail = async (param: any): Promise<any> => 
+    await db_users.findOne({ email: param }, { noCursorTimeout: false } as any);
 
-export const findUserById = async (_id): Promise<any> => await db_users.findOne({ _id });
+export const findUserById = async (_id: any): Promise<any> => 
+    await db_users.findOne({ _id },  { noCursorTimeout: false } as any);
+
+export const deleteUser = async (email: string): Promise<any> => await db_users.deleteOne({ email });
 
 const extractFields = (document: Object) => {
     const keys = Object.keys(document);

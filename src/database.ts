@@ -1,6 +1,9 @@
-import { Bson, MongoClient } from "deno-mongo";
+import { MongoClient } from "deno-mongo";
 import User from './models/User.ts';
-import IProfileDocument from './models/interfaces/IProfileDocument.ts';
+import { config } from 'dotenv';
+
+//dotenv
+config({export: true, safe: true});
 
 const client = new MongoClient();
 
