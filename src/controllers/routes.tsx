@@ -1,3 +1,4 @@
+import UserInfoContext from '~/frontend/src/context/userContext.jsx';
 import App from '~/frontend/src/App.jsx';
 import Profile from '~/frontend/src/components/Profile/index.jsx';
 import { Router, Context } from "oak";
@@ -12,6 +13,7 @@ import * as documents_api from '~/controllers/api/documents.ts';
 import register from '~/controllers/authentication/register.ts';
 import logout from '~/controllers/authentication/logout.ts';
 import getUserInfo from "~/controllers/authentication/getUserInfo.ts";
+import getUserDocuments from "~/controllers/authentication/getUserDocuments.ts";
 import getGuestInfo from "~/controllers/authentication/getGuestInfo.ts";
 import verifyAccount from "~/controllers/authentication/verify_account.ts";
 
@@ -23,7 +25,11 @@ const html = await Deno.readTextFile(`${Deno.cwd().replace(/\\/g, "/")}/src/stat
 router.get('/', async (context: Context) => {
 
     try {
-        const toStringApp = ReactDOMServer.renderToString(<App />);    
+        const toStringApp = ReactDOMServer.renderToString(
+            <UserInfoContext>
+                <App />
+            </UserInfoContext>
+        );    
         context.response.body = html.replace(
             '<main id="app"></main>',
             `<main id="app">${toStringApp}</main>`
@@ -67,6 +73,8 @@ router.get('/user/:id', async (context: Context) => {
 .delete('/deletecategory', verifyUserCall, documents_api.removeCategory)
 
 .get('/getuserinfo', verifyToken, getUserInfo)
+
+.get('/getuserdocuments', verifyToken, getUserDocuments)
 
 .get('/verify_account/:id', verifyAccount)
 

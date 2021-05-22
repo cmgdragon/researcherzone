@@ -60,12 +60,9 @@ const ConferenceProceedingForm = ({current, userInfo, setUserInfo, setShowModal,
         try {
 
             const newDocument = createDocumentObject();
-            console.log({...current, ...newDocument});
             if (!current) {
-                console.log(newDocument)
                 const response = await addDocument(newDocument);
                 const { document_id } = await response.json();
-                console.log({ user: { ...userInfo.user }, documents: [...userInfo.documents, { ...newDocument, _id: document_id }] });
                 setUserInfo({ user: { ...userInfo.user }, documents: [...userInfo.documents, { ...newDocument, _id: document_id }] });
             } else {
 
@@ -79,7 +76,6 @@ const ConferenceProceedingForm = ({current, userInfo, setUserInfo, setShowModal,
                 ];
                 
                 await updateDocument({...newDocument, _id: current._id });
-                console.log({ user: userInfo.user, documents: updatedDocuments });
                 setUserInfo({ user: userInfo.user, documents: updatedDocuments });
             }
 

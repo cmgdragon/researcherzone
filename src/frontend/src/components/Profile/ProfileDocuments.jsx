@@ -9,7 +9,6 @@ import DocumentsModal from './DocumentsModal.jsx';
 import CitationModal from './Citations/CitationModal.jsx';
 import selectCitation from './Citations/selectCitation.js';
 import selectForm from './DocumentForms/selectForm.js';
-import Footer from '../../components/Footer.jsx';
 
 const ProfileDocuments = ({userInfo, setUserInfo}) => {
 
@@ -64,7 +63,6 @@ const ProfileDocuments = ({userInfo, setUserInfo}) => {
                                             .sort((a, b) => orderList(a, b))
                                             .map((doc, index) => ({ ...doc, order: index }));
 
-                                            console.log(updatedDocuments)
                 setUserInfo({ user: userInfo.user, documents: updatedDocuments });
             } catch (error) {
                 console.error(error);
@@ -80,7 +78,7 @@ const ProfileDocuments = ({userInfo, setUserInfo}) => {
                 updatedUser.categories = [ ...updatedUser.categories ]
                                             .sort((a, b) => orderList(a, b))
                                             .map((cat, index) => ({ ...cat, order: index }));
-                console.log(updatedUser)
+
                 await deleteCategory(categoryId, updatedUser);
                 setUserInfo({ user: updatedUser, documents: updatedDocuments });
             } catch (error) {
@@ -105,7 +103,7 @@ const ProfileDocuments = ({userInfo, setUserInfo}) => {
         const updatedCategories = [ ...userInfo.user.categories ];
         const toChangeIndex = updatedCategories.findIndex(({category_name, order}) => 
                                 category_name === currentName && order == currentOrder);
-                                console.log(toChangeIndex)
+
         const toSwitchIndex = updatedCategories.findIndex(cat => cat.order === categoryChangedOrder);
 
         const oldOrder = updatedCategories[toChangeIndex].order;
@@ -113,8 +111,6 @@ const ProfileDocuments = ({userInfo, setUserInfo}) => {
         updatedCategories[toSwitchIndex].order = oldOrder;
 
         const updatedUser = { ...userInfo.user, categories: updatedCategories };
-            
-        console.log(updatedUser)
 
         try {
             await updateUser(updatedUser);
@@ -142,7 +138,6 @@ const ProfileDocuments = ({userInfo, setUserInfo}) => {
             ...updatedCategoryDocuments 
         ];
             
-        console.log(updatedDocuments)
         try {
             await updateDocument(updatedCategoryDocuments[toChangeIndex]);
             await updateDocument(updatedCategoryDocuments[toSwitchIndex]);
@@ -153,7 +148,6 @@ const ProfileDocuments = ({userInfo, setUserInfo}) => {
     }
 
     return (
-        <>
         <div className={'profile-articles container'}>
 
             { !userInfo.isGuest ? <>
@@ -273,8 +267,6 @@ const ProfileDocuments = ({userInfo, setUserInfo}) => {
         <DocumentsModal show={showModal} activeForm={activeForm} />
         <CitationModal show={showCitation} activeCitation={activeCitation} />
         </div>
-        <Footer styles={{margin: '6rem 0 0 0'}} />
-        </>
     )
 }
 

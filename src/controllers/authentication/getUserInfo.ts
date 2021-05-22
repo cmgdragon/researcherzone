@@ -7,40 +7,48 @@ import cookie from 'cookie';
 
 const getUserInfo = async context => {
 
-    try {
+    const path = context.request.headers.get('pathname');
 
-        const path = context.request.headers.get('pathname');
+    if (path.includes('/user')) {
 
-        if (path.includes('/user')) {
+        const segments = path.split('/');
 
-            const segments = path.split('/');
+        try {
             const user = await findUserById(new Bson.ObjectID(segments[segments.length-1]));
             const documents = await findDocuments(user.email);
-    
             context.response.body = { 
                 isGuest: true,
                 user: {...user, pwd: '', email: ''},
-                documents 
+                documents
             };
+        } catch (error) {
+            context.response.body = { 
+                message: error.message
+            };
+        }
 
-        } else {
 
-            const { token } = cookie.parse(context.request.headers.get('cookie') || '');
-        
-            const [ header, payload, signature ] : any = decode(token);
+    } else {
+
+        const { token } = cookie.parse(context.request.headers.get('cookie') || '');
+        const [ header, payload, signature ] : any = decode(token);
+        try {
+
             const user = await findUserByEmail(payload.iss.email);
             const documents = await findDocuments(payload.iss.email);
     
             context.response.body = { 
                 isGuest: false,
                 user: {...user, pwd: ''},
-                documents 
+                documents
             };
 
+        } catch (error) {
+            context.response.body = { 
+                message: error.message
+            };
         }
 
-    } catch ({message}) {
-        context.response.body = { message };   
     }
 
 }

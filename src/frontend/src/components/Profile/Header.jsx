@@ -87,6 +87,13 @@ const Header = ({userInfo, setUserInfo}) => {
         event.stopPropagation();
     }
 
+    const copyShare = () => {
+        const copyInput = document.getElementById("copy-share");
+        copyInput.select();
+        copyInput.setSelectionRange(0, 99999);
+        document.execCommand("copy");
+    }
+
     return (
         <>
         { !userInfo.isGuest ?
@@ -96,25 +103,25 @@ const Header = ({userInfo, setUserInfo}) => {
         <div className="profile-container">
         <div className="profile-header container">
             <input id="image" type="file" name="name" style={{display: 'none'}} accept="image/png, image/jpeg" onChange={changeImage} />
-            <img src={userInfo.user.image !== '' ? userInfo.user.image : `${'http://localhost/'}img/default.png`} className={'profile-header__image'} onClick={selectImage}  />
+            <img src={userInfo.user.image !== '' ? userInfo.user.image : `${'https://researcher.zone/'}img/default.png`} className={`profile-header__image ${userInfo.isGuest ? 'isguest' : ''}`} onClick={selectImage}  />
             <div className={'profile-header__textgroup'}>
                 <div className={'profile-header__name-group'}>
-                    <span id="name" className={`h3 profile-header__name blue-text lighten-2  ${!userInfo.isGuest && userInfo.user.name === '' ? 'empty' : ''}`} onClick={editField}>{userInfo.user.name}</span>
-                    <span id="surname" className={`h3 profile-header__name blue-text lighten-2  ${!userInfo.isGuest && userInfo.user.surname === '' ? 'empty' : ''}`} onClick={editField}>{userInfo.user.surname}</span>
+                    <span id="name" className={`h3 profile-header__name blue-text lighten-2  ${!userInfo.isGuest && userInfo.user.name === '' ? 'empty' : ''} ${userInfo.isGuest ? 'isguest' : ''}`} onClick={editField}>{userInfo.user.name}</span>
+                    <span id="surname" className={`h3 profile-header__name blue-text lighten-2  ${!userInfo.isGuest && userInfo.user.surname === '' ? 'empty' : ''} ${userInfo.isGuest ? 'isguest' : ''}`} onClick={editField}>{userInfo.user.surname}</span>
                 </div>
                 <div className="profile-header__slotsgroup">
                     <div className={'profile-header__optional-image'}>
                         { userInfo.user.isGufest && userInfo.user.optional_image === '' ? undefined : 
                         <>
                             <input id="optional_image" type="file" name="name" style={{display: 'none'}} accept="image/png, image/jpeg" onChange={changeImage} />
-                            <img id="optional_image" src={userInfo.user.optional_image && userInfo.user.optional_image !== '' ? userInfo.user.optional_image : `${'http://localhost/'}img/default.png`} className={'profile-header__image2'} onClick={selectImage} /> </>
+                            <img id="optional_image" src={userInfo.user.optional_image && userInfo.user.optional_image !== '' ? userInfo.user.optional_image : `${'https://researcher.zone/'}img/default.png`} className={`profile-header__image2 ${userInfo.isGuest ? 'isguest' : ''}`} onClick={selectImage} /> </>
                         
                         }
                         {!userInfo.isGuest && userInfo.user.optional_image && userInfo.user.optional_image !== '' ? <i onClick={removeOptionalImage} className="material-icons right">close</i> : undefined}
                     </div>
                     <div className={'profile-header__slots'}>
-                        <span id="profile_slot_1" className={`profile-header__slot ${!userInfo.isGuest && userInfo.user.profile_slot_1 === '' ? 'empty' : ''}`} onClick={editField}>{userInfo.user.profile_slot_1}</span>
-                        <span id="profile_slot_2" className={`profile-header__slot ${!userInfo.isGuest && userInfo.user.profile_slot_2 === '' ? 'empty' : ''}`} onClick={editField}>{userInfo.user.profile_slot_2}</span>
+                        <span id="profile_slot_1" className={`profile-header__slot ${!userInfo.isGuest && userInfo.user.profile_slot_1 === '' ? 'empty' : ''} ${userInfo.isGuest ? 'isguest' : ''}`} onClick={editField}>{userInfo.user.profile_slot_1}</span>
+                        <span id="profile_slot_2" className={`profile-header__slot ${!userInfo.isGuest && userInfo.user.profile_slot_2 === '' ? 'empty' : ''} ${userInfo.isGuest ? 'isguest' : ''}`} onClick={editField}>{userInfo.user.profile_slot_2}</span>
                     </div>
                 </div>
             </div>
@@ -135,7 +142,7 @@ const Header = ({userInfo, setUserInfo}) => {
                         return (
                             <a className={`profile__social-link ${image ? '' : 'no-image'}`} key={index} href={url} title={name}>
                                 {
-                                    image ? <img src={`${'http://localhost/'}img/${image}.png`} alt={name} />
+                                    image ? <img src={`${'https://researcher.zone/'}img/${image}.png`} alt={name} />
                                     : <i className="material-icons right">link</i>
                                 }
                             </a>
@@ -149,7 +156,10 @@ const Header = ({userInfo, setUserInfo}) => {
                     : undefined
                 }
             </div>
-            <span>Share: <input readOnly type="text" className="profile__share-link" value={`${'http://localhost/'}user/${userInfo.user._id}`} /> </span>
+            <div className="profile__share">
+                <a class="btn-floating btn-small waves-effect waves-light red" onClick={copyShare}><i class="material-icons">content_paste</i></a>
+                <span>Share: <input readOnly id="copy-share" type="text" className="profile__share-link" value={`${'https://researcher.zone/'}user/${userInfo.user._id}`} /> </span>
+            </div>
         </div>
         <SocialMediaModal show={showModal}>
             <SocialMediaForm userInfo={userInfo} setUserInfo={setUserInfo} setShowModal={setShowModal} />
@@ -181,7 +191,6 @@ const SocialMediaForm = ({userInfo, setShowModal, setUserInfo}) => {
 
         try {
 
-            console.log({...userInfo.user, social_media: newSocialMedia});
             await updateUser({...userInfo.user, social_media: newSocialMedia});
             setUserInfo({ ...userInfo, user: {...userInfo.user, social_media: newSocialMedia} });
             closeModal(false);

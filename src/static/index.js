@@ -400,7 +400,7 @@ var g1 = j1((ce, H)=>{
     "use strict";
     H.exports = z5();
 });
-var ne = O1(g1()), oe = O1(g1()), { PureComponent: fe , lazy: le , useCallback: pe1 , useDebugValue: ae , useState: ye1 , isValidElement: de , useLayoutEffect: _e , useMemo: ve , version: me , forwardRef: he , useReducer: Ee , useRef: Se , StrictMode: Ce , Profiler: Re , Children: ke , __SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED: $e , createElement: ge , useContext: je , useImperativeHandle: Oe , Suspense: Pe , Component: xe , createFactory: Ie1 , memo: we , useEffect: Ae , cloneElement: Fe1 , Fragment: Le , createContext: qe , createRef: De1  } = ne;
+var ne = O1(g1()), oe = O1(g1()), { Suspense: fe , PureComponent: le , useEffect: pe1 , useMemo: ae , Profiler: ye1 , createFactory: de , isValidElement: _e , Children: ve , forwardRef: me , lazy: he , useDebugValue: Ee , StrictMode: Se , useContext: Ce , useLayoutEffect: Re , useState: ke , Fragment: $e , useImperativeHandle: ge , version: je , createContext: Oe , cloneElement: Pe , createElement: xe , createRef: Ie1 , Component: we , useReducer: Ae , useRef: Fe1 , __SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED: Le , useCallback: qe , memo: De1  } = ne;
 var export_default1 = oe.default;
 var D6 = Object.create, j2 = Object.defineProperty, z1 = Object.getPrototypeOf, B = Object.prototype.hasOwnProperty, G1 = Object.getOwnPropertyNames, ee = Object.getOwnPropertyDescriptor;
 var ne1 = (e)=>j2(e, "__esModule", {
@@ -1170,7 +1170,7 @@ var Ss = Oi((ee1)=>{
     }(function(e, n) {
         if (e.namespaceURI !== Gr.svg || "innerHTML" in e) e.innerHTML = n;
         else {
-            for((Mt = Mt || document.createElement("div"), Mt.innerHTML = "<svg>" + n.valueOf().toString() + "</svg>", n = Mt.firstChild); e.firstChild;)e.removeChild(e.firstChild);
+            for(Mt = Mt || document.createElement("div"), Mt.innerHTML = "<svg>" + n.valueOf().toString() + "</svg>", n = Mt.firstChild; e.firstChild;)e.removeChild(e.firstChild);
             for(; n.firstChild;)e.appendChild(n.firstChild);
         }
     });
@@ -2491,7 +2491,7 @@ var Ss = Oi((ee1)=>{
                     for(var f = d, p4; f !== null;){
                         p4 = f;
                         var m2 = p4.stateNode;
-                        if ((p4.tag === 5 && m2 !== null && (p4 = m2, a !== null && (m2 = Bn(f, a), m2 != null && E.push(tt(f, m2, p4)))), c)) break;
+                        if (p4.tag === 5 && m2 !== null && (p4 = m2, a !== null && (m2 = Bn(f, a), m2 != null && E.push(tt(f, m2, p4)))), c) break;
                         f = f.return;
                     }
                     0 < E.length && (h4 = new S3(h4, k, null, t, y4), C.push({
@@ -2502,11 +2502,11 @@ var Ss = Oi((ee1)=>{
             }
             if ((n & 7) == 0) {
                 e: {
-                    if ((h4 = e === "mouseover" || e === "pointerover", S3 = e === "mouseout" || e === "pointerout", h4 && (n & 16) == 0 && (k = t.relatedTarget || t.fromElement) && (Ye(k) || k[vn]))) break e;
+                    if (h4 = e === "mouseover" || e === "pointerover", S3 = e === "mouseout" || e === "pointerout", h4 && (n & 16) == 0 && (k = t.relatedTarget || t.fromElement) && (Ye(k) || k[vn])) break e;
                     if ((S3 || h4) && (h4 = y4.window === y4 ? y4 : (h4 = y4.ownerDocument) ? h4.defaultView || h4.parentWindow : window, S3 ? (k = t.relatedTarget || t.toElement, S3 = d, k = k ? Ye(k) : null, k !== null && (c = $e1(k), k !== c || k.tag !== 5 && k.tag !== 6) && (k = null)) : (S3 = null, k = d), S3 !== k)) {
-                        if ((E = Co, m2 = "onMouseLeave", a = "onMouseEnter", f = "mouse", (e === "pointerout" || e === "pointerover") && (E = No, m2 = "onPointerLeave", a = "onPointerEnter", f = "pointer"), c = S3 == null ? h4 : pn(S3), p4 = k == null ? h4 : pn(k), h4 = new E(m2, f + "leave", S3, t, y4), h4.target = c, h4.relatedTarget = p4, m2 = null, Ye(y4) === d && (E = new E(a, f + "enter", k, t, y4), E.target = p4, E.relatedTarget = c, m2 = E), c = m2, S3 && k)) n: {
-                            for((E = S3, a = k, f = 0, p4 = E); p4; p4 = hn(p4))f++;
-                            for((p4 = 0, m2 = a); m2; m2 = hn(m2))p4++;
+                        if (E = Co, m2 = "onMouseLeave", a = "onMouseEnter", f = "mouse", (e === "pointerout" || e === "pointerover") && (E = No, m2 = "onPointerLeave", a = "onPointerEnter", f = "pointer"), c = S3 == null ? h4 : pn(S3), p4 = k == null ? h4 : pn(k), h4 = new E(m2, f + "leave", S3, t, y4), h4.target = c, h4.relatedTarget = p4, m2 = null, Ye(y4) === d && (E = new E(a, f + "enter", k, t, y4), E.target = p4, E.relatedTarget = c, m2 = E), c = m2, S3 && k) n: {
+                            for(E = S3, a = k, f = 0, p4 = E; p4; p4 = hn(p4))f++;
+                            for(p4 = 0, m2 = a; m2; m2 = hn(m2))p4++;
                             for(; 0 < f - p4;)E = hn(E), f--;
                             for(; 0 < p4 - f;)a = hn(a), p4--;
                             for(; f--;){
@@ -2520,7 +2520,7 @@ var Ss = Oi((ee1)=>{
                     }
                 }
                 e: {
-                    if ((h4 = d ? pn(d) : window, S3 = h4.nodeName && h4.nodeName.toLowerCase(), S3 === "select" || S3 === "input" && h4.type === "file")) var _ = Da;
+                    if (h4 = d ? pn(d) : window, S3 = h4.nodeName && h4.nodeName.toLowerCase(), S3 === "select" || S3 === "input" && h4.type === "file") var _ = Da;
                     else if (Mo(h4)) {
                         if (Io) _ = Ua;
                         else {
@@ -2534,7 +2534,7 @@ var Ss = Oi((ee1)=>{
                     }
                     w && w(e, h4, d), e === "focusout" && (w = h4._wrapperState) && w.controlled && h4.type === "number" && $r(h4, "number", h4.value);
                 }
-                switch((w = d ? pn(d) : window, e)){
+                switch(w = d ? pn(d) : window, e){
                     case "focusin":
                         (Mo(w) || w.contentEditable === "true") && (mn = w, _l = d, et = null);
                         break;
@@ -3694,31 +3694,31 @@ var Ss = Oi((ee1)=>{
     }, Ga = {
         readContext: te1,
         useCallback: function(e, n) {
-            return (Je().memoizedState = [
+            return Je().memoizedState = [
                 e,
                 n === void 0 ? null : n
-            ], e);
+            ], e;
         },
         useContext: te1,
         useEffect: Ou,
         useImperativeHandle: function(e, n, t) {
-            return (t = t != null ? t.concat([
+            return t = t != null ? t.concat([
                 e
-            ]) : null, ei(4, 2, Ru.bind(null, n, e), t));
+            ]) : null, ei(4, 2, Ru.bind(null, n, e), t);
         },
         useLayoutEffect: function(e, n) {
             return ei(4, 2, e, n);
         },
         useMemo: function(e, n) {
             var t = Je();
-            return (n = n === void 0 ? null : n, e = e(), t.memoizedState = [
+            return n = n === void 0 ? null : n, e = e(), t.memoizedState = [
                 e,
                 n
-            ], e);
+            ], e;
         },
         useReducer: function(e, n, t) {
             var r = Je();
-            return (n = t !== void 0 ? t(n) : n, r.memoizedState = r.baseState = n, e = r.queue = {
+            return n = t !== void 0 ? t(n) : n, r.memoizedState = r.baseState = n, e = r.queue = {
                 pending: null,
                 dispatch: null,
                 lastRenderedReducer: e,
@@ -3726,14 +3726,14 @@ var Ss = Oi((ee1)=>{
             }, e = e.dispatch = bl.bind(null, I, e), [
                 r.memoizedState,
                 e
-            ]);
+            ];
         },
         useRef: zu,
         useState: ht,
         useDebugValue: ti,
         useDeferredValue: function(e) {
             var n = ht(e), t = n[0], r = n[1];
-            return (Ou(function() {
+            return Ou(function() {
                 var l18 = le2.transition;
                 le2.transition = 1;
                 try {
@@ -3743,36 +3743,36 @@ var Ss = Oi((ee1)=>{
                 }
             }, [
                 e
-            ]), t);
+            ]), t;
         },
         useTransition: function() {
             var e = ht(!1), n = e[0];
-            return (e = qa.bind(null, e[1]), zu(e), [
+            return e = qa.bind(null, e[1]), zu(e), [
                 e,
                 n
-            ]);
+            ];
         },
         useMutableSource: function(e, n, t) {
             var r = Je();
-            return (r.memoizedState = {
+            return r.memoizedState = {
                 refs: {
                     getSnapshot: n,
                     setSnapshot: null
                 },
                 source: e,
                 subscribe: t
-            }, Tu(r, e, n, t));
+            }, Tu(r, e, n, t);
         },
         useOpaqueIdentifier: function() {
             if (ce) {
                 var e = !1, n = Aa(function() {
-                    throw (e || (e = !0, t("r:" + (Ml++).toString(36))), Error(v2(355)));
+                    throw e || (e = !0, t("r:" + (Ml++).toString(36))), Error(v2(355));
                 }), t = ht(n)[1];
-                return ((I.mode & 2) == 0 && (I.flags |= 516, vr(5, function() {
+                return (I.mode & 2) == 0 && (I.flags |= 516, vr(5, function() {
                     t("r:" + (Ml++).toString(36));
-                }, void 0, null)), n);
+                }, void 0, null)), n;
             }
-            return (n = "r:" + (Ml++).toString(36), ht(n), n);
+            return n = "r:" + (Ml++).toString(36), ht(n), n;
         },
         unstable_isNewReconciler: !1
     }, Za = {
@@ -3791,7 +3791,7 @@ var Ss = Oi((ee1)=>{
         useDebugValue: ti,
         useDeferredValue: function(e) {
             var n = pt(de1), t = n[0], r = n[1];
-            return (gr(function() {
+            return gr(function() {
                 var l18 = le2.transition;
                 le2.transition = 1;
                 try {
@@ -3801,7 +3801,7 @@ var Ss = Oi((ee1)=>{
                 }
             }, [
                 e
-            ]), t);
+            ]), t;
         },
         useTransition: function() {
             var e = pt(de1)[0];
@@ -3831,7 +3831,7 @@ var Ss = Oi((ee1)=>{
         useDebugValue: ti,
         useDeferredValue: function(e) {
             var n = mt(de1), t = n[0], r = n[1];
-            return (gr(function() {
+            return gr(function() {
                 var l18 = le2.transition;
                 le2.transition = 1;
                 try {
@@ -3841,7 +3841,7 @@ var Ss = Oi((ee1)=>{
                 }
             }, [
                 e
-            ]), t);
+            ]), t;
         },
         useTransition: function() {
             var e = mt(de1)[0];
@@ -5285,7 +5285,7 @@ var Ss = Oi((ee1)=>{
             Nr || St === null || ((g3.flags & 8) != 0 ? io(g3, St) && (Nr = !0) : g3.tag === 13 && af(e, g3) && io(g3, St) && (Nr = !0));
             var n = g3.flags;
             (n & 256) != 0 && lf(e, g3), (n & 512) == 0 || Ve || (Ve = !0, rt(97, function() {
-                return (Be(), null);
+                return Be(), null;
             })), g3 = g3.nextEffect;
         }
     }
@@ -5298,12 +5298,12 @@ var Ss = Oi((ee1)=>{
     }
     function of(e, n) {
         xi.push(n, e), Ve || (Ve = !0, rt(97, function() {
-            return (Be(), null);
+            return Be(), null;
         }));
     }
     function ns(e, n) {
         Ci.push(n, e), Ve || (Ve = !0, rt(97, function() {
-            return (Be(), null);
+            return Be(), null;
         }));
     }
     function yf() {
@@ -5847,7 +5847,7 @@ var Ss = Oi((ee1)=>{
         scheduleUpdate: null,
         currentDispatcherRef: He.ReactCurrentDispatcher,
         findHostInstanceByFiber: function(e) {
-            return (e = lo(e), e === null ? null : e.stateNode);
+            return e = lo(e), e === null ? null : e.stateNode;
         },
         findFiberByHostInstance: xt.findFiberByHostInstance || kf,
         findHostInstancesForRefresh: null,
@@ -6050,6 +6050,12 @@ function encode(str, encoding = "utf8") {
 }
 class SHA256 {
     hashSize = 32;
+    _buf;
+    _bufIdx;
+    _count;
+    _K;
+    _H;
+    _finalized;
     constructor(){
         this._buf = new Uint8Array(64);
         this._K = new Uint32Array([
@@ -6240,36 +6246,67 @@ function sha256(msg, inputEncoding, outputEncoding) {
     return new SHA256().update(msg, inputEncoding).digest(outputEncoding);
 }
 class User {
+    _id;
+    name;
     surname = '';
+    email;
+    pwd;
     profile_slot_1 = '';
     profile_slot_2 = '';
     categories = [];
     image = '';
     optional_image = '';
     social_media = [];
-    constructor(user){
-        this.email = user.email;
-        this.name = user.name;
-        this.surname = user.surname;
+    verified;
+    constructor(user1){
+        this.email = user1.email;
+        this.name = user1.name;
+        this.surname = user1.surname;
         this.verified = false;
-        this.pwd = sha256(user.pwd, "utf8", "hex");
+        this.pwd = sha256(user1.pwd, "utf8", "hex");
     }
 }
+const Footer = ({ dynamic  })=>{
+    const [styles, setStyle] = ke({
+        margin: '6rem 0 0 0'
+    });
+    pe1(()=>{
+        if (dynamic && window.outerHeight - 150 >= document.getElementById('app').clientHeight) {
+            setStyle({
+                position: 'fixed',
+                bottom: '0'
+            });
+        }
+    }, []);
+    return export_default1.createElement("footer", {
+        style: styles
+    }, export_default1.createElement("div", {
+        className: "footer-credits"
+    }, "\xa9 Researchezone 2021 \u2013 cmgdragon ", export_default1.createElement("span", {
+        role: "img"
+    }, "\u{1f432}")), export_default1.createElement("a", {
+        href: "https://github.com/cmgdragon/researcherzone",
+        target: "_blank",
+        "aria-hidden": "true"
+    }, export_default1.createElement("img", {
+        src: `${'https://researcher.zone/'}img/github.png`
+    })));
+};
 const Register = ({ changeRoute  })=>{
-    const [inputs, setInputs] = ye1({
+    const [inputs, setInputs] = ke({
         email: '',
         name: '',
         password: '',
         password2: ''
     });
-    const [errors, setError] = ye1({
+    const [errors, setError] = ke({
         email: '',
         name: '',
         password: '',
         password2: '',
         form: ''
     });
-    const [sending, setSending] = ye1(false);
+    const [sending, setSending] = ke(false);
     const validate = ({ target  })=>{
         setInputs({
             ...inputs,
@@ -6317,7 +6354,7 @@ const Register = ({ changeRoute  })=>{
                     [target.id]: '✓'
                 });
                 document.getElementById('password2').classList.remove('invalid');
-                classList.remove('invalid');
+                target.classList.remove('invalid');
                 break;
             case 'password2':
                 if (target.value !== document.getElementById('password').value) {
@@ -6399,7 +6436,7 @@ const Register = ({ changeRoute  })=>{
                 setSending(false);
         }
     };
-    return export_default1.createElement("div", {
+    return export_default1.createElement(export_default1.Fragment, null, export_default1.createElement("div", {
         className: "container row"
     }, export_default1.createElement("pre", {
         className: "red-text"
@@ -6469,12 +6506,20 @@ const Register = ({ changeRoute  })=>{
         disabled: !(errors.name === '✓' && errors.password === '✓' && errors.password2 === '✓' && errors.email === '✓') || sending
     }, sending ? 'Registering...' : 'Register', export_default1.createElement("i", {
         className: "material-icons right"
-    }, "done"))));
+    }, "done")))), export_default1.createElement("div", {
+        className: "container"
+    }, "Already a member? ", export_default1.createElement("a", {
+        href: "#",
+        className: "link",
+        onClick: ()=>changeRoute('login')
+    }, "Log in")), export_default1.createElement(Footer, {
+        dynamic: true
+    }));
 };
-const Login = ({ registered  })=>{
-    const [error, setError] = ye1('');
-    const [message, setMessage] = ye1(undefined);
-    Ae(()=>{
+const Login = ({ registered , changeRoute  })=>{
+    const [error, setError] = ke('');
+    const [message, setMessage] = ke(undefined);
+    pe1(()=>{
         if (registered) {
             setMessage('We have sent a message to your email. Please, verify you account before log in');
         }
@@ -6503,16 +6548,15 @@ const Login = ({ registered  })=>{
             body: JSON.stringify(login1)
         });
         const response = await request.json();
-        console.log(response);
         switch(response.status){
             case 200:
-                window.location.reload();
+                window.location.href = "/";
                 break;
             default:
                 setError(response.message);
         }
     };
-    return export_default1.createElement("div", {
+    return export_default1.createElement(export_default1.Fragment, null, export_default1.createElement("div", {
         className: "container row"
     }, export_default1.createElement("form", {
         className: "col s12",
@@ -6546,53 +6590,37 @@ const Login = ({ registered  })=>{
         name: "action"
     }, "Login", export_default1.createElement("i", {
         className: "material-icons right"
-    }, "login"))));
-};
-const Footer = ({ styles  })=>{
-    return export_default1.createElement("footer", {
-        style: styles
-    }, export_default1.createElement("div", {
-        className: "footer-credits"
-    }, "\xa9 Researchezone 2021 \u2013 cmgdragon ", export_default1.createElement("span", {
-        role: "img"
-    }, "\u{1f432}")), export_default1.createElement("a", {
-        href: 'https://github.com/cmgdragon/researcherzone',
-        target: '_blank',
-        "aria-hidden": "true"
-    }, export_default1.createElement("img", {
-        src: `img/github.png`
-    })));
-};
-const Auth = ()=>{
-    const [router, setRouter] = ye1('login');
-    const changeRoute = (route)=>setRouter(route)
-    ;
-    return export_default1.createElement(export_default1.Fragment, null, router === 'login' || router === 'newuser' ? export_default1.createElement(export_default1.Fragment, null, export_default1.createElement(Login, {
-        registered: router === 'newuser' ? true : false
-    }), " ", export_default1.createElement("div", {
+    }, "login")))), export_default1.createElement("div", {
         className: "container"
     }, "Not yet a member? ", export_default1.createElement("a", {
         href: "#",
         className: "link",
         onClick: ()=>changeRoute('register')
-    }, "Register")), " ") : export_default1.createElement(export_default1.Fragment, null, export_default1.createElement(Register, {
+    }, "Register")), export_default1.createElement(Footer, {
+        dynamic: true
+    }));
+};
+const Auth = ()=>{
+    const [router, setRouter] = ke('login');
+    const changeRoute = (route)=>setRouter(route)
+    ;
+    return export_default1.createElement("div", {
+        className: "auth"
+    }, export_default1.createElement("div", {
+        className: "app__auth-header"
+    }, export_default1.createElement("img", {
+        src: "img/icon.png",
+        alt: "ResearcherZone"
+    }), export_default1.createElement("h1", null, "ResearcherZone")), router === 'login' || router === 'newuser' ? export_default1.createElement(Login, {
+        registered: router === 'newuser' ? true : false,
         changeRoute: changeRoute
-    }), " ", export_default1.createElement("div", {
-        className: "container"
-    }, "Already a member? ", export_default1.createElement("a", {
-        href: "#",
-        className: "link",
-        onClick: ()=>changeRoute('login')
-    }, "Log in"))), export_default1.createElement(Footer, {
-        styles: {
-            position: 'absolute',
-            bottom: '0'
-        }
+    }) : export_default1.createElement(Register, {
+        changeRoute: changeRoute
     }));
 };
 const getUserInfo = async ()=>{
     try {
-        const request = await fetch(`${'http://localhost/'}getuserinfo`, {
+        const request = await fetch(`${'https://researcher.zone/'}getuserinfo`, {
             headers: {
                 'Content-Type': 'application/json',
                 'pathname': window.location.pathname,
@@ -6610,14 +6638,13 @@ const getUserInfo = async ()=>{
         return false;
     }
 };
-const UserContext = qe(false);
+const UserContext = Oe(false);
 const UserInfoContext = ({ children  })=>{
-    const [userInfo, setUserInfo] = ye1(false);
-    Ae(async ()=>{
+    const [userInfo, setUserInfo] = ke('loading');
+    pe1(async ()=>{
         try {
             const userInfo1 = await getUserInfo();
             setUserInfo(userInfo1);
-            console.log(userInfo1);
         } catch (error) {
             console.error(error);
         }
@@ -8492,13 +8519,13 @@ function K4() {
                     try {
                         return cn(t = o[1], s25.type, s25.name, s25.lastModified).then(function(l37) {
                             try {
-                                return (n = l37, $3(t), fn(n).then(function(c) {
+                                return n = l37, $3(t), fn(n).then(function(c) {
                                     try {
-                                        return (e = c[0], K4.result = e.width === 1 && e.height === 2, r(K4.result));
+                                        return e = c[0], K4.result = e.width === 1 && e.height === 2, r(K4.result);
                                     } catch (A) {
                                         return a(A);
                                     }
-                                }, a));
+                                }, a);
                             } catch (c) {
                                 return a(c);
                             }
@@ -8553,10 +8580,10 @@ function fn(r) {
     return new Promise(function(a, s25) {
         var t, n, e = function() {
             try {
-                return (n = pn(t), a([
+                return n = pn(t), a([
                     t,
                     n
-                ]));
+                ]);
             } catch (l37) {
                 return s25(l37);
             }
@@ -8566,7 +8593,7 @@ function fn(r) {
                     try {
                         return wn(c).then(function(A) {
                             try {
-                                return (t = A, e());
+                                return t = A, e();
                             } catch (h19) {
                                 return s25(h19);
                             }
@@ -8582,7 +8609,7 @@ function fn(r) {
         try {
             return createImageBitmap(r).then(function(o) {
                 try {
-                    return (t = o, e());
+                    return t = o, e();
                 } catch (l37) {
                     return i7();
                 }
@@ -8596,13 +8623,13 @@ function cn(r, a, s25, t) {
     var n = arguments.length > 4 && arguments[4] !== void 0 ? arguments[4] : 1;
     return new Promise(function(e, i7) {
         var o, l37, c;
-        if (a === "image/png") return (l37 = r.getContext("2d").getImageData(0, 0, r.width, r.height).data, c = w.encode([
+        if (a === "image/png") return l37 = r.getContext("2d").getImageData(0, 0, r.width, r.height).data, c = w.encode([
             l37
         ], r.width, r.height, 256 * n), (o = new Blob([
             c
         ], {
             type: a
-        })).name = s25, o.lastModified = t, A.call(this));
+        })).name = s25, o.lastModified = t, A.call(this);
         {
             let h19 = function() {
                 return A.call(this);
@@ -8716,7 +8743,7 @@ function un(r, a) {
         function F(y19) {
             e = Math.min(Math.max(y19, e), 100), a.onProgress(e);
         }
-        return (e = s25, i7 = a.maxIteration || 10, o = 1024 * a.maxSizeMB * 1024, U(), fn(r).then((function(y19) {
+        return e = s25, i7 = a.maxIteration || 10, o = 1024 * a.maxSizeMB * 1024, U(), fn(r).then((function(y19) {
             try {
                 var N = J2(y19, 2);
                 return N[0], l38 = N[1], U(), c = Un(l38, a), U(), new Promise(function(C, B8) {
@@ -8742,19 +8769,19 @@ function un(r, a) {
                                             let R = function() {
                                                 if ((i7--) && (p16 > o || p16 > I)) {
                                                     var x, z6, D8 = J2(en(x = g12 ? 0.95 * b12.width : b12.width, z6 = g12 ? 0.95 * b12.height : b12.height), 2);
-                                                    return (_ = D8[0], D8[1].drawImage(b12, 0, 0, x, z6), u *= 0.95, cn(_, d, r.name, r.lastModified, u).then(function(V6) {
+                                                    return _ = D8[0], D8[1].drawImage(b12, 0, 0, x, z6), u *= 0.95, cn(_, d, r.name, r.lastModified, u).then(function(V6) {
                                                         try {
-                                                            return (H11 = V6, $3(b12), b12 = _, p16 = H11.size, F(Math.min(99, Math.floor((E - p16) / (E - o) * 100))), R);
+                                                            return H11 = V6, $3(b12), b12 = _, p16 = H11.size, F(Math.min(99, Math.floor((E - p16) / (E - o) * 100))), R;
                                                         } catch (q) {
                                                             return n(q);
                                                         }
-                                                    }, n));
+                                                    }, n);
                                                 }
                                                 return [
                                                     1
                                                 ];
                                             }, M = function() {
-                                                return ($3(b12), $3(_), $3(c), $3(h20), $3(l38), F(100), t(H11));
+                                                return $3(b12), $3(_), $3(c), $3(h20), $3(l38), F(100), t(H11);
                                             };
                                             if (m13 = P, U(), g12 = m13.size > o, v12 = m13.size > r.size, !g12 && !v12) return F(100), t(m13);
                                             var Q11;
@@ -8787,7 +8814,7 @@ function un(r, a) {
             } catch (C) {
                 return n(C);
             }
-        }).bind(this), n));
+        }).bind(this), n);
     });
 }
 on && (Number.isInteger = Number.isInteger || function(r) {
@@ -8820,7 +8847,7 @@ function yn(o) {
         if (typeof value == "string" && value.startsWith("BIC_FN:::")) try {
             result[key] = eval(value.replace(/^BIC_FN:::/, ""));
         } catch (r) {
-            throw (console.log(key, r), r);
+            throw console.log(key, r), r;
         }
         else result[key] = yn(value);
     }), result;
@@ -8835,7 +8862,7 @@ function zn(r, a) {
     return new Promise(function(s25, t) {
         return new Promise(function(n, e) {
             var i7 = Wn++;
-            return (dn || (dn = Rn()), nn || (nn = Tn()), nn.addEventListener("message", function o(l38) {
+            return dn || (dn = Rn()), nn || (nn = Tn()), nn.addEventListener("message", function o(l38) {
                 if (l38.data.id === i7) {
                     if (l38.data.progress !== void 0) return void a.onProgress(l38.data.progress);
                     nn.removeEventListener("message", o), l38.data.error && t(new Error(l38.data.error)), s25(l38.data.file);
@@ -8849,18 +8876,18 @@ function zn(r, a) {
                 }, {
                     onProgress: void 0
                 })
-            }), n());
+            }), n();
         });
     });
 }
 function Z(r, a) {
     return new Promise(function(s25, t) {
         var n, e, i7, o, l38;
-        if ((e = 0, a.maxSizeMB = a.maxSizeMB || Number.POSITIVE_INFINITY, o = typeof a.useWebWorker != "boolean" || a.useWebWorker, delete a.useWebWorker, i7 = a.onProgress, a.onProgress = function(u) {
+        if (e = 0, a.maxSizeMB = a.maxSizeMB || Number.POSITIVE_INFINITY, o = typeof a.useWebWorker != "boolean" || a.useWebWorker, delete a.useWebWorker, i7 = a.onProgress, a.onProgress = function(u) {
             e = u, typeof i7 == "function" && i7(e);
-        }, !(r instanceof Blob || r instanceof Mn))) return t(new Error("The file given is not an instance of Blob or File"));
+        }, !(r instanceof Blob || r instanceof Mn)) return t(new Error("The file given is not an instance of Blob or File"));
         if (!/^image/.test(r.type)) return t(new Error("The file given is not an image"));
-        if ((l38 = typeof WorkerGlobalScope != "undefined" && self instanceof WorkerGlobalScope, !o || typeof Worker != "function" || l38)) return un(r, a).then((function(u) {
+        if (l38 = typeof WorkerGlobalScope != "undefined" && self instanceof WorkerGlobalScope, !o || typeof Worker != "function" || l38) return un(r, a).then((function(u) {
             try {
                 return n = u, h20.call(this);
             } catch (d) {
@@ -8877,7 +8904,7 @@ function Z(r, a) {
             try {
                 return un(r, a).then(function(m13) {
                     try {
-                        return (n = m13, c());
+                        return n = m13, c();
                     } catch (g12) {
                         return t(g12);
                     }
@@ -8889,7 +8916,7 @@ function Z(r, a) {
         try {
             return zn(r, a).then(function(u) {
                 try {
-                    return (n = u, c());
+                    return n = u, c();
                 } catch (d) {
                     return A();
                 }
@@ -8923,7 +8950,7 @@ class ImageHelper {
     }
 }
 const SocialMediaModal = ({ children , show  })=>{
-    Ae(()=>{
+    pe1(()=>{
         if (show) document.querySelector('#social-modal').classList.add('show-modal');
         else document.querySelector('#social-modal').classList.remove('show-modal');
     }, [
@@ -8941,7 +8968,7 @@ const logout = async ()=>fetch('/logout', {
     )
 ;
 const Header = ({ userInfo , setUserInfo  })=>{
-    const [showModal, setShowModal] = ye1(false);
+    const [showModal, setShowModal] = ke(false);
     const editInfo = {
         isEditing: false,
         currentElement: undefined
@@ -9040,6 +9067,12 @@ const Header = ({ userInfo , setUserInfo  })=>{
         }
         event.stopPropagation();
     };
+    const copyShare = ()=>{
+        const copyInput = document.getElementById("copy-share");
+        copyInput.select();
+        copyInput.setSelectionRange(0, 99999);
+        document.execCommand("copy");
+    };
     return export_default1.createElement(export_default1.Fragment, null, !userInfo.isGuest ? export_default1.createElement("div", {
         className: "profile-logout logout waves-effect waves-light red btn-small",
         onClick: logout
@@ -9064,8 +9097,8 @@ const Header = ({ userInfo , setUserInfo  })=>{
         accept: "image/png, image/jpeg",
         onChange: changeImage
     }), export_default1.createElement("img", {
-        src: userInfo.user.image !== '' ? userInfo.user.image : `h${'http://localhost/'}img/default.png`,
-        className: 'profile-header__image',
+        src: userInfo.user.image !== '' ? userInfo.user.image : `${'https://researcher.zone/'}img/default.png`,
+        className: `profile-header__image ${userInfo.isGuest ? 'isguest' : ''}`,
         onClick: selectImage
     }), export_default1.createElement("div", {
         className: 'profile-header__textgroup'
@@ -9073,11 +9106,11 @@ const Header = ({ userInfo , setUserInfo  })=>{
         className: 'profile-header__name-group'
     }, export_default1.createElement("span", {
         id: "name",
-        className: `h3 profile-header__name blue-text lighten-2  ${!userInfo.isGuest && userInfo.user.name === '' ? 'empty' : ''}`,
+        className: `h3 profile-header__name blue-text lighten-2  ${!userInfo.isGuest && userInfo.user.name === '' ? 'empty' : ''} ${userInfo.isGuest ? 'isguest' : ''}`,
         onClick: editField
     }, userInfo.user.name), export_default1.createElement("span", {
         id: "surname",
-        className: `h3 profile-header__name blue-text lighten-2  ${!userInfo.isGuest && userInfo.user.surname === '' ? 'empty' : ''}`,
+        className: `h3 profile-header__name blue-text lighten-2  ${!userInfo.isGuest && userInfo.user.surname === '' ? 'empty' : ''} ${userInfo.isGuest ? 'isguest' : ''}`,
         onClick: editField
     }, userInfo.user.surname)), export_default1.createElement("div", {
         className: "profile-header__slotsgroup"
@@ -9094,8 +9127,8 @@ const Header = ({ userInfo , setUserInfo  })=>{
         onChange: changeImage
     }), export_default1.createElement("img", {
         id: "optional_image",
-        src: userInfo.user.optional_image && userInfo.user.optional_image !== '' ? userInfo.user.optional_image : `${'http://localhost/'}img/default.png`,
-        className: 'profile-header__image2',
+        src: userInfo.user.optional_image && userInfo.user.optional_image !== '' ? userInfo.user.optional_image : `${'https://researcher.zone/'}img/default.png`,
+        className: `profile-header__image2 ${userInfo.isGuest ? 'isguest' : ''}`,
         onClick: selectImage
     }), " "), !userInfo.isGuest && userInfo.user.optional_image && userInfo.user.optional_image !== '' ? export_default1.createElement("i", {
         onClick: removeOptionalImage,
@@ -9104,11 +9137,11 @@ const Header = ({ userInfo , setUserInfo  })=>{
         className: 'profile-header__slots'
     }, export_default1.createElement("span", {
         id: "profile_slot_1",
-        className: `profile-header__slot ${!userInfo.isGuest && userInfo.user.profile_slot_1 === '' ? 'empty' : ''}`,
+        className: `profile-header__slot ${!userInfo.isGuest && userInfo.user.profile_slot_1 === '' ? 'empty' : ''} ${userInfo.isGuest ? 'isguest' : ''}`,
         onClick: editField
     }, userInfo.user.profile_slot_1), export_default1.createElement("span", {
         id: "profile_slot_2",
-        className: `profile-header__slot ${!userInfo.isGuest && userInfo.user.profile_slot_2 === '' ? 'empty' : ''}`,
+        className: `profile-header__slot ${!userInfo.isGuest && userInfo.user.profile_slot_2 === '' ? 'empty' : ''} ${userInfo.isGuest ? 'isguest' : ''}`,
         onClick: editField
     }, userInfo.user.profile_slot_2)))))), export_default1.createElement("div", {
         className: "profile__social container"
@@ -9129,7 +9162,7 @@ const Header = ({ userInfo , setUserInfo  })=>{
             href: url,
             title: name
         }, image ? export_default1.createElement("img", {
-            src: `${'http://localhost/'}img/${image}.png`,
+            src: `${'https://researcher.zone/'}img/${image}.png`,
             alt: name
         }) : export_default1.createElement("i", {
             className: "material-icons right"
@@ -9142,12 +9175,20 @@ const Header = ({ userInfo , setUserInfo  })=>{
         }
     }, export_default1.createElement("i", {
         className: "material-icons right"
-    }, "add")) : undefined), export_default1.createElement("span", null, "Share: ", export_default1.createElement("input", {
+    }, "add")) : undefined), export_default1.createElement("div", {
+        className: "profile__share"
+    }, export_default1.createElement("a", {
+        class: "btn-floating btn-small waves-effect waves-light red",
+        onClick: copyShare
+    }, export_default1.createElement("i", {
+        class: "material-icons"
+    }, "content_paste")), export_default1.createElement("span", null, "Share: ", export_default1.createElement("input", {
         readOnly: true,
+        id: "copy-share",
         type: "text",
         className: "profile__share-link",
-        value: `${'http://localhost/'}user/${userInfo.user._id}`
-    }), " ")), export_default1.createElement(SocialMediaModal, {
+        value: `${'https://researcher.zone/'}user/${userInfo.user._id}`
+    }), " "))), export_default1.createElement(SocialMediaModal, {
         show: showModal
     }, export_default1.createElement(SocialMediaForm, {
         userInfo: userInfo,
@@ -9156,9 +9197,9 @@ const Header = ({ userInfo , setUserInfo  })=>{
     })));
 };
 const SocialMediaForm = ({ userInfo , setShowModal , setUserInfo  })=>{
-    const form = Se();
+    const form = Fe1();
     const { social_media  } = userInfo.user;
-    const [links, setLinks] = ye1([
+    const [links, setLinks] = ke([
         ...Array(social_media.length ? social_media.length : 1).keys()
     ]);
     const addLink = ()=>setLinks([
@@ -9183,10 +9224,6 @@ const SocialMediaForm = ({ userInfo , setShowModal , setUserInfo  })=>{
             })
         );
         try {
-            console.log({
-                ...userInfo.user,
-                social_media: newSocialMedia
-            });
             await updateUser({
                 ...userInfo.user,
                 social_media: newSocialMedia
@@ -9266,7 +9303,7 @@ const SocialMediaForm = ({ userInfo , setShowModal , setUserInfo  })=>{
     }, "send"))));
 };
 const FreeDocumentRender = ({ doc  })=>{
-    Ae(()=>{
+    pe1(()=>{
         const node = document.querySelector(`[data-article-id=id-${doc._id}]`);
         node.innerHTML = doc.html;
     });
@@ -9294,10 +9331,10 @@ const AuthorCitator = ({ authors  })=>{
     }));
 };
 const JournalArticleRender = ({ doc  })=>{
-    const __abstract = Se();
+    const __abstract = Fe1();
     const collapse = ({ target  })=>target.classList.toggle('show')
     ;
-    Ae(()=>{
+    pe1(()=>{
         if (__abstract.current?.clientHeight > 50) __abstract.current.classList.add('collapse');
     });
     return export_default1.createElement("div", {
@@ -9321,10 +9358,10 @@ const JournalArticleRender = ({ doc  })=>{
     }, "Abstract"), doc.abstract) : undefined);
 };
 const BookRender = ({ doc  })=>{
-    const __abstract = Se();
+    const __abstract = Fe1();
     const collapse = ({ target  })=>target.classList.toggle('show')
     ;
-    Ae(()=>{
+    pe1(()=>{
         if (__abstract.current?.clientHeight > 50) __abstract.current.classList.add('collapse');
     });
     return export_default1.createElement("div", {
@@ -9346,10 +9383,10 @@ const BookRender = ({ doc  })=>{
     }, "Abstract"), doc.abstract) : undefined);
 };
 const BookChapterRender = ({ doc  })=>{
-    const __abstract = Se();
+    const __abstract = Fe1();
     const collapse = ({ target  })=>target.classList.toggle('show')
     ;
-    Ae(()=>{
+    pe1(()=>{
         if (__abstract.current?.clientHeight > 50) __abstract.current.classList.add('collapse');
     });
     return export_default1.createElement("div", {
@@ -9375,10 +9412,10 @@ const BookChapterRender = ({ doc  })=>{
     }, "Abstract"), doc.abstract) : undefined);
 };
 const ConferenceProceedingRender = ({ doc  })=>{
-    const __abstract = Se();
+    const __abstract = Fe1();
     const collapse = ({ target  })=>target.classList.toggle('show')
     ;
-    Ae(()=>{
+    pe1(()=>{
         if (__abstract.current?.clientHeight > 50) __abstract.current.classList.add('collapse');
     });
     return export_default1.createElement("div", {
@@ -9402,10 +9439,10 @@ const ConferenceProceedingRender = ({ doc  })=>{
     }, "Abstract"), doc.abstract) : undefined);
 };
 const ThesisRender = ({ doc  })=>{
-    const __abstract = Se();
+    const __abstract = Fe1();
     const collapse = ({ target  })=>target.classList.toggle('show')
     ;
-    Ae(()=>{
+    pe1(()=>{
         if (__abstract.current?.clientHeight > 50) __abstract.current.classList.add('collapse');
     });
     return export_default1.createElement("div", {
@@ -9427,9 +9464,9 @@ const ThesisRender = ({ doc  })=>{
     }, "Abstract"), doc.abstract) : undefined);
 };
 const DocumentRender = ({ doc  })=>{
-    const [document, setDocument] = ye1(undefined);
-    const [icon, setIcon] = ye1(false);
-    Ae(()=>{
+    const [document, setDocument] = ke(undefined);
+    const [icon, setIcon] = ke(false);
+    pe1(()=>{
         switch(doc.type){
             case 'freedocument':
                 setDocument(export_default1.createElement(FreeDocumentRender, {
@@ -9476,11 +9513,10 @@ const DocumentRender = ({ doc  })=>{
     }, icon ? icon : undefined), document);
 };
 const NewCategoryForm = ({ current , userInfo , setUserInfo , setShowModal , setActiveForm  })=>{
-    const form = Se(undefined);
-    Ae(()=>{
+    const form = Fe1(undefined);
+    pe1(()=>{
         document.body.classList.add('show-modal-body');
         document.body.addEventListener('click', closeModal, false);
-        console.log(current);
         if (current) form.current.getElementsByTagName('input')[0].value = current.category_name;
     }, []);
     const closeModal = ()=>{
@@ -9604,7 +9640,7 @@ const updateDocument = async (document)=>fetch('/updatedocument', {
     })
 ;
 const DocumentsModal = ({ activeForm , show  })=>{
-    Ae(()=>{
+    pe1(()=>{
         if (show) document.querySelector('#documents-modal').classList.add('show-modal');
         else document.querySelector('#documents-modal').classList.remove('show-modal');
     }, [
@@ -9617,7 +9653,7 @@ const DocumentsModal = ({ activeForm , show  })=>{
     }, activeForm);
 };
 const CitationModal = ({ activeCitation , show  })=>{
-    Ae(()=>{
+    pe1(()=>{
         if (show) document.querySelector('#citation-modal').classList.add('show-modal');
         else document.querySelector('#citation-modal').classList.remove('show-modal');
     }, [
@@ -9632,8 +9668,7 @@ const CitationModal = ({ activeCitation , show  })=>{
     }, activeCitation));
 };
 const JournalArticleCitation = ({ doc , setShowCitation , setActiveCitation  })=>{
-    Ae(()=>{
-        console.log(doc);
+    pe1(()=>{
         document.body.classList.add('show-modal-body');
         document.body.addEventListener('click', closeModal, false);
     }, []);
@@ -9653,8 +9688,7 @@ const JournalArticleCitation = ({ doc , setShowCitation , setActiveCitation  })=
     }), export_default1.createElement("span", null, " ", doc.title, ". "), export_default1.createElement("span", null, doc.journal, ". "), export_default1.createElement("span", null, doc.publication_year), export_default1.createElement("span", null, doc?.volume ? `; ${doc.volume}` : undefined, doc?.issue ? `(${doc.issue})` : undefined), export_default1.createElement("span", null, doc?.start_page ? `:${doc.start_page}` : undefined, doc?.end_page ? "-" + doc.end_page : undefined, ". "), export_default1.createElement("span", null, doc?.doi ? doc.doi : undefined));
 };
 const BookCitation = ({ doc , setShowCitation , setActiveCitation  })=>{
-    Ae(()=>{
-        console.log(doc);
+    pe1(()=>{
         document.body.classList.add('show-modal-body');
         document.body.addEventListener('click', closeModal, false);
     }, []);
@@ -9674,8 +9708,7 @@ const BookCitation = ({ doc , setShowCitation , setActiveCitation  })=>{
     }), export_default1.createElement("span", null, " ", doc.chapter_title, ". "), export_default1.createElement("span", null, doc.title, doc?.subtitle ? `: ${doc.subtitle}` : undefined, ". "), doc?.edition ? export_default1.createElement("span", null, doc.edition, " - ed. ") : undefined, export_default1.createElement("span", null, doc.publication_place, ": ", doc?.publisher ? `${doc.publisher}; ` : undefined, " ", doc.publication_year), export_default1.createElement("span", null, doc?.start_page ? `:${doc.start_page}` : undefined, doc?.end_page ? "-" + doc.end_page : undefined, ". "), export_default1.createElement("span", null, doc?.doi ? doc.doi : undefined));
 };
 const BookChapterCitation = ({ doc , setShowCitation , setActiveCitation  })=>{
-    Ae(()=>{
-        console.log(doc);
+    pe1(()=>{
         document.body.classList.add('show-modal-body');
         document.body.addEventListener('click', closeModal, false);
     }, []);
@@ -9697,8 +9730,7 @@ const BookChapterCitation = ({ doc , setShowCitation , setActiveCitation  })=>{
     }), ". ") : undefined, export_default1.createElement("span", null, doc.title, doc?.subtitle ? `: ${doc.subtitle}` : undefined, ". "), doc?.edition ? export_default1.createElement("span", null, doc.edition, ". ") : undefined, export_default1.createElement("span", null, doc.publication_place, ": ", doc?.publisher ? `${doc.publisher} ;` : undefined, " ", doc.publication_year), export_default1.createElement("span", null, doc?.start_page ? `:${doc.start_page}` : undefined, doc?.end_page ? "-" + doc.end_page : undefined, ". "), export_default1.createElement("span", null, doc?.doi ? doc.doi : undefined));
 };
 const ConferenceProceedingCitation = ({ doc , setShowCitation , setActiveCitation  })=>{
-    Ae(()=>{
-        console.log(doc);
+    pe1(()=>{
         document.body.classList.add('show-modal-body');
         document.body.addEventListener('click', closeModal, false);
     }, []);
@@ -9720,8 +9752,7 @@ const ConferenceProceedingCitation = ({ doc , setShowCitation , setActiveCitatio
     }), ". ") : undefined, export_default1.createElement("span", null, doc.title, doc?.subtitle ? `: ${doc.subtitle}` : undefined, "; "), export_default1.createElement("span", null, doc.publication_year, " ", doc?.publication_month ? ` ${doc.publication_month}` : undefined, doc?.publication_day ? ` ${doc.publication_day}` : undefined), export_default1.createElement("span", null, "; ", doc.conference_location, ". "), export_default1.createElement("span", null, doc.publication_place, ": ", doc?.publisher ? `${doc.publisher}; ` : undefined, " ", doc.publication_year), export_default1.createElement("span", null, doc?.start_page ? `:${doc.start_page}` : undefined, doc?.end_page ? "-" + doc.end_page : undefined, ". "), export_default1.createElement("span", null, doc?.doi ? doc.doi : undefined));
 };
 const ThesisCitation = ({ doc , setShowCitation , setActiveCitation  })=>{
-    Ae(()=>{
-        console.log(doc);
+    pe1(()=>{
         document.body.classList.add('show-modal-body');
         document.body.addEventListener('click', closeModal, false);
     }, []);
@@ -9768,15 +9799,14 @@ const addDocument = async (newDocument)=>fetch('/documentadd', {
     })
 ;
 const FreeDocumentForm = ({ current , userInfo , setUserInfo , setShowModal , setActiveForm , categoryId  })=>{
-    Ae(()=>{
+    pe1(()=>{
         document.body.classList.add('show-modal-body');
-        CKEDITOR.plugins.addExternal('youtube', `${'http://localhost/'}plugins/youtube/plugin.js`);
+        CKEDITOR.plugins.addExternal('youtube', `${'https://researcher.zone/'}plugins/youtube/plugin.js`);
         CKEDITOR.replace('editor', {
             extraPlugins: 'youtube',
             allowedContent: true
         });
         if (current) {
-            console.log(current);
             CKEDITOR.instances.editor1.setData(current.html);
         }
     }, []);
@@ -9803,21 +9833,8 @@ const FreeDocumentForm = ({ current , userInfo , setUserInfo , setShowModal , se
                     ).map(({ order  })=>order
                     )) + 1 : 1
                 };
-                console.log(newDocument);
                 const response = await addDocument(newDocument);
                 const { document_id  } = await response.json();
-                console.log({
-                    user: {
-                        ...userInfo.user
-                    },
-                    documents: [
-                        ...userInfo.documents,
-                        {
-                            ...newDocument,
-                            _id: document_id
-                        }
-                    ]
-                });
                 setUserInfo({
                     user: {
                         ...userInfo.user
@@ -9842,10 +9859,6 @@ const FreeDocumentForm = ({ current , userInfo , setUserInfo , setShowModal , se
                 await updateDocument({
                     ...current,
                     html: CKEDITOR.instances.editor1.getData()
-                });
-                console.log({
-                    user: userInfo.user,
-                    documents: updatedDocuments
                 });
                 setUserInfo({
                     user: userInfo.user,
@@ -9883,16 +9896,36 @@ const FreeDocumentForm = ({ current , userInfo , setUserInfo , setShowModal , se
     }, "send")));
 };
 class Book {
+    order;
+    _id;
+    category;
+    user;
     type = 'book';
+    can_be_cited;
+    volume;
+    authors;
+    title;
+    subtitle;
+    edition;
+    publication_place;
+    publisher;
+    publication_year;
+    doi;
 }
 class BookChapter extends Book {
+    editors;
+    number;
+    start_page;
+    end_page;
+    chapter_title;
+    coordinator;
 }
 const BookForm = ({ current , userInfo , setUserInfo , setShowModal , setActiveForm , categoryId  })=>{
-    const [authors, setAuthors] = ye1([
+    const [authors, setAuthors] = ke([
         0
     ]);
-    const form = Se();
-    Ae(()=>{
+    const form = Fe1();
+    pe1(()=>{
         document.body.classList.add('show-modal-body');
     }, []);
     const closeModal = (ask = true)=>{
@@ -9936,26 +9969,9 @@ const BookForm = ({ current , userInfo , setUserInfo , setShowModal , setActiveF
         event.preventDefault();
         try {
             const newDocument = createDocumentObject();
-            console.log({
-                ...current,
-                ...newDocument
-            });
             if (!current) {
-                console.log(newDocument);
                 const response = await addDocument(newDocument);
                 const { document_id  } = await response.json();
-                console.log({
-                    user: {
-                        ...userInfo.user
-                    },
-                    documents: [
-                        ...userInfo.documents,
-                        {
-                            ...newDocument,
-                            _id: document_id
-                        }
-                    ]
-                });
                 setUserInfo({
                     user: {
                         ...userInfo.user
@@ -9984,10 +10000,6 @@ const BookForm = ({ current , userInfo , setUserInfo , setShowModal , setActiveF
                 await updateDocument({
                     ...newDocument,
                     _id: current._id
-                });
-                console.log({
-                    user: userInfo.user,
-                    documents: updatedDocuments
                 });
                 setUserInfo({
                     user: userInfo.user,
@@ -10072,7 +10084,7 @@ const BookForm = ({ current , userInfo , setUserInfo , setShowModal , setActiveF
             htmlFor: `aut-surname-${aut}`,
             className: "active",
             onClick: ({ target  })=>target.previousElementSibling.focus()
-        }, "Author surname *")), aut !== 1 ? export_default1.createElement("a", {
+        }, "Author surname *")), aut !== 0 ? export_default1.createElement("a", {
             onClick: ()=>removeAuthor(aut)
             ,
             className: "button-remove-modal waves-effect waves-light red btn-small"
@@ -10166,13 +10178,29 @@ const BookForm = ({ current , userInfo , setUserInfo , setShowModal , setActiveF
     }, "send"))));
 };
 class JournalArticle {
+    _id;
+    type;
+    category;
+    abstract;
+    order;
+    user;
+    can_be_cited;
+    authors;
+    title;
+    journal;
+    volume;
+    issue;
+    start_page;
+    end_page;
+    publication_year;
+    doi;
 }
 const JournalArticleForm = ({ current , userInfo , setUserInfo , setShowModal , setActiveForm , categoryId  })=>{
-    const [authors, setAuthors] = ye1([
+    const [authors, setAuthors] = ke([
         0
     ]);
-    const form = Se();
-    Ae(()=>{
+    const form = Fe1();
+    pe1(()=>{
         document.body.classList.add('show-modal-body');
         if (current) {
             setAuthors([
@@ -10221,26 +10249,9 @@ const JournalArticleForm = ({ current , userInfo , setUserInfo , setShowModal , 
         event.preventDefault();
         try {
             const newDocument = createDocumentObject();
-            console.log({
-                ...current,
-                ...newDocument
-            });
             if (!current) {
-                console.log(newDocument);
                 const response = await addDocument(newDocument);
                 const { document_id  } = await response.json();
-                console.log({
-                    user: {
-                        ...userInfo.user
-                    },
-                    documents: [
-                        ...userInfo.documents,
-                        {
-                            ...newDocument,
-                            _id: document_id
-                        }
-                    ]
-                });
                 setUserInfo({
                     user: {
                         ...userInfo.user
@@ -10269,10 +10280,6 @@ const JournalArticleForm = ({ current , userInfo , setUserInfo , setShowModal , 
                 await updateDocument({
                     ...newDocument,
                     _id: current._id
-                });
-                console.log({
-                    user: userInfo.user,
-                    documents: updatedDocuments
                 });
                 setUserInfo({
                     user: userInfo.user,
@@ -10451,12 +10458,12 @@ const JournalArticleForm = ({ current , userInfo , setUserInfo , setShowModal , 
     }, "send"))));
 };
 const BookChapterForm = ({ current , userInfo , setUserInfo , setShowModal , setActiveForm , categoryId  })=>{
-    const [authors, setAuthors] = ye1([
+    const [authors, setAuthors] = ke([
         0
     ]);
-    const [editors, setEditors] = ye1([]);
-    const form = Se();
-    Ae(()=>{
+    const [editors, setEditors] = ke([]);
+    const form = Fe1();
+    pe1(()=>{
         document.body.classList.add('show-modal-body');
     }, []);
     const closeModal = (ask = true)=>{
@@ -10514,26 +10521,9 @@ const BookChapterForm = ({ current , userInfo , setUserInfo , setShowModal , set
         event.preventDefault();
         try {
             const newDocument = createDocumentObject();
-            console.log({
-                ...current,
-                ...newDocument
-            });
             if (!current) {
-                console.log(newDocument);
                 const response = await addDocument(newDocument);
                 const { document_id  } = await response.json();
-                console.log({
-                    user: {
-                        ...userInfo.user
-                    },
-                    documents: [
-                        ...userInfo.documents,
-                        {
-                            ...newDocument,
-                            _id: document_id
-                        }
-                    ]
-                });
                 setUserInfo({
                     user: {
                         ...userInfo.user
@@ -10562,10 +10552,6 @@ const BookChapterForm = ({ current , userInfo , setUserInfo , setShowModal , set
                 await updateDocument({
                     ...newDocument,
                     _id: current._id
-                });
-                console.log({
-                    user: userInfo.user,
-                    documents: updatedDocuments
                 });
                 setUserInfo({
                     user: userInfo.user,
@@ -10672,7 +10658,7 @@ const BookChapterForm = ({ current , userInfo , setUserInfo , setShowModal , set
             htmlFor: `aut-surname-${aut}`,
             className: "active",
             onClick: ({ target  })=>target.previousElementSibling.focus()
-        }, "Author surname *")), aut !== 1 ? export_default1.createElement("a", {
+        }, "Author surname *")), aut !== 0 ? export_default1.createElement("a", {
             onClick: ()=>removeAuthor(aut)
             ,
             className: "button-remove-modal waves-effect waves-light red btn-small"
@@ -10844,14 +10830,32 @@ const BookChapterForm = ({ current , userInfo , setUserInfo , setShowModal , set
     }, "send"))));
 };
 class ConferenceProceeding {
+    _id;
+    type;
+    category;
+    order;
+    user;
+    can_be_cited;
+    title;
+    authors;
+    editors;
+    subtitle;
+    conference_year;
+    conference_month;
+    conference_day;
+    publisher;
+    conference_location;
+    publication_place;
+    publication_year;
+    doi;
 }
 const ConferenceProceedingForm = ({ current , userInfo , setUserInfo , setShowModal , setActiveForm , categoryId  })=>{
-    const [authors, setAuthors] = ye1([
+    const [authors, setAuthors] = ke([
         0
     ]);
-    const [editors, setEditors] = ye1([]);
-    const form = Se();
-    Ae(()=>{
+    const [editors, setEditors] = ke([]);
+    const form = Fe1();
+    pe1(()=>{
         document.body.classList.add('show-modal-body');
     }, []);
     const closeModal = (ask = true)=>{
@@ -10904,26 +10908,9 @@ const ConferenceProceedingForm = ({ current , userInfo , setUserInfo , setShowMo
         event.preventDefault();
         try {
             const newDocument = createDocumentObject();
-            console.log({
-                ...current,
-                ...newDocument
-            });
             if (!current) {
-                console.log(newDocument);
                 const response = await addDocument(newDocument);
                 const { document_id  } = await response.json();
-                console.log({
-                    user: {
-                        ...userInfo.user
-                    },
-                    documents: [
-                        ...userInfo.documents,
-                        {
-                            ...newDocument,
-                            _id: document_id
-                        }
-                    ]
-                });
                 setUserInfo({
                     user: {
                         ...userInfo.user
@@ -10952,10 +10939,6 @@ const ConferenceProceedingForm = ({ current , userInfo , setUserInfo , setShowMo
                 await updateDocument({
                     ...newDocument,
                     _id: current._id
-                });
-                console.log({
-                    user: userInfo.user,
-                    documents: updatedDocuments
                 });
                 setUserInfo({
                     user: userInfo.user,
@@ -11050,7 +11033,7 @@ const ConferenceProceedingForm = ({ current , userInfo , setUserInfo , setShowMo
             htmlFor: `aut-surname-${aut}`,
             className: "active",
             onClick: ({ target  })=>target.previousElementSibling.focus()
-        }, "Author surname *")), aut !== 1 ? export_default1.createElement("a", {
+        }, "Author surname *")), aut !== 0 ? export_default1.createElement("a", {
             onClick: ()=>removeAuthor(aut)
             ,
             className: "button-remove-modal waves-effect waves-light red btn-small"
@@ -11096,7 +11079,8 @@ const ConferenceProceedingForm = ({ current , userInfo , setUserInfo , setShowMo
             className: "material-icons right"
         }, "delete_forever")));
     }), export_default1.createElement("span", {
-        onClick: addEditor
+        onClick: addEditor,
+        className: "button-add-modal waves-effect waves-light btn-small"
     }, "Add editor")), export_default1.createElement("div", {
         className: "input-field col s12"
     }, export_default1.createElement("textarea", {
@@ -11203,10 +11187,24 @@ const ConferenceProceedingForm = ({ current , userInfo , setUserInfo , setShowMo
     }, "send"))));
 };
 class Thesis {
+    _id;
+    type;
+    category;
+    order;
+    user;
+    can_be_cited;
+    title;
+    abstract;
+    author;
+    subtitle;
+    university;
+    university_location;
+    publication_year;
+    uri;
 }
 const ThesisForm = ({ current , userInfo , setUserInfo , setShowModal , setActiveForm , categoryId  })=>{
-    const form = Se();
-    Ae(()=>{
+    const form = Fe1();
+    pe1(()=>{
         document.body.classList.add('show-modal-body');
     }, []);
     const closeModal = (ask = true)=>{
@@ -11253,26 +11251,9 @@ const ThesisForm = ({ current , userInfo , setUserInfo , setShowModal , setActiv
         event.preventDefault();
         try {
             const newDocument = createDocumentObject();
-            console.log({
-                ...current,
-                ...newDocument
-            });
             if (!current) {
-                console.log(newDocument);
                 const response = await addDocument(newDocument);
                 const { document_id  } = await response.json();
-                console.log({
-                    user: {
-                        ...userInfo.user
-                    },
-                    documents: [
-                        ...userInfo.documents,
-                        {
-                            ...newDocument,
-                            _id: document_id
-                        }
-                    ]
-                });
                 setUserInfo({
                     user: {
                         ...userInfo.user
@@ -11301,10 +11282,6 @@ const ThesisForm = ({ current , userInfo , setUserInfo , setShowModal , setActiv
                 await updateDocument({
                     ...newDocument,
                     _id: current._id
-                });
-                console.log({
-                    user: userInfo.user,
-                    documents: updatedDocuments
                 });
                 setUserInfo({
                     user: userInfo.user,
@@ -11466,11 +11443,11 @@ const selectForm = (type)=>{
     }
 };
 const ProfileDocuments = ({ userInfo , setUserInfo  })=>{
-    const [showModal, setShowModal] = ye1(false);
-    const [showCitation, setShowCitation] = ye1(false);
-    const [activeCitation, setActiveCitation] = ye1(undefined);
-    const [activeForm, setActiveForm] = ye1(undefined);
-    Ae(()=>{
+    const [showModal, setShowModal] = ke(false);
+    const [showCitation, setShowCitation] = ke(false);
+    const [activeCitation, setActiveCitation] = ke(undefined);
+    const [activeForm, setActiveForm] = ke(undefined);
+    pe1(()=>{
         const elems = document.querySelectorAll('.dropdown-trigger');
         M.Dropdown.init(elems);
     }, [
@@ -11516,7 +11493,6 @@ const ProfileDocuments = ({ userInfo , setUserInfo  })=>{
                         order: index
                     })
                 );
-                console.log(updatedDocuments);
                 setUserInfo({
                     user: userInfo.user,
                     documents: updatedDocuments
@@ -11544,7 +11520,6 @@ const ProfileDocuments = ({ userInfo , setUserInfo  })=>{
                         order: index
                     })
                 );
-                console.log(updatedUser);
                 await deleteCategory(categoryId, updatedUser);
                 setUserInfo({
                     user: updatedUser,
@@ -11571,7 +11546,6 @@ const ProfileDocuments = ({ userInfo , setUserInfo  })=>{
         ];
         const toChangeIndex = updatedCategories.findIndex(({ category_name , order  })=>category_name === currentName && order == currentOrder
         );
-        console.log(toChangeIndex);
         const toSwitchIndex = updatedCategories.findIndex((cat)=>cat.order === categoryChangedOrder
         );
         const oldOrder = updatedCategories[toChangeIndex].order;
@@ -11581,7 +11555,6 @@ const ProfileDocuments = ({ userInfo , setUserInfo  })=>{
             ...userInfo.user,
             categories: updatedCategories
         };
-        console.log(updatedUser);
         try {
             await updateUser(updatedUser);
             setUserInfo({
@@ -11610,7 +11583,6 @@ const ProfileDocuments = ({ userInfo , setUserInfo  })=>{
             ),
             ...updatedCategoryDocuments
         ];
-        console.log(updatedDocuments);
         try {
             await updateDocument(updatedCategoryDocuments[toChangeIndex]);
             await updateDocument(updatedCategoryDocuments[toSwitchIndex]);
@@ -11622,19 +11594,19 @@ const ProfileDocuments = ({ userInfo , setUserInfo  })=>{
             console.error(error);
         }
     };
-    return export_default1.createElement(export_default1.Fragment, null, export_default1.createElement("div", {
+    return export_default1.createElement("div", {
         className: 'profile-articles container'
     }, !userInfo.isGuest ? export_default1.createElement(export_default1.Fragment, null, export_default1.createElement("div", {
         className: "profile-articles__add-category"
     }, export_default1.createElement("a", {
-        className: 'btn-floating btn-medium waves-effect waves-light blue dropdown-trigger',
-        href: '#',
-        "data-target": 'dropdownc'
+        className: "btn-floating btn-medium waves-effect waves-light blue dropdown-trigger",
+        href: "#",
+        "data-target": "dropdownc"
     }, export_default1.createElement("i", {
         className: "material-icons"
     }, "add"))), export_default1.createElement("ul", {
-        id: 'dropdownc',
-        className: 'dropdown-content'
+        id: "dropdownc",
+        className: "dropdown-content"
     }, export_default1.createElement("li", null, export_default1.createElement("a", {
         onClick: ()=>addEditCategory(undefined)
     }, "Add category")))) : undefined, export_default1.createElement("div", {
@@ -11667,8 +11639,8 @@ const ProfileDocuments = ({ userInfo , setUserInfo  })=>{
         }, "expand_more")))) : undefined), !userInfo.isGuest ? export_default1.createElement(export_default1.Fragment, null, export_default1.createElement("div", {
             className: "profile-articles__buttons-group2"
         }, export_default1.createElement("button", {
-            className: 'btn-floating btn-small waves-effect waves-light blue dropdown-trigger',
-            href: '#',
+            className: "btn-floating btn-small waves-effect waves-light blue dropdown-trigger",
+            href: "#",
             "data-target": `dropdown${index}`
         }, export_default1.createElement("i", {
             className: "material-icons"
@@ -11692,7 +11664,7 @@ const ProfileDocuments = ({ userInfo , setUserInfo  })=>{
             className: "material-icons right"
         }, "edit"))), " ") : undefined, export_default1.createElement("ul", {
             id: `dropdown${index}`,
-            className: 'dropdown-content'
+            className: "dropdown-content"
         }, export_default1.createElement("li", null, export_default1.createElement("a", {
             onClick: ()=>addDocument1(category_id, selectForm('freedocument'), undefined)
         }, "Add free document")), export_default1.createElement("li", null, export_default1.createElement("a", {
@@ -11763,17 +11735,10 @@ const ProfileDocuments = ({ userInfo , setUserInfo  })=>{
     }), export_default1.createElement(CitationModal, {
         show: showCitation,
         activeCitation: activeCitation
-    })), export_default1.createElement(Footer, {
-        styles: {
-            margin: '6rem 0 0 0'
-        }
     }));
 };
 const Profile = ({ userInfo  })=>{
-    const [profileUserInfo, setUserInfo] = ye1(userInfo);
-    Ae(()=>{
-        console.log(userInfo);
-    }, []);
+    const [profileUserInfo, setUserInfo] = ke(userInfo);
     return export_default1.createElement("div", {
         className: "profile"
     }, export_default1.createElement(Header, {
@@ -11782,11 +11747,13 @@ const Profile = ({ userInfo  })=>{
     }), export_default1.createElement(ProfileDocuments, {
         userInfo: profileUserInfo,
         setUserInfo: setUserInfo
+    }), export_default1.createElement(Footer, {
+        dynamic: false
     }));
 };
 const App = ()=>{
-    const userInfo = je(UserContext);
-    return export_default1.createElement(export_default1.Fragment, null, userInfo?.user ? export_default1.createElement(Profile, {
+    const userInfo = Ce(UserContext);
+    return export_default1.createElement(export_default1.Fragment, null, userInfo === 'loading' ? '' : userInfo?.user ? export_default1.createElement(Profile, {
         userInfo: userInfo
     }) : export_default1.createElement(Auth, null));
 };

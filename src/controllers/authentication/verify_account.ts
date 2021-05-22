@@ -7,7 +7,6 @@ const verifyAccount = async context => {
 
         const userId = context.params.id;
         const user = await findUserById(new Bson.ObjectId(userId));
-        console.log(user);
 
         if (user) {
             await updateUser(user.email, { ...user, verified: true });
@@ -15,7 +14,7 @@ const verifyAccount = async context => {
             throw new Error();
         }
 
-        context.response.redirect(`${'http://localhost/'}?verification_successful`);
+        context.response.redirect(`${'https://researcher.zone/'}?verification_successful`);
 
 
     } catch (e) {

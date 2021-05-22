@@ -9,7 +9,7 @@ const App = () => {
 
   return (
     <>
-      {userInfo?.user ? <Profile userInfo={userInfo} />  : <Auth /> }
+      {userInfo === 'loading' ? '' : userInfo?.user ? <Profile userInfo={userInfo} />  : <Auth /> }
     </>
   )
 }

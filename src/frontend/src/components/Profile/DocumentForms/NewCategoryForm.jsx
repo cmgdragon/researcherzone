@@ -7,7 +7,6 @@ const NewCategoryForm = ({current, userInfo, setUserInfo, setShowModal, setActiv
     useEffect(() => {
         document.body.classList.add('show-modal-body');
         document.body.addEventListener('click', closeModal, false);
-        console.log(current)
         if (current) form.current.getElementsByTagName('input')[0].value = current.category_name;
 
     }, []);

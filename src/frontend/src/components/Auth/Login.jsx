@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import Footer from '../../components/Footer.jsx';
 
-const Login = ({registered}) => {
+const Login = ({registered, changeRoute}) => {
 
     const [error, setError] = useState('');
     const [message, setMessage] = useState(undefined);
@@ -27,7 +28,7 @@ const Login = ({registered}) => {
             body: JSON.stringify(login)
         });
       const response = await request.json();
-      console.log(response)
+
       switch (response.status) {
             case 200:
                 window.location.href = "/";
@@ -39,8 +40,8 @@ const Login = ({registered}) => {
     }
 
     return (
+      <>
         <div className="container row">
-        
         <form className="col s12" onSubmit={login}>
         <pre className="green-text">{message}</pre>
         <pre className="red-text">{error}</pre>
@@ -62,6 +63,9 @@ const Login = ({registered}) => {
         </button>
         </form>
       </div>
+      <div className="container">Not yet a member? <a href="#" className="link" onClick={() => changeRoute('register')}>Register</a></div>
+      <Footer dynamic={true} />
+      </>
     )
 }
 

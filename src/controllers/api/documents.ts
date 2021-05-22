@@ -1,5 +1,5 @@
 import { Context } from "oak";
-import { addNewDocument, deleteDocument, deleteCategory, updateDocument } from '~/controllers/database/documents.ts';
+import { addNewDocument, deleteDocument, deleteCategory, updateDocument, findDocuments } from '~/controllers/database/documents.ts';
 import { Bson } from 'deno-mongo';
 import { updateUser } from '~/controllers/database/users.ts';
 

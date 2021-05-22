@@ -4,7 +4,6 @@ import AuthorCitator from './AuthorCitator.jsx';
 const BookChapterCitation = ({doc, setShowCitation, setActiveCitation}) => {
 
     useEffect(() => {
-        console.log(doc)
         document.body.classList.add('show-modal-body');
         document.body.addEventListener('click', closeModal, false);
     }, [])

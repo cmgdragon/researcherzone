@@ -1,16 +1,9 @@
 import React, { useEffect } from 'react';
-import JournalArticle from '~/models/JournalArticle.ts';
 import AuthorCitator from './AuthorCitator.jsx';
 
 const JournalArticleCitation = ({doc, setShowCitation, setActiveCitation}) => {
 
-    //document = new JournalArticle();
-   /* document = {
-        ...document,
-        ...doc
-    }*/
     useEffect(() => {
-        console.log(doc)
         document.body.classList.add('show-modal-body');
         document.body.addEventListener('click', closeModal, false);
     }, [])

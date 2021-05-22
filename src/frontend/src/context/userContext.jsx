@@ -5,7 +5,7 @@ export const UserContext = createContext(false);
 
 const UserInfoContext = ({children}) => {
 
-    const [userInfo, setUserInfo] = useState(false);
+    const [userInfo, setUserInfo] = useState('loading');
 
     useEffect(async () => {
         try {

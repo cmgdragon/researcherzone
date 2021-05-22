@@ -37,7 +37,7 @@ const register = async (context: Context) => {
             subject: "ResearcherZone – Verification",
             content: '',
             html: `Thank you for registering! Please, click on the following link to verify your account:
-            <a href="${'http://localhost/'}verify_account/${userId}">${'http://localhost/'}verify_account/${userId}</a>`
+            <a href="${'https://researcher.zone/'}verify_account/${userId}">${'https://researcher.zone/'}verify_account/${userId}</a>`
         });
 
         await client.close();

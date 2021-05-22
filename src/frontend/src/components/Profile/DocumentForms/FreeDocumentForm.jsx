@@ -7,13 +7,12 @@ const FreeDocumentForm = ({current, userInfo, setUserInfo, setShowModal, setActi
     useEffect(() => {
         document.body.classList.add('show-modal-body');
 
-        CKEDITOR.plugins.addExternal('youtube', `${'http://localhost/'}plugins/youtube/plugin.js`);
+        CKEDITOR.plugins.addExternal('youtube', `${'https://researcher.zone/'}plugins/youtube/plugin.js`);
         CKEDITOR.replace( 'editor' ,  {
             extraPlugins: 'youtube',
             allowedContent: true
         });
         if (current) {
-            console.log(current)
             CKEDITOR.instances.editor1.setData(current.html);
         }
     
@@ -43,11 +42,9 @@ const FreeDocumentForm = ({current, userInfo, setUserInfo, setShowModal, setActi
                     order: userInfo.documents.length ?
                     Math.max( ...userInfo.documents.filter(({category}) => category === categoryId).map(({order}) => order) )+1 : 1
                 };
-    
-                console.log(newDocument)
+
                 const response = await addDocument(newDocument);
                 const { document_id } = await response.json();
-                console.log({ user: { ...userInfo.user }, documents: [...userInfo.documents, { ...newDocument, _id: document_id }] });
                 setUserInfo({ user: { ...userInfo.user }, documents: [...userInfo.documents, { ...newDocument, _id: document_id }] });
             } else {
 
@@ -56,7 +53,6 @@ const FreeDocumentForm = ({current, userInfo, setUserInfo, setShowModal, setActi
                 ];
 
                 await updateDocument({...current, html: CKEDITOR.instances.editor1.getData() });
-                console.log({ user: userInfo.user, documents: updatedDocuments });
                 setUserInfo({ user: userInfo.user, documents: updatedDocuments });
             }
 

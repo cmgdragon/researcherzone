@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import Register from './Register.jsx';
 import Login from './Login.jsx';
-import Footer from '../../components/Footer.jsx';
 
 const Auth = () => {
 
@@ -10,15 +9,19 @@ const Auth = () => {
     const changeRoute = route => setRouter(route);
 
     return (
-            <>
+            <div className="auth">
+                <div className="app__auth-header">
+                    <img src="img/icon.png" alt="ResearcherZone" />
+                    <h1>ResearcherZone</h1>       
+                </div>
             {
                 router === 'login' || router === 'newuser' ?
-                <><Login registered={router === 'newuser' ? true : false} /> <div className="container">Not yet a member? <a href="#" className="link" onClick={() => changeRoute('register')}>Register</a></div> </>
+
+                <Login registered={router === 'newuser' ? true : false} changeRoute={changeRoute} />
                 :
-                <><Register changeRoute={changeRoute} /> <div className="container">Already a member? <a href="#" className="link" onClick={() => changeRoute('login')}>Log in</a ></div></>
+                <Register changeRoute={changeRoute} />
             }
-            <Footer styles={{position: 'absolute', bottom: '0'}} />
-            </>
+            </div>
     )
 }
 

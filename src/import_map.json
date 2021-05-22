@@ -3,18 +3,16 @@
     "~/": "./",
     "react": "https://esm.sh/react@17.0.2",
     "react-dom": "https://esm.sh/react-dom@17.0.2",
-    "oak": "https://deno.land/x/oak/mod.ts",
+    "oak": "https://deno.land/x/oak@v6.5.1/mod.ts",
     "react-dom/server": "https://esm.sh/react-dom@17.0.2/server",
-    "react-router-dom": "https://esm.sh/react-router-dom@5.2.0",
-    "deno-mongo": "https://deno.land/x/mongo@v0.22.0/mod.ts",
+    "deno-mongo": "https://deno.land/x/mongo@v0.23.0/mod.ts",
     "dotenv": "https://deno.land/x/dotenv/mod.ts",
     "sha256": "https://deno.land/x/sha256@v1.0.2/mod.ts",
     "djwt": "https://deno.land/x/djwt@v2.2/mod.ts",
     "cookie": "https://esm.sh/cookie@0.4.1",
     "browser-image-compression": "https://esm.sh/browser-image-compression@1.0.14",
     "smtp": "https://deno.land/x/smtp/mod.ts",
-    "test_suite": "https://deno.land/x/test_suite@v0.7.0/mod.ts",
-    "asserts": "https://deno.land/std@0.93.0/testing/asserts.ts"
+    "asserts": "https://deno.land/std@0.97.0/testing/asserts.ts"
   },
   "scopes": {}
 }

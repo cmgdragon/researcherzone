@@ -2,7 +2,7 @@
   "$schema": "https://deno.land/x/denon@2.4.7/schema.json",
   "scripts": {
     "start": {
-      "cmd": "deno bundle src/frontend/index.jsx src/static/index.js --config ./tsconfig.json --import-map=src/import_map.json && deno run -A --config ./tsconfig.json --import-map=src/import_map.json src/main.tsx"
+      "cmd": "deno bundle src/frontend/index.jsx src/static/index.js --config ./tsconfig.json --import-map=src/import_map.json && deno run -A --unstable --config ./tsconfig.json --import-map=src/import_map.json src/main.tsx"
     }
   },
   "watcher": {

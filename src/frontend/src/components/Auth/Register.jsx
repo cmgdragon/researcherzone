@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import User from '~/models/User.ts';
+import Footer from '../../components/Footer.jsx';
 
 const Register = ({changeRoute}) => {
 
@@ -97,6 +98,7 @@ const Register = ({changeRoute}) => {
     }
 
     return (
+      <>
         <div className="container row">
         <pre className="red-text">{errors.form}</pre>
         <form className="col s12" onSubmit={register}>
@@ -138,6 +140,9 @@ const Register = ({changeRoute}) => {
         </button>
         </form>
       </div>
+      <div className="container">Already a member? <a href="#" className="link" onClick={() => changeRoute('login')}>Log in</a ></div>
+      <Footer dynamic={true} />
+      </>
     )
 }
 

@@ -1,6 +1,6 @@
 const getUserInfo = async () => {
     try {
-        const request = await fetch(`${'http://localhost/'}getuserinfo`, {
+        const request = await fetch(`${'https://researcher.zone/'}getuserinfo`, {
             headers: { 'Content-Type': 'application/json',
                 'pathname': window.location.pathname,
                 'pragma': 'no-cache',
