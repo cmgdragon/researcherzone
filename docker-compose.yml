@@ -5,7 +5,7 @@ services:
     restart: always
     build: . #donde está el Dockerfile
     ports:
-      - "8001:8000" #el primero es el que expone fuera del contenedor, el segundo es el del contenedor
+      - "80:8000" #el primero es el que expone fuera del contenedor, el segundo es el del contenedor
     env_file:
       - ./.env
     environment:
@@ -13,3 +13,5 @@ services:
       MONGODB_PASSWORD: "${MONGODB_PASSWORD}"
       MONGODB_DATABASE: "${MONGODB_DATABASE}"
       MONGODB_HOST: "${MONGODB_HOST}"
+      SMTP_USER: "${SMTP_USER}"
+      SMTP_PASSWORD: "${SMTP_PASSWORD}"

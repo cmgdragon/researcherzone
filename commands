@@ -7,5 +7,5 @@ deno run --allow-env --allow-read --allow-net --config ./tsconfig.json  src/main
 deno test --import-map=src/import_map.json --config ./tsconfig.json -A
 
 //docker
-docker build -t deno_server .
+docker build -t researcherzone .
 docker run -it --init -p 8001:8000 deno_server

@@ -49,7 +49,6 @@ const login = async ({request, response}: Context) => {
       exp: getNumericDate(60 * 60)
     }
     
-    //const token = await create(header, payload, Deno.env.get('SECRET'))
     const token = await create(header, payload, user.pwd+user.email)
 
     response.headers.set('Set-Cookie', cookie.serialize('token', token, {
