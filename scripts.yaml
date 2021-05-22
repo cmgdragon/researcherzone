@@ -1,6 +1,8 @@
 #needs https://github.com/jurassiscripts/velociraptor
 scripts:
   dev: denon start
-  test: deno test --import-map=src/import_map.json --config ./tsconfig.json -A
+  test: deno test --unstable --import-map=src/import_map.json --config ./tsconfig.json -A
   bundle: deno bundle src/frontend/index.jsx src/static/index.js --config ./tsconfig.json --import-map=src/import_map.json
-  build-image: docker build -t researcherzone .
+  build: docker build -t gcr.io/researcherzone/researcherzone .
+  push: docker push gcr.io/researcherzone/researcherzone
+  auth: gcloud auth login
