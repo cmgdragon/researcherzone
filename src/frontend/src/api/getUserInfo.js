@@ -1,6 +1,6 @@
 const getUserInfo = async () => {
     try {
-        const request = await fetch('http://localhost:8000/getuserinfo', {
+        const request = await fetch(`${'http://localhost/'}getuserinfo`, {
             headers: { 'Content-Type': 'application/json',
                 'pathname': window.location.pathname,
                 'pragma': 'no-cache',

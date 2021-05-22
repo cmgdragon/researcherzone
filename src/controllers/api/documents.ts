@@ -6,9 +6,7 @@ import { updateUser } from '~/controllers/database/users.ts';
 const addDocument = async ({request, response}: Context) => {
 
     const { newDocument, email } = await request.body().value;
-    console.log(newDocument, email)
     const result = await addNewDocument({ ...newDocument, user: email });
-    console.log( result.toString() );
 
   try {
     response.status = 200;
@@ -24,7 +22,6 @@ const removeDocument = async ({request, response}: Context) => {
 
     const { document_id, email } = await request.body().value;
     const result = await deleteDocument(new Bson.ObjectID(document_id), email);
-    console.log( document_id, email );
 
     response.status = 200;
     response.body = { status: 200, document_id: result.toString() };
@@ -38,8 +35,6 @@ const removeCategory = async ({request, response}: Context) => {
   const { categoryId, user: newUser, email } = await request.body().value;
   const result = await deleteCategory(categoryId, email);
   const { matchedCount, modifiedCount, upsertedId } = await updateUser(email, newUser);
-
-  console.log( result, categoryId, " | " , matchedCount, modifiedCount, upsertedId );
 
   try {
     response.status = 200;

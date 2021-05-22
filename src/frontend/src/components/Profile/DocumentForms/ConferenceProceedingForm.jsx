@@ -127,7 +127,7 @@ const ConferenceProceedingForm = ({current, userInfo, setUserInfo, setShowModal,
                             <input id={`aut-surname-${aut}`} type="text" defaultValue={current?.authors[aut].surname} required />
                             <label htmlFor={`aut-surname-${aut}`} className="active" onClick={({target}) => target.previousElementSibling.focus()}>Author surname *</label>
                         </div>
-                        { aut !== 1 ?
+                        { aut !== 0 ?
                                 <a onClick={() => removeAuthor(aut)} className="button-remove-modal waves-effect waves-light red btn-small"><i className="material-icons right">delete_forever</i></a>
                         : undefined }
                         </div>
@@ -153,7 +153,7 @@ const ConferenceProceedingForm = ({current, userInfo, setUserInfo, setShowModal,
                     )
                 })
                 }
-                <span onClick={addEditor}>Add editor</span>
+                <span onClick={addEditor} className="button-add-modal waves-effect waves-light btn-small">Add editor</span>
             </div>
 
                 <div className="input-field col s12">

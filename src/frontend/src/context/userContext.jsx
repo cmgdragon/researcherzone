@@ -11,7 +11,6 @@ const UserInfoContext = ({children}) => {
         try {
             const userInfo = await getUserInfo();
             setUserInfo(userInfo);
-            console.log(userInfo)
         } catch (error) {
             console.error(error);
         }

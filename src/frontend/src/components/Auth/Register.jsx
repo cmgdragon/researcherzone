@@ -36,7 +36,7 @@ const Register = ({changeRoute}) => {
 
             setError({...errors, password2: '✓', [target.id]: '✓'})
             document.getElementById('password2').classList.remove('invalid');
-            classList.remove('invalid');
+            target.classList.remove('invalid');
             break;
           case 'password2':
             if (target.value !== document.getElementById('password').value) {

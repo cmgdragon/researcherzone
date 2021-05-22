@@ -30,7 +30,7 @@ const Login = ({registered}) => {
       console.log(response)
       switch (response.status) {
             case 200:
-                window.location.reload();
+                window.location.href = "/";
             break;
             default:
                 setError(response.message);

@@ -10,7 +10,6 @@ const verifyUserCall = async ({request, response}: Context, next: any) => {
 
         const { token } = cookie.parse(request.headers.get('cookie') || '');
         const { email } = await request.body().value;
-        console.log(email)
 
         if (!token) {
             throw new Error('Not token found');

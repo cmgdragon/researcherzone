@@ -96,7 +96,7 @@ const Header = ({userInfo, setUserInfo}) => {
         <div className="profile-container">
         <div className="profile-header container">
             <input id="image" type="file" name="name" style={{display: 'none'}} accept="image/png, image/jpeg" onChange={changeImage} />
-            <img src={userInfo.user.image !== '' ? userInfo.user.image : `http://localhost:8000/img/default.png`} className={'profile-header__image'} onClick={selectImage}  />
+            <img src={userInfo.user.image !== '' ? userInfo.user.image : `${'http://localhost/'}img/default.png`} className={'profile-header__image'} onClick={selectImage}  />
             <div className={'profile-header__textgroup'}>
                 <div className={'profile-header__name-group'}>
                     <span id="name" className={`h3 profile-header__name blue-text lighten-2  ${!userInfo.isGuest && userInfo.user.name === '' ? 'empty' : ''}`} onClick={editField}>{userInfo.user.name}</span>
@@ -107,7 +107,7 @@ const Header = ({userInfo, setUserInfo}) => {
                         { userInfo.user.isGufest && userInfo.user.optional_image === '' ? undefined : 
                         <>
                             <input id="optional_image" type="file" name="name" style={{display: 'none'}} accept="image/png, image/jpeg" onChange={changeImage} />
-                            <img id="optional_image" src={userInfo.user.optional_image && userInfo.user.optional_image !== '' ? userInfo.user.optional_image : `http://localhost:8000/img/default.png`} className={'profile-header__image2'} onClick={selectImage} /> </>
+                            <img id="optional_image" src={userInfo.user.optional_image && userInfo.user.optional_image !== '' ? userInfo.user.optional_image : `${'http://localhost/'}img/default.png`} className={'profile-header__image2'} onClick={selectImage} /> </>
                         
                         }
                         {!userInfo.isGuest && userInfo.user.optional_image && userInfo.user.optional_image !== '' ? <i onClick={removeOptionalImage} className="material-icons right">close</i> : undefined}
@@ -135,7 +135,7 @@ const Header = ({userInfo, setUserInfo}) => {
                         return (
                             <a className={`profile__social-link ${image ? '' : 'no-image'}`} key={index} href={url} title={name}>
                                 {
-                                    image ? <img src={`http://localhost:8000/img/${image}.png`} alt={name} />
+                                    image ? <img src={`${'http://localhost/'}img/${image}.png`} alt={name} />
                                     : <i className="material-icons right">link</i>
                                 }
                             </a>
@@ -149,7 +149,7 @@ const Header = ({userInfo, setUserInfo}) => {
                     : undefined
                 }
             </div>
-            <span>Share: <input readOnly type="text" className="profile__share-link" value={`http://localhost:8000/user/${userInfo.user._id}`} /> </span>
+            <span>Share: <input readOnly type="text" className="profile__share-link" value={`${'http://localhost/'}user/${userInfo.user._id}`} /> </span>
         </div>
         <SocialMediaModal show={showModal}>
             <SocialMediaForm userInfo={userInfo} setUserInfo={setUserInfo} setShowModal={setShowModal} />

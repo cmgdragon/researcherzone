@@ -117,7 +117,7 @@ const BookForm = ({current, userInfo, setUserInfo, setShowModal, setActiveForm, 
                             <input id={`aut-surname-${aut}`} type="text" defaultValue={current?.authors[aut].surname} required />
                             <label htmlFor={`aut-surname-${aut}`} className="active" onClick={({target}) => target.previousElementSibling.focus()}>Author surname *</label>
                         </div>
-                        { aut !== 1 ?
+                        { aut !== 0 ?
                                 <a onClick={() => removeAuthor(aut)} className="button-remove-modal waves-effect waves-light red btn-small"><i className="material-icons right">delete_forever</i></a>
                         : undefined }
                         </div>

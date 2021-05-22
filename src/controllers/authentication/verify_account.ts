@@ -15,7 +15,7 @@ const verifyAccount = async context => {
             throw new Error();
         }
 
-        context.response.redirect('http://localhost:8000/?verification_successful');
+        context.response.redirect(`${'http://localhost/'}?verification_successful`);
 
 
     } catch (e) {

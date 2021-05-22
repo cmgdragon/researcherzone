@@ -1,3 +1,4 @@
+#needs https://github.com/jurassiscripts/velociraptor
 scripts:
   dev: denon start
   test: deno test --import-map=src/import_map.json --config ./tsconfig.json -A

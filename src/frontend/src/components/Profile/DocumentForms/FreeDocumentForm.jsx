@@ -7,7 +7,7 @@ const FreeDocumentForm = ({current, userInfo, setUserInfo, setShowModal, setActi
     useEffect(() => {
         document.body.classList.add('show-modal-body');
 
-        CKEDITOR.plugins.addExternal('youtube', 'http://localhost:8000/plugins/youtube/plugin.js');
+        CKEDITOR.plugins.addExternal('youtube', `${'http://localhost/'}plugins/youtube/plugin.js`);
         CKEDITOR.replace( 'editor' ,  {
             extraPlugins: 'youtube',
             allowedContent: true
