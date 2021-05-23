@@ -13,7 +13,6 @@ import * as documents_api from '~/controllers/api/documents.ts';
 import register from '~/controllers/authentication/register.ts';
 import logout from '~/controllers/authentication/logout.ts';
 import getUserInfo from "~/controllers/authentication/getUserInfo.ts";
-import getUserDocuments from "~/controllers/authentication/getUserDocuments.ts";
 import getGuestInfo from "~/controllers/authentication/getGuestInfo.ts";
 import verifyAccount from "~/controllers/authentication/verify_account.ts";
 
@@ -28,7 +27,7 @@ const replaceSSRApp = (toString: string) => html.replace(
 router.get('/', async (context: Context) => {
 
     try {
-        
+
         const toStringApp = ReactDOMServer.renderToString(
             <UserInfoContext>
                 <App />
@@ -73,8 +72,6 @@ router.get('/user/:id', async (context: Context) => {
 .delete('/deletecategory', verifyUserCall, documents_api.removeCategory)
 
 .get('/getuserinfo', verifyToken, getUserInfo)
-
-.get('/getuserdocuments', verifyToken, getUserDocuments)
 
 .get('/verify_account/:id', verifyAccount)
 
