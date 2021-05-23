@@ -1,5 +1,4 @@
 import { Application, send, Context } from "oak";
-import { config } from 'dotenv';
 import router from '~/controllers/routes.tsx';
 
 declare global {
@@ -9,9 +8,6 @@ declare global {
       }
   }
 }
-
-//dotenv
-config({export: true, safe: true});
 
 const app = new Application();
 

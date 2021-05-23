@@ -6521,7 +6521,7 @@ const Login = ({ registered , changeRoute  })=>{
     const [message, setMessage] = ke(undefined);
     pe1(()=>{
         if (registered) {
-            setMessage('We have sent a message to your email. Please, verify you account before log in');
+            setMessage('We have sent a verification URL to your email. Check your spam folder.');
         }
         if (window.location.search.includes('verification_successful')) {
             setMessage('Verification successful! Please, log in');

@@ -3,6 +3,9 @@ scripts:
   dev: denon start
   test: deno test --unstable --import-map=src/import_map.json --config ./tsconfig.json -A
   bundle: deno bundle src/frontend/index.jsx src/static/index.js --config ./tsconfig.json --import-map=src/import_map.json
-  build: docker build -t gcr.io/researcherzone/researcherzone .
+  build:
+    - vr bundle
+    - docker image rm gcr.io/researcherzone/researcherzone
+    - docker build -t gcr.io/researcherzone/researcherzone .
   push: docker push gcr.io/researcherzone/researcherzone
   auth: gcloud auth login

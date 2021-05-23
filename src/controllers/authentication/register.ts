@@ -1,7 +1,11 @@
 import { Context } from "oak";
 import { addNewUser, findUserByEmail } from '~/controllers/database/users.ts';
 import User from "~/models/User.ts";
-import { SmtpClient } from 'smtp';
+import { config } from 'dotenv';
+import { deleteUser } from "~/controllers/database/users.ts";
+
+//dotenv
+config({export: true, safe: true});
 
 const register = async (context: Context) => {
     try {
@@ -22,32 +26,44 @@ const register = async (context: Context) => {
         }
         
         const userId = (await addNewUser(user)).toString();
-        const client = new SmtpClient();
+        const message = {
+          Messages:[
+            {
+              From: {
+                Email: Deno.env.get('APP_EMAIL'),
+                Name: 'ResearcherZone'
+              },
+              To: [
+                {
+                  Email: user.email,
+                  Name: user.name
+                }
+              ],
+              Subject: 'ResearcherZone – Verification',
+              HTMLPart: `<p>Dear ${user.name},</p>
+        
+              <p>Thank you for registering!</p> Please, click on the following link to verify your account: <br />
+              <a href="https://researcher.zone/verify_account/${userId}">https://researcher.zone/verify_account/${userId}</a>`
+            }
+          ]
+        }
 
-        await client.connectTLS({
-            hostname: "smtp.gmail.com",
-            port: 465,
-            username: Deno.env.get('SMTP_USER'),
-            password: Deno.env.get('SMTP_PASSWORD'),
+        await fetch('https://api.mailjet.com/v3.1/send', {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Basic ${Deno.env.get('APP_AUTH')}`
+            },
+            body: JSON.stringify(message)
         });
-
-        await client.send({
-            from: Deno.env.get('SMTP_USER'),
-            to: user.email,
-            subject: "ResearcherZone – Verification",
-            content: '',
-            html: `Thank you for registering! Please, click on the following link to verify your account:
-            <a href="${'https://researcher.zone/'}verify_account/${userId}">${'https://researcher.zone/'}verify_account/${userId}</a>`
-        });
-
-        await client.close();
 
         context.response.status = 200;
         context.response.body = { status: 200 };
 
-    } catch (error) {
-        console.log(error);
-        context.response.body = { error };
+    } catch ({message}) {
+        const user: User = await context.request.body().value;
+        await deleteUser(user.email);
+        context.response.body = { message: 'Unexpected error creating user. Please, try it again later', status: 500 };
     }
 }
 
