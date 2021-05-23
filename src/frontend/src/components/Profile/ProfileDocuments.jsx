@@ -97,7 +97,10 @@ const ProfileDocuments = ({userInfo, setUserInfo}) => {
         return 0;
     }
 
-    const changeCategoryOrder = async (modify, currentName, currentOrder) => {
+    const changeCategoryOrder = async (target, modify, currentName, currentOrder) => {
+        if (target.disabled) return;
+        target.disabled = true;
+
         const categoryChangedOrder = currentOrder + (modify);
 
         const updatedCategories = [ ...userInfo.user.categories ];
@@ -114,13 +117,17 @@ const ProfileDocuments = ({userInfo, setUserInfo}) => {
 
         try {
             await updateUser(updatedUser);
-            setUserInfo({ user: updatedUser, documents: userInfo.documents })
+            setUserInfo({ user: updatedUser, documents: userInfo.documents });
+            target.disabled = false;
         } catch (error) {
             console.error(error);
         }
     }
 
-    const changeDocumentOrder = async (modify, currentCategory, currentOrder) => {
+    const changeDocumentOrder = async (target, modify, currentCategory, currentOrder) => {
+        if (target.disabled) return;
+        target.disabled = true;
+
         const documentChangedOrder = currentOrder + (modify);
 
         const updatedCategoryDocuments = [ ...userInfo.documents.filter(({category}) => category === currentCategory) ];
@@ -141,7 +148,8 @@ const ProfileDocuments = ({userInfo, setUserInfo}) => {
         try {
             await updateDocument(updatedCategoryDocuments[toChangeIndex]);
             await updateDocument(updatedCategoryDocuments[toSwitchIndex]);
-            setUserInfo({ user: userInfo.user, documents: updatedDocuments })
+            setUserInfo({ user: userInfo.user, documents: updatedDocuments });
+            target.disabled = false;
         } catch (error) {
             console.error(error);
         }
@@ -173,14 +181,14 @@ const ProfileDocuments = ({userInfo, setUserInfo}) => {
                         { !userInfo.isGuest ? <>              
                             <div className="profile-articles__order-controls">
                                 { index === 0 ? undefined :
-                                <button className="profile-articles__order-button">
-                                    <i className="material-icons" onClick={() => changeCategoryOrder(-1, category_name, order)}>expand_less</i>
+                                <button className="profile-articles__order-button" onClick={({target}) => changeCategoryOrder(target, -1, category_name, order)}>
+                                    <i className="material-icons" >expand_less</i>
                                 </button>
                                 }
                                 {
                                     index === userInfo.user.categories.length-1 ? undefined :
-                                    <button className="profile-articles__order-button">
-                                        <i className="material-icons" onClick={() => changeCategoryOrder(1, category_name, order)}>expand_more</i>
+                                    <button className="profile-articles__order-button" onClick={({target}) => changeCategoryOrder(target, 1, category_name, order)}>
+                                        <i className="material-icons" >expand_more</i>
                                     </button>
                                 }
                             </div>
@@ -229,14 +237,14 @@ const ProfileDocuments = ({userInfo, setUserInfo}) => {
 
                                             <div className="profile-articles__order-controls">
                                                 { docIndex === 0 ? undefined :
-                                                <button className="profile-articles__order-button">
-                                                    <i className="material-icons" onClick={() => changeDocumentOrder(-1, doc.category, doc.order)}>expand_less</i>
+                                                <button className="profile-articles__order-button" onClick={({target}) => changeDocumentOrder(target, -1, doc.category, doc.order)}>
+                                                    <i className="material-icons">expand_less</i>
                                                 </button>
                                                 }
                                                 {docIndex === 0 && userInfo.documents.filter(({category}) => category === category_id).length <= 1
                                                 || docIndex === userInfo.documents.filter(({category}) => category === category_id).length-1 ? undefined :
-                                                <button className="profile-articles__order-button">
-                                                    <i className="material-icons" onClick={() => changeDocumentOrder(1, doc.category, doc.order)}>expand_more</i>
+                                                <button className="profile-articles__order-button" onClick={({target}) => changeDocumentOrder(target, 1, doc.category, doc.order)}>
+                                                    <i className="material-icons">expand_more</i>
                                                 </button>
                                                 }
                                             </div>

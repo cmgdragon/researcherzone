@@ -11539,7 +11539,9 @@ const ProfileDocuments = ({ userInfo , setUserInfo  })=>{
         }
         return 0;
     };
-    const changeCategoryOrder = async (modify, currentName, currentOrder)=>{
+    const changeCategoryOrder = async (target, modify, currentName, currentOrder)=>{
+        if (target.disabled) return;
+        target.disabled = true;
         const categoryChangedOrder = currentOrder + modify;
         const updatedCategories = [
             ...userInfo.user.categories
@@ -11561,11 +11563,14 @@ const ProfileDocuments = ({ userInfo , setUserInfo  })=>{
                 user: updatedUser,
                 documents: userInfo.documents
             });
+            target.disabled = false;
         } catch (error) {
             console.error(error);
         }
     };
-    const changeDocumentOrder = async (modify, currentCategory, currentOrder)=>{
+    const changeDocumentOrder = async (target, modify, currentCategory, currentOrder)=>{
+        if (target.disabled) return;
+        target.disabled = true;
         const documentChangedOrder = currentOrder + modify;
         const updatedCategoryDocuments = [
             ...userInfo.documents.filter(({ category  })=>category === currentCategory
@@ -11590,6 +11595,7 @@ const ProfileDocuments = ({ userInfo , setUserInfo  })=>{
                 user: userInfo.user,
                 documents: updatedDocuments
             });
+            target.disabled = false;
         } catch (error) {
             console.error(error);
         }
@@ -11627,15 +11633,15 @@ const ProfileDocuments = ({ userInfo , setUserInfo  })=>{
         }, category_name), !userInfo.isGuest ? export_default1.createElement(export_default1.Fragment, null, export_default1.createElement("div", {
             className: "profile-articles__order-controls"
         }, index === 0 ? undefined : export_default1.createElement("button", {
-            className: "profile-articles__order-button"
+            className: "profile-articles__order-button",
+            onClick: ({ target  })=>changeCategoryOrder(target, -1, category_name, order)
         }, export_default1.createElement("i", {
-            className: "material-icons",
-            onClick: ()=>changeCategoryOrder(-1, category_name, order)
+            className: "material-icons"
         }, "expand_less")), index === userInfo.user.categories.length - 1 ? undefined : export_default1.createElement("button", {
-            className: "profile-articles__order-button"
+            className: "profile-articles__order-button",
+            onClick: ({ target  })=>changeCategoryOrder(target, 1, category_name, order)
         }, export_default1.createElement("i", {
-            className: "material-icons",
-            onClick: ()=>changeCategoryOrder(1, category_name, order)
+            className: "material-icons"
         }, "expand_more")))) : undefined), !userInfo.isGuest ? export_default1.createElement(export_default1.Fragment, null, export_default1.createElement("div", {
             className: "profile-articles__buttons-group2"
         }, export_default1.createElement("button", {
@@ -11706,17 +11712,17 @@ const ProfileDocuments = ({ userInfo , setUserInfo  })=>{
             }, "edit")), export_default1.createElement("div", {
                 className: "profile-articles__order-controls"
             }, docIndex === 0 ? undefined : export_default1.createElement("button", {
-                className: "profile-articles__order-button"
+                className: "profile-articles__order-button",
+                onClick: ({ target  })=>changeDocumentOrder(target, -1, doc.category, doc.order)
             }, export_default1.createElement("i", {
-                className: "material-icons",
-                onClick: ()=>changeDocumentOrder(-1, doc.category, doc.order)
+                className: "material-icons"
             }, "expand_less")), docIndex === 0 && userInfo.documents.filter(({ category  })=>category === category_id
             ).length <= 1 || docIndex === userInfo.documents.filter(({ category  })=>category === category_id
             ).length - 1 ? undefined : export_default1.createElement("button", {
-                className: "profile-articles__order-button"
+                className: "profile-articles__order-button",
+                onClick: ({ target  })=>changeDocumentOrder(target, 1, doc.category, doc.order)
             }, export_default1.createElement("i", {
-                className: "material-icons",
-                onClick: ()=>changeDocumentOrder(1, doc.category, doc.order)
+                className: "material-icons"
             }, "expand_more")))) : export_default1.createElement("span", null), doc.can_be_cited ? export_default1.createElement("div", {
                 className: "profile-articles__buttons-group2"
             }, export_default1.createElement("a", {
