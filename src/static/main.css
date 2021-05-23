@@ -21,6 +21,8 @@ img {
 
 p { word-break: break-word; }
 
+pre { white-space: pre-wrap; }
+
 .link { text-decoration: underline; }
 
 /* Auth */
@@ -133,8 +135,7 @@ p { word-break: break-word; }
 }
 
 .profile-header span { border-radius: 5px; }
-.profile-header span:hover:not(.updating-field)
-.profile-header span:hover:not(.isguest) { 
+.profile-header span:hover:not(.updating-field, .isguest) { 
     background-color: rgba(95, 93, 93, 0.192);
     cursor: text;
 }
