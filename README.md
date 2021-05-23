@@ -1,9 +1,7 @@
-<div style="display: flex; align-items: center">
-<img style="max-width: 90px" src="https://github.com/cmgdragon/researcherzone/blob/master/src/static/img/icon.png?raw=true">
-<span style="font-weight: bolder; font-size: 3rem;">ResearcherZone 1.0</span>
-</div>
+<img src="https://github.com/cmgdragon/researcherzone/blob/master/src/static/img/icon.png?raw=true" width="100" />
+#ResearcherZone 1.0
 
-<a href="https://researcher.zone/" style="display: inline-block; padding: 1rem; margin: 4rem 0 2rem 0; background-color: #F1F8Fe; border: 1px solid #2E97F2">Link to production!</a>
+:blue_book: <font size="5">**[Link to production!](https://researcher.zone/)**</font>
 
 A web application where researchers can create, customize and share their CVs.
 
@@ -12,4 +10,4 @@ Final project of the [Master's Program in Web App and Website Development](https
 
 ------------
 
-<img style="margin-top: 2rem; max-width: 500px" src="https://github.com/cmgdragon/researcherzone/blob/master/images/architecture.png?raw=true">
+<img src="https://github.com/cmgdragon/researcherzone/blob/master/images/architecture.png?raw=true" width="500" />
