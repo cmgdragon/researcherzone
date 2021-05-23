@@ -20,20 +20,22 @@ import verifyAccount from "~/controllers/authentication/verify_account.ts";
 const router = new Router();
 
 const html = await Deno.readTextFile(`${Deno.cwd().replace(/\\/g, "/")}/src/static/index.html`);
-
+const replaceSSRApp = (toString: string) => html.replace(
+    '<main id="app"></main>',
+    `<main id="app">${toString}</main>`
+);
 
 router.get('/', async (context: Context) => {
 
     try {
+        
         const toStringApp = ReactDOMServer.renderToString(
             <UserInfoContext>
                 <App />
             </UserInfoContext>
         );    
-        context.response.body = html.replace(
-            '<main id="app"></main>',
-            `<main id="app">${toStringApp}</main>`
-        );   
+        context.response.body = replaceSSRApp(toStringApp);
+        
     } catch (error) {
         console.log(error)
     }
@@ -41,14 +43,12 @@ router.get('/', async (context: Context) => {
 
 router.get('/user/:id', async (context: Context) => {
 
-    const userInfo = await getGuestInfo(context.request.url.pathname);
-
     try {
+
+        const userInfo = await getGuestInfo(context.request.url.pathname);
         const toStringProfile = ReactDOMServer.renderToString(<Profile userInfo={userInfo} />);    
-        context.response.body = html.replace(
-            '<main id="app"></main>',
-            `<main id="app">${toStringProfile}</main>`
-        );
+        context.response.body = replaceSSRApp(toStringProfile);
+
     } catch (error) {
         console.log(error)
     }
