@@ -1,5 +1,6 @@
-<img src="https://github.com/cmgdragon/researcherzone/blob/master/src/static/img/icon.png?raw=true" width="100" />
-#ResearcherZone 1.0
+[![Logo](https://github.com/cmgdragon/researcherzone/blob/master/src/static/img/icon.png?raw=true "Logo source")](https://www.flaticon.com/free-icon/flask_1437121 "Logo")
+
+# ResearcherZone 1.0
 
 :blue_book: <font size="5">**[Link to production!](https://researcher.zone/)**</font>
 
