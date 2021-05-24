@@ -12,7 +12,6 @@ import selectForm from './DocumentForms/selectForm.js';
 
 const ProfileDocuments = ({userInfo, setUserInfo}) => {
 
-    //const [userInfo, setUserInfo] = useState(user);
     const [showModal, setShowModal] = useState(false);
     const [showCitation, setShowCitation] = useState(false);
     const [activeCitation, setActiveCitation] = useState(undefined);
@@ -20,7 +19,7 @@ const ProfileDocuments = ({userInfo, setUserInfo}) => {
 
     useEffect(() => {
         const elems = document.querySelectorAll('.dropdown-trigger');
-        M.Dropdown.init(elems);
+        if (!userInfo.isGuest) M.Dropdown.init(elems);
     }, [userInfo])
 
     const addEditCategory = category => {
@@ -157,7 +156,6 @@ const ProfileDocuments = ({userInfo, setUserInfo}) => {
 
     return (
         <div className={'profile-articles container'}>
-
             { !userInfo.isGuest ? <>
                 <div className="profile-articles__add-category">
                     <a className='btn-floating btn-medium waves-effect waves-light blue dropdown-trigger' href='#' data-target='dropdownc'><i className="material-icons">add</i></a>

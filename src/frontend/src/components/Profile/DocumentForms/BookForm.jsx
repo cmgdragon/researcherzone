@@ -49,6 +49,8 @@ const BookForm = ({current, userInfo, setUserInfo, setShowModal, setActiveForm, 
 
     const send = async event => {
         event.preventDefault();
+        event.target.disabled = true;
+        event.target.firstChild.data = 'Sending...';
 
         try {
 
@@ -73,6 +75,8 @@ const BookForm = ({current, userInfo, setUserInfo, setShowModal, setActiveForm, 
             }
 
             document.body.removeEventListener('click', closeModal, false);
+            event.target.disabled = false;
+            event.target.firstChild.data = 'Submit';
             closeModal(false);
 
         } catch (error) {

@@ -50,6 +50,8 @@ const JournalArticleForm = ({current, userInfo, setUserInfo, setShowModal, setAc
 
     const send = async event => {
         event.preventDefault();
+        event.target.disabled = true;
+        event.target.firstChild.data = 'Sending...';
 
         try {
 
@@ -74,6 +76,8 @@ const JournalArticleForm = ({current, userInfo, setUserInfo, setShowModal, setAc
             }
 
             document.body.removeEventListener('click', closeModal, false);
+            event.target.disabled = false;
+            event.target.firstChild.data = 'Submit';
             closeModal(false);
 
         } catch (error) {

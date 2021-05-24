@@ -6282,7 +6282,7 @@ const Footer = ({ dynamic  })=>{
         style: styles
     }, export_default1.createElement("div", {
         className: "footer-credits"
-    }, "\xa9 Researchezone 2021 \u2013 cmgdragon ", export_default1.createElement("span", {
+    }, "\xa9 ResearcherZone 2021 \u2013 cmgdragon ", export_default1.createElement("span", {
         role: "img"
     }, "\u{1f432}")), export_default1.createElement("a", {
         href: "https://github.com/cmgdragon/researcherzone",
@@ -8967,6 +8967,121 @@ const logout = async ()=>fetch('/logout', {
     }).then(()=>window.location.href = '/'
     )
 ;
+const SocialMediaForm = ({ userInfo , setShowModal , setUserInfo  })=>{
+    const form = Fe1();
+    const { social_media  } = userInfo.user;
+    const [links, setLinks] = ke([
+        ...Array(social_media.length ? social_media.length : 1).keys()
+    ]);
+    const addLink = ()=>setLinks([
+            ...links,
+            Math.max(...links) + 1
+        ])
+    ;
+    const removeLink = (id)=>setLinks(links.filter((link)=>link !== id
+        ))
+    ;
+    const closeModal = (ask = true)=>{
+        setShowModal(false);
+        document.body.classList.remove('show-modal-body');
+    };
+    const send = async (event)=>{
+        event.preventDefault();
+        event.target.disabled = true;
+        event.target.firstChild.data = 'Sending...';
+        const fixURL = (url)=>{
+            if (!url.includes('http')) {
+                return `http://${url}`;
+            } else return url;
+        };
+        const newSocialMedia = [
+            ...form.current.querySelectorAll('[data-social]')
+        ].map((link)=>({
+                name: link.querySelector(`#link-name-${link.getAttribute('data-social')}`).value,
+                url: fixURL(link.querySelector(`#link-url-${link.getAttribute('data-social')}`).value)
+            })
+        );
+        try {
+            await updateUser({
+                ...userInfo.user,
+                social_media: newSocialMedia
+            });
+            setUserInfo({
+                ...userInfo,
+                user: {
+                    ...userInfo.user,
+                    social_media: newSocialMedia
+                }
+            });
+            event.target.disabled = false;
+            event.target.firstChild.data = 'Submit';
+            closeModal(false);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+    return export_default1.createElement("div", {
+        className: "row"
+    }, export_default1.createElement("span", {
+        className: "modal-label"
+    }, "Edit social media"), export_default1.createElement("button", {
+        className: "close-modal btn-floating red btn-small",
+        onClick: closeModal
+    }, export_default1.createElement("i", {
+        className: "material-icons right"
+    }, "clear")), export_default1.createElement("form", {
+        className: "col s12",
+        onSubmit: send,
+        ref: form
+    }, export_default1.createElement("div", {
+        className: "row"
+    }, links.map((link)=>{
+        return export_default1.createElement("div", {
+            key: link,
+            "data-social": link
+        }, export_default1.createElement("div", {
+            className: "input-field col s6"
+        }, export_default1.createElement("input", {
+            id: `link-name-${link}`,
+            type: "text",
+            defaultValue: social_media[link]?.name ?? '',
+            required: true
+        }), export_default1.createElement("label", {
+            htmlFor: `link-name-${link}`,
+            className: "active",
+            onClick: ({ target  })=>target.previousElementSibling.focus()
+        }, "Name")), export_default1.createElement("div", {
+            className: "input-field col s6"
+        }, export_default1.createElement("input", {
+            id: `link-url-${link}`,
+            type: "text",
+            defaultValue: social_media[link]?.url ?? '',
+            required: true
+        }), export_default1.createElement("label", {
+            htmlFor: `link-url-${link}`,
+            className: "active",
+            onClick: ({ target  })=>target.previousElementSibling.focus()
+        }, "URL")), export_default1.createElement("a", {
+            onClick: ()=>removeLink(link)
+            ,
+            className: "button-remove-modal waves-effect waves-light red btn-small"
+        }, export_default1.createElement("i", {
+            className: "material-icons right"
+        }, "delete_forever")));
+    }), export_default1.createElement("a", {
+        onClick: addLink,
+        className: "button-add-modal waves-effect waves-light btn-small"
+    }, "Add social link ", export_default1.createElement("i", {
+        className: "material-icons right"
+    }, "add"))), export_default1.createElement("button", {
+        id: "send-form",
+        className: "btn waves-effect waves-light blue accent-4",
+        type: "submit",
+        name: "action"
+    }, "Submit", export_default1.createElement("i", {
+        className: "material-icons right"
+    }, "send"))));
+};
 const Header = ({ userInfo , setUserInfo  })=>{
     const [showModal, setShowModal] = ke(false);
     const editInfo = {
@@ -9116,7 +9231,7 @@ const Header = ({ userInfo , setUserInfo  })=>{
         className: "profile-header__slotsgroup"
     }, export_default1.createElement("div", {
         className: 'profile-header__optional-image'
-    }, userInfo.user.isGufest && userInfo.user.optional_image === '' ? undefined : export_default1.createElement(export_default1.Fragment, null, export_default1.createElement("input", {
+    }, userInfo.isGuest && userInfo.user.optional_image === '' ? undefined : export_default1.createElement(export_default1.Fragment, null, export_default1.createElement("input", {
         id: "optional_image",
         type: "file",
         name: "name",
@@ -9178,10 +9293,10 @@ const Header = ({ userInfo , setUserInfo  })=>{
     }, "add")) : undefined), export_default1.createElement("div", {
         className: "profile__share"
     }, export_default1.createElement("a", {
-        class: "btn-floating btn-small waves-effect waves-light red",
+        className: "btn-floating btn-small waves-effect waves-light red",
         onClick: copyShare
     }, export_default1.createElement("i", {
-        class: "material-icons"
+        className: "material-icons"
     }, "content_paste")), export_default1.createElement("span", null, "Share: ", export_default1.createElement("input", {
         readOnly: true,
         id: "copy-share",
@@ -9196,112 +9311,6 @@ const Header = ({ userInfo , setUserInfo  })=>{
         setShowModal: setShowModal
     })));
 };
-const SocialMediaForm = ({ userInfo , setShowModal , setUserInfo  })=>{
-    const form = Fe1();
-    const { social_media  } = userInfo.user;
-    const [links, setLinks] = ke([
-        ...Array(social_media.length ? social_media.length : 1).keys()
-    ]);
-    const addLink = ()=>setLinks([
-            ...links,
-            Math.max(...links) + 1
-        ])
-    ;
-    const removeLink = (id)=>setLinks(links.filter((link)=>link !== id
-        ))
-    ;
-    const closeModal = (ask = true)=>{
-        setShowModal(false);
-        document.body.classList.remove('show-modal-body');
-    };
-    const send = async (event)=>{
-        event.preventDefault();
-        const newSocialMedia = [
-            ...form.current.querySelectorAll('[data-social]')
-        ].map((link)=>({
-                name: link.querySelector(`#link-name-${link.getAttribute('data-social')}`).value,
-                url: link.querySelector(`#link-url-${link.getAttribute('data-social')}`).value
-            })
-        );
-        try {
-            await updateUser({
-                ...userInfo.user,
-                social_media: newSocialMedia
-            });
-            setUserInfo({
-                ...userInfo,
-                user: {
-                    ...userInfo.user,
-                    social_media: newSocialMedia
-                }
-            });
-            closeModal(false);
-        } catch (error) {
-            console.error(error);
-        }
-    };
-    return export_default1.createElement("div", {
-        className: "row"
-    }, export_default1.createElement("span", {
-        className: "modal-label"
-    }, "Edit social media"), export_default1.createElement("button", {
-        className: "close-modal btn-floating red btn-small",
-        onClick: closeModal
-    }, export_default1.createElement("i", {
-        className: "material-icons right"
-    }, "clear")), export_default1.createElement("form", {
-        className: "col s12",
-        onSubmit: send,
-        ref: form
-    }, export_default1.createElement("div", {
-        className: "row"
-    }, links.map((link)=>{
-        return export_default1.createElement("div", {
-            key: link,
-            "data-social": link
-        }, export_default1.createElement("div", {
-            className: "input-field col s6"
-        }, export_default1.createElement("input", {
-            id: `link-name-${link}`,
-            type: "text",
-            defaultValue: social_media[link]?.name ?? '',
-            required: true
-        }), export_default1.createElement("label", {
-            htmlFor: `link-name-${link}`,
-            className: "active",
-            onClick: ({ target  })=>target.previousElementSibling.focus()
-        }, "Name")), export_default1.createElement("div", {
-            className: "input-field col s6"
-        }, export_default1.createElement("input", {
-            id: `link-url-${link}`,
-            type: "text",
-            defaultValue: social_media[link]?.url ?? '',
-            required: true
-        }), export_default1.createElement("label", {
-            htmlFor: `link-url-${link}`,
-            className: "active",
-            onClick: ({ target  })=>target.previousElementSibling.focus()
-        }, "URL")), export_default1.createElement("a", {
-            onClick: ()=>removeLink(link)
-            ,
-            className: "button-remove-modal waves-effect waves-light red btn-small"
-        }, export_default1.createElement("i", {
-            className: "material-icons right"
-        }, "delete_forever")));
-    }), export_default1.createElement("a", {
-        onClick: addLink,
-        className: "button-add-modal waves-effect waves-light btn-small"
-    }, "Add social link ", export_default1.createElement("i", {
-        className: "material-icons right"
-    }, "add"))), export_default1.createElement("button", {
-        id: "send-form",
-        className: "btn waves-effect waves-light blue accent-4",
-        type: "submit",
-        name: "action"
-    }, "Submit", export_default1.createElement("i", {
-        className: "material-icons right"
-    }, "send"))));
-};
 const FreeDocumentRender = ({ doc  })=>{
     pe1(()=>{
         const node = document.querySelector(`[data-article-id=id-${doc._id}]`);
@@ -9310,7 +9319,7 @@ const FreeDocumentRender = ({ doc  })=>{
     return export_default1.createElement("div", {
         "data-article-id": `id-${doc._id}`,
         "data-article-order": doc.order
-    });
+    }, doc.html);
 };
 const AuthorCitator = ({ authors  })=>{
     const formatNames = ()=>{
@@ -9464,53 +9473,55 @@ const ThesisRender = ({ doc  })=>{
     }, "Abstract"), doc.abstract) : undefined);
 };
 const DocumentRender = ({ doc  })=>{
-    const [document, setDocument] = ke(undefined);
-    const [icon, setIcon] = ke(false);
-    pe1(()=>{
+    const switchDocument = ()=>{
         switch(doc.type){
             case 'freedocument':
-                setDocument(export_default1.createElement(FreeDocumentRender, {
+                return export_default1.createElement(FreeDocumentRender, {
                     doc: doc
-                }));
-                setIcon(false);
-                break;
+                });
             case 'journalarticle':
-                setDocument(export_default1.createElement(JournalArticleRender, {
+                return export_default1.createElement(JournalArticleRender, {
                     doc: doc
-                }));
-                setIcon('Journal Article');
-                break;
+                });
             case 'book':
-                setDocument(export_default1.createElement(BookRender, {
+                return export_default1.createElement(BookRender, {
                     doc: doc
-                }));
-                setIcon('Book');
-                break;
+                });
             case 'bookchapter':
-                setDocument(export_default1.createElement(BookChapterRender, {
+                return export_default1.createElement(BookChapterRender, {
                     doc: doc
-                }));
-                setIcon('Book chapter');
-                break;
+                });
             case 'conferenceproceeding':
-                setDocument(export_default1.createElement(ConferenceProceedingRender, {
+                return export_default1.createElement(ConferenceProceedingRender, {
                     doc: doc
-                }));
-                setIcon('Conference proceeding');
-                break;
+                });
             case 'thesis':
-                setDocument(export_default1.createElement(ThesisRender, {
+                return export_default1.createElement(ThesisRender, {
                     doc: doc
-                }));
-                setIcon('Thesis');
-                break;
+                });
         }
-    }, []);
+    };
+    const switchBadge = ()=>{
+        switch(doc.type){
+            case 'freedocument':
+                return false;
+            case 'journalarticle':
+                return 'Journal Article';
+            case 'book':
+                return 'Book';
+            case 'bookchapter':
+                return 'Book chapter';
+            case 'conferenceproceeding':
+                return 'Conference proceeding';
+            case 'thesis':
+                return 'Thesis';
+        }
+    };
     return export_default1.createElement("div", {
         className: 'profile-articles__document'
     }, export_default1.createElement("div", {
         className: "profile-article__badge"
-    }, icon ? icon : undefined), document);
+    }, switchBadge() ? switchBadge() : undefined), switchDocument());
 };
 const NewCategoryForm = ({ current , userInfo , setUserInfo , setShowModal , setActiveForm  })=>{
     const form = Fe1(undefined);
@@ -9527,6 +9538,8 @@ const NewCategoryForm = ({ current , userInfo , setUserInfo , setShowModal , set
     };
     const send = async (event)=>{
         event.preventDefault();
+        event.target.disabled = true;
+        event.target.firstChild.data = 'Sending...';
         const category_name = [
             ...event.target
         ].find((input)=>input.id === 'category_name'
@@ -9566,6 +9579,8 @@ const NewCategoryForm = ({ current , userInfo , setUserInfo , setShowModal , set
                 user: updatedUser,
                 documents: userInfo.documents
             });
+            event.target.disabled = false;
+            event.target.firstChild.data = 'Submit';
             closeModal();
         } catch (error) {
             console.error(error);
@@ -9820,6 +9835,8 @@ const FreeDocumentForm = ({ current , userInfo , setUserInfo , setShowModal , se
     const send = async (event)=>{
         event.preventDefault();
         if (CKEDITOR.instances.editor1.getData() === "") return;
+        event.target.disabled = true;
+        event.target.firstChild.data = 'Sending...';
         try {
             if (!current) {
                 const newDocument = {
@@ -9866,6 +9883,8 @@ const FreeDocumentForm = ({ current , userInfo , setUserInfo , setShowModal , se
                 });
             }
             document.body.removeEventListener('click', closeModal, false);
+            event.target.disabled = false;
+            event.target.firstChild.data = 'Submit';
             closeModal(false);
         } catch (error) {
             console.error(error);
@@ -9967,6 +9986,8 @@ const BookForm = ({ current , userInfo , setUserInfo , setShowModal , setActiveF
     };
     const send = async (event)=>{
         event.preventDefault();
+        event.target.disabled = true;
+        event.target.firstChild.data = 'Sending...';
         try {
             const newDocument = createDocumentObject();
             if (!current) {
@@ -10007,6 +10028,8 @@ const BookForm = ({ current , userInfo , setUserInfo , setShowModal , setActiveF
                 });
             }
             document.body.removeEventListener('click', closeModal, false);
+            event.target.disabled = false;
+            event.target.firstChild.data = 'Submit';
             closeModal(false);
         } catch (error) {
             console.error(error);
@@ -10247,6 +10270,8 @@ const JournalArticleForm = ({ current , userInfo , setUserInfo , setShowModal , 
     };
     const send = async (event)=>{
         event.preventDefault();
+        event.target.disabled = true;
+        event.target.firstChild.data = 'Sending...';
         try {
             const newDocument = createDocumentObject();
             if (!current) {
@@ -10287,6 +10312,8 @@ const JournalArticleForm = ({ current , userInfo , setUserInfo , setShowModal , 
                 });
             }
             document.body.removeEventListener('click', closeModal, false);
+            event.target.disabled = false;
+            event.target.firstChild.data = 'Submit';
             closeModal(false);
         } catch (error) {
             console.error(error);
@@ -10519,6 +10546,8 @@ const BookChapterForm = ({ current , userInfo , setUserInfo , setShowModal , set
     };
     const send = async (event)=>{
         event.preventDefault();
+        event.target.disabled = true;
+        event.target.firstChild.data = 'Sending...';
         try {
             const newDocument = createDocumentObject();
             if (!current) {
@@ -10559,6 +10588,8 @@ const BookChapterForm = ({ current , userInfo , setUserInfo , setShowModal , set
                 });
             }
             document.body.removeEventListener('click', closeModal, false);
+            event.target.disabled = false;
+            event.target.firstChild.data = 'Submit';
             closeModal(false);
         } catch (error) {
             console.error(error);
@@ -10906,6 +10937,8 @@ const ConferenceProceedingForm = ({ current , userInfo , setUserInfo , setShowMo
     };
     const send = async (event)=>{
         event.preventDefault();
+        event.target.disabled = true;
+        event.target.firstChild.data = 'Sending...';
         try {
             const newDocument = createDocumentObject();
             if (!current) {
@@ -10946,6 +10979,8 @@ const ConferenceProceedingForm = ({ current , userInfo , setUserInfo , setShowMo
                 });
             }
             document.body.removeEventListener('click', closeModal, false);
+            event.target.disabled = false;
+            event.target.firstChild.data = 'Submit';
             closeModal(false);
         } catch (error) {
             console.error(error);
@@ -11249,6 +11284,8 @@ const ThesisForm = ({ current , userInfo , setUserInfo , setShowModal , setActiv
     };
     const send = async (event)=>{
         event.preventDefault();
+        event.target.disabled = true;
+        event.target.firstChild.data = 'Sending...';
         try {
             const newDocument = createDocumentObject();
             if (!current) {
@@ -11289,6 +11326,8 @@ const ThesisForm = ({ current , userInfo , setUserInfo , setShowModal , setActiv
                 });
             }
             document.body.removeEventListener('click', closeModal, false);
+            event.target.disabled = false;
+            event.target.firstChild.data = 'Submit';
             closeModal(false);
         } catch (error) {
             console.error(error);
@@ -11449,7 +11488,7 @@ const ProfileDocuments = ({ userInfo , setUserInfo  })=>{
     const [activeForm, setActiveForm] = ke(undefined);
     pe1(()=>{
         const elems = document.querySelectorAll('.dropdown-trigger');
-        M.Dropdown.init(elems);
+        if (!userInfo.isGuest) M.Dropdown.init(elems);
     }, [
         userInfo
     ]);

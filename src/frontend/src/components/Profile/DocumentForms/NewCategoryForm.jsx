@@ -20,6 +20,8 @@ const NewCategoryForm = ({current, userInfo, setUserInfo, setShowModal, setActiv
 
     const send = async (event) => {
         event.preventDefault();        
+        event.target.disabled = true;
+        event.target.firstChild.data = 'Sending...';
 
         const category_name = [...event.target].find(input => input.id === 'category_name').value;
         try {
@@ -46,6 +48,8 @@ const NewCategoryForm = ({current, userInfo, setUserInfo, setShowModal, setActiv
 
           await updateUser(updatedUser);
           setUserInfo({ user: updatedUser, documents: userInfo.documents });
+          event.target.disabled = false;
+          event.target.firstChild.data = 'Submit';
           closeModal();
 
         } catch (error) {

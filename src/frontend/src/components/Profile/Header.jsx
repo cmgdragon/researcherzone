@@ -3,6 +3,7 @@ import updateUser from '~/frontend/src/api/updateUser.js';
 import ImageHelper from '~/frontend/src/util/imageCrompressor.js';
 import SocialMediaModal from './SocialMediaModal.jsx';
 import logout from '~/frontend/src/api/logout.js';
+import SocialMediaForm from './DocumentForms/SocialMediaForm.jsx';
 
 const Header = ({userInfo, setUserInfo}) => {
 
@@ -111,7 +112,7 @@ const Header = ({userInfo, setUserInfo}) => {
                 </div>
                 <div className="profile-header__slotsgroup">
                     <div className={'profile-header__optional-image'}>
-                        { userInfo.user.isGufest && userInfo.user.optional_image === '' ? undefined : 
+                        { userInfo.isGuest && userInfo.user.optional_image === '' ? undefined : 
                         <>
                             <input id="optional_image" type="file" name="name" style={{display: 'none'}} accept="image/png, image/jpeg" onChange={changeImage} />
                             <img id="optional_image" src={userInfo.user.optional_image && userInfo.user.optional_image !== '' ? userInfo.user.optional_image : `${'https://researcher.zone/'}img/default.png`} className={`profile-header__image2 ${userInfo.isGuest ? 'isguest' : ''}`} onClick={selectImage} /> </>
@@ -157,7 +158,7 @@ const Header = ({userInfo, setUserInfo}) => {
                 }
             </div>
             <div className="profile__share">
-                <a class="btn-floating btn-small waves-effect waves-light red" onClick={copyShare}><i class="material-icons">content_paste</i></a>
+                <a className="btn-floating btn-small waves-effect waves-light red" onClick={copyShare}><i className="material-icons">content_paste</i></a>
                 <span>Share: <input readOnly id="copy-share" type="text" className="profile__share-link" value={`${'https://researcher.zone/'}user/${userInfo.user._id}`} /> </span>
             </div>
         </div>
@@ -165,76 +166,6 @@ const Header = ({userInfo, setUserInfo}) => {
             <SocialMediaForm userInfo={userInfo} setUserInfo={setUserInfo} setShowModal={setShowModal} />
         </SocialMediaModal>
         </>
-    )
-}
-
-const SocialMediaForm = ({userInfo, setShowModal, setUserInfo}) => {
-
-    const form = useRef();
-    const { social_media } = userInfo.user;
-    const [links, setLinks] = useState([...Array(social_media.length ? social_media.length : 1).keys()]);
-    const addLink = () => setLinks([...links, Math.max(...links) + 1]);
-
-    const removeLink = id => setLinks(links.filter(link => link !== id));
-    const closeModal = (ask=true) => {
-        setShowModal(false);
-        document.body.classList.remove('show-modal-body');
-    }
-
-    const send = async event => {
-        event.preventDefault();
-
-        const newSocialMedia = [...form.current.querySelectorAll('[data-social]')].map((link) => ({
-            name: link.querySelector(`#link-name-${link.getAttribute('data-social')}`).value,
-            url: link.querySelector(`#link-url-${link.getAttribute('data-social')}`).value,
-        }));
-
-        try {
-
-            await updateUser({...userInfo.user, social_media: newSocialMedia});
-            setUserInfo({ ...userInfo, user: {...userInfo.user, social_media: newSocialMedia} });
-            closeModal(false);
-
-        } catch (error) {
-            console.error(error);
-        }
-      
-    }
-
-    return (
-        <div className="row">
-          <span className="modal-label">Edit social media</span>
-          <button className="close-modal btn-floating red btn-small" onClick={closeModal}><i className="material-icons right">clear</i></button>
-        <form className="col s12" onSubmit={send} ref={form}>
-          <div className="row">
-
-            {
-                links.map(link => {
-                    return (
-                        <div key={link} data-social={link}>
-                            <div className="input-field col s6">
-                                <input id={`link-name-${link}`} type="text" defaultValue={social_media[link]?.name ?? ''} required />
-                                <label htmlFor={`link-name-${link}`} className="active" onClick={({target}) => target.previousElementSibling.focus()}>Name</label>
-                            </div>
-
-                            <div className="input-field col s6">
-                                <input id={`link-url-${link}`} type="text" defaultValue={social_media[link]?.url ?? ''} required />
-                                <label htmlFor={`link-url-${link}`} className="active" onClick={({target}) => target.previousElementSibling.focus()}>URL</label>
-                            </div>
-                            <a onClick={() => removeLink(link)} className="button-remove-modal waves-effect waves-light red btn-small"><i className="material-icons right">delete_forever</i></a>
-                        </div>
-                    )
-                })
-            }
-            <a onClick={addLink} className="button-add-modal waves-effect waves-light btn-small">Add social link <i className="material-icons right">add</i></a>
-          </div>
-
-        <button id="send-form" className="btn waves-effect waves-light blue accent-4" type="submit" name="action"
-        >Submit
-            <i className="material-icons right">send</i>
-        </button>
-        </form>
-    </div>
     )
 }
 

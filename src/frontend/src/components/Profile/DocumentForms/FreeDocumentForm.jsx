@@ -29,6 +29,8 @@ const FreeDocumentForm = ({current, userInfo, setUserInfo, setShowModal, setActi
     const send = async event => {
         event.preventDefault();
         if (CKEDITOR.instances.editor1.getData() === "") return;
+        event.target.disabled = true;
+        event.target.firstChild.data = 'Sending...';
 
         try {
 
@@ -57,12 +59,14 @@ const FreeDocumentForm = ({current, userInfo, setUserInfo, setShowModal, setActi
             }
 
             document.body.removeEventListener('click', closeModal, false);
+            event.target.disabled = false;
+            event.target.firstChild.data = 'Submit';
             closeModal(false);
 
         } catch (error) {
             console.error(error);
         }
-      
+
     }
 
     return (
