@@ -11,7 +11,7 @@ const Footer = ({ dynamic }) => {
 
     return (
         <footer style={styles}>
-            <div className="footer-credits">© Researchezone 2021 – cmgdragon <span role="img">🐲</span></div>
+            <div className="footer-credits">© ResearcherZone 2021 – cmgdragon <span role="img">🐲</span></div>
             <a href='https://github.com/cmgdragon/researcherzone' target='_blank' aria-hidden="true"><img src={`${'https://researcher.zone/'}img/github.png`} /></a>
         </footer>
     )
