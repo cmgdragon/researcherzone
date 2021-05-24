@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import FreeDocumentRender from './FreeDocumentRender.jsx';
 import JournalArticleRender from './JournalArticleRender.jsx';
 import BookRender from './BookRender.jsx';
@@ -8,42 +8,46 @@ import ThesisRender from './ThesisRender.jsx';
 
 const DocumentRender = ({doc}) => {
 
-    const [document, setDocument] = useState(undefined);
-    const [icon, setIcon] = useState(false);
-    useEffect(() => {
+    const switchDocument = () => {
         switch (doc.type) {
             case 'freedocument':
-                setDocument( <FreeDocumentRender doc={doc} /> );
-                setIcon(false);
-            break;
+                return <FreeDocumentRender doc={doc} />;
             case 'journalarticle':
-                setDocument( <JournalArticleRender doc={doc} /> );
-                setIcon('Journal Article');
-            break;
+                return <JournalArticleRender doc={doc} />;
             case 'book':
-                setDocument( <BookRender doc={doc} /> );
-                setIcon('Book');
-            break;
+                return <BookRender doc={doc} />;
             case 'bookchapter':
-                setDocument( <BookChapterRender doc={doc} /> );
-                setIcon('Book chapter');
-            break;
+                return <BookChapterRender doc={doc} />;
             case 'conferenceproceeding':
-                setDocument( <ConferenceProceedingRender doc={doc} /> );
-                setIcon('Conference proceeding');
-            break;
+                return <ConferenceProceedingRender doc={doc} />;
             case 'thesis':
-                setDocument( <ThesisRender doc={doc} /> );
-                setIcon('Thesis');
-            break;
+                return <ThesisRender doc={doc} />;
         }
 
-    }, [])
+    }
+
+    const switchBadge = () => {
+        switch (doc.type) {
+            case 'freedocument':
+                return false;
+            case 'journalarticle':
+                return 'Journal Article';
+            case 'book':
+                return 'Book';
+            case 'bookchapter':
+                return 'Book chapter';
+            case 'conferenceproceeding':
+                return 'Conference proceeding';
+            case 'thesis':
+                return 'Thesis';
+        }
+
+    }
 
     return (
         <div className={'profile-articles__document'}>
-            <div className="profile-article__badge">{icon ? icon : undefined}</div>
-            {document}
+            <div className="profile-article__badge">{switchBadge() ? switchBadge() : undefined}</div>
+            {switchDocument()}
         </div>
     )
 }

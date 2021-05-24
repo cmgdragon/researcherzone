@@ -8,7 +8,7 @@ const FreeDocumentRender = ({doc}) => {
     });
 
     return (
-        <div data-article-id={`id-${doc._id}`} data-article-order={doc.order}></div>
+        <div data-article-id={`id-${doc._id}`} data-article-order={doc.order}>{doc.html}</div>
     )
 }
 

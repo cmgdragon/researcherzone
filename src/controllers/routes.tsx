@@ -1,4 +1,3 @@
-import UserInfoContext from '~/frontend/src/context/userContext.jsx';
 import App from '~/frontend/src/App.jsx';
 import Profile from '~/frontend/src/components/Profile/index.jsx';
 import { Router, Context } from "oak";
@@ -28,11 +27,7 @@ router.get('/', async (context: Context) => {
 
     try {
 
-        const toStringApp = ReactDOMServer.renderToString(
-            <UserInfoContext>
-                <App />
-            </UserInfoContext>
-        );    
+        const toStringApp = ReactDOMServer.renderToString(<App />);    
         context.response.body = replaceSSRApp(toStringApp);
         
     } catch (error) {
@@ -45,6 +40,7 @@ router.get('/user/:id', async (context: Context) => {
     try {
 
         const userInfo = await getGuestInfo(context.request.url.pathname);
+
         const toStringProfile = ReactDOMServer.renderToString(<Profile userInfo={userInfo} />);    
         context.response.body = replaceSSRApp(toStringProfile);
 
