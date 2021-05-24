@@ -33,7 +33,7 @@ const login = async ({request, response}: Context) => {
     if (user.pwd !== sha256(body.pwd, "utf8", "hex") as string) {
       response.status = 401;
       response.body = {
-        message: 'Invalid password or email',
+        message: 'Invalid password',
         status: 401
       }
       return;

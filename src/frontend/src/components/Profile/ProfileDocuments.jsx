@@ -54,8 +54,13 @@ const ProfileDocuments = ({userInfo, setUserInfo}) => {
         />);
     }
 
-    const deleteOneDocument = async id => {
+    const deleteOneDocument = async (target, id) => {
         if (confirm('Delete this document?')) {
+
+            target.parentElement.disabled = true;
+            target.classList.add('rotating');
+            target.firstElementChild.innerText = "autorenew";
+
             try {
                 await deleteDocument(id, userInfo.user);
                 const updatedDocuments = userInfo.documents.filter(({_id}) => _id !== id)
@@ -69,8 +74,14 @@ const ProfileDocuments = ({userInfo, setUserInfo}) => {
         }
     }
 
-    const deleteCategoryDocuments = async (category, categoryId) => {
+    const deleteCategoryDocuments = async (target, category, categoryId) => {
         if (confirm(`Delete category "${category}" and all its documents?`)) {
+
+            console.dir(target)
+            target.parentElement.disabled = true;
+            target.classList.add('rotating');
+            target.innerText = "autorenew";
+
             try {
                 const updatedDocuments = userInfo.documents.filter(({category: currentCat}) => currentCat !== category);
                 const updatedUser = { ...userInfo.user, categories: userInfo.user.categories.filter(({category_name}) => category_name !== category) };
@@ -196,7 +207,7 @@ const ProfileDocuments = ({userInfo, setUserInfo}) => {
                         { !userInfo.isGuest ? <>  
                         <div className="profile-articles__buttons-group2">
                             <button className='btn-floating btn-small waves-effect waves-light blue dropdown-trigger' href='#' data-target={`dropdown${index}`}><i className="material-icons">add</i></button>
-                            <button id="delete-category" onClick={() => deleteCategoryDocuments(category_name, category_id)} className="btn waves-effect waves-light btn-floating red btn-small">
+                            <button id="delete-category" onClick={({target}) => deleteCategoryDocuments(target, category_name, category_id)} className="btn waves-effect waves-light btn-floating red btn-small">
                                 <i className="material-icons right">delete</i>
                             </button>
                             <button id="edit-document" onClick={() => addEditCategory({id: category_id, category_name, order})} className="profile-articles__edit-category btn waves-effect waves-light btn-floating blue btn-small">
@@ -224,7 +235,7 @@ const ProfileDocuments = ({userInfo, setUserInfo}) => {
                                     <div className="profile-articles__buttons-group">
                                         { !userInfo.isGuest ?
                                         <div className="profile-articles__buttons-group1">
-                                            <button id="delete-document" onClick={() => deleteOneDocument(doc._id)} className="btn waves-effect waves-light btn-floating red btn-small"
+                                            <button id="delete-document" onClick={({target}) => deleteOneDocument(target, doc._id)} className="btn waves-effect waves-light btn-floating red btn-small"
                                             >
                                                 <i className="material-icons right">delete</i>
                                             </button>

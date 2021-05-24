@@ -8987,8 +8987,8 @@ const SocialMediaForm = ({ userInfo , setShowModal , setUserInfo  })=>{
     };
     const send = async (event)=>{
         event.preventDefault();
-        event.target.disabled = true;
-        event.target.firstChild.data = 'Sending...';
+        event.target.lastElementChild.disabled = true;
+        event.target.lastElementChild.firstChild.data = 'Sending...';
         const fixURL = (url)=>{
             if (!url.includes('http')) {
                 return `http://${url}`;
@@ -9013,8 +9013,8 @@ const SocialMediaForm = ({ userInfo , setShowModal , setUserInfo  })=>{
                     social_media: newSocialMedia
                 }
             });
-            event.target.disabled = false;
-            event.target.firstChild.data = 'Submit';
+            event.target.lastElementChild.disabled = false;
+            event.target.lastElementChild.firstChild.data = 'Submit';
             closeModal(false);
         } catch (error) {
             console.error(error);
@@ -9538,8 +9538,8 @@ const NewCategoryForm = ({ current , userInfo , setUserInfo , setShowModal , set
     };
     const send = async (event)=>{
         event.preventDefault();
-        event.target.disabled = true;
-        event.target.firstChild.data = 'Sending...';
+        event.target.lastElementChild.disabled = true;
+        event.target.lastElementChild.firstChild.data = 'Sending...';
         const category_name = [
             ...event.target
         ].find((input)=>input.id === 'category_name'
@@ -9579,8 +9579,8 @@ const NewCategoryForm = ({ current , userInfo , setUserInfo , setShowModal , set
                 user: updatedUser,
                 documents: userInfo.documents
             });
-            event.target.disabled = false;
-            event.target.firstChild.data = 'Submit';
+            event.target.lastElementChild.disabled = false;
+            event.target.lastElementChild.firstChild.data = 'Submit';
             closeModal();
         } catch (error) {
             console.error(error);
@@ -9986,8 +9986,8 @@ const BookForm = ({ current , userInfo , setUserInfo , setShowModal , setActiveF
     };
     const send = async (event)=>{
         event.preventDefault();
-        event.target.disabled = true;
-        event.target.firstChild.data = 'Sending...';
+        event.target.lastElementChild.disabled = true;
+        event.target.lastElementChild.firstChild.data = 'Sending...';
         try {
             const newDocument = createDocumentObject();
             if (!current) {
@@ -10028,8 +10028,8 @@ const BookForm = ({ current , userInfo , setUserInfo , setShowModal , setActiveF
                 });
             }
             document.body.removeEventListener('click', closeModal, false);
-            event.target.disabled = false;
-            event.target.firstChild.data = 'Submit';
+            event.target.lastElementChild.disabled = false;
+            event.target.lastElementChild.firstChild.data = 'Submit';
             closeModal(false);
         } catch (error) {
             console.error(error);
@@ -10270,8 +10270,8 @@ const JournalArticleForm = ({ current , userInfo , setUserInfo , setShowModal , 
     };
     const send = async (event)=>{
         event.preventDefault();
-        event.target.disabled = true;
-        event.target.firstChild.data = 'Sending...';
+        event.target.lastElementChild.disabled = true;
+        event.target.lastElementChild.firstChild.data = 'Sending...';
         try {
             const newDocument = createDocumentObject();
             if (!current) {
@@ -10312,8 +10312,8 @@ const JournalArticleForm = ({ current , userInfo , setUserInfo , setShowModal , 
                 });
             }
             document.body.removeEventListener('click', closeModal, false);
-            event.target.disabled = false;
-            event.target.firstChild.data = 'Submit';
+            event.target.lastElementChild.disabled = false;
+            event.target.lastElementChild.firstChild.data = 'Submit';
             closeModal(false);
         } catch (error) {
             console.error(error);
@@ -10546,8 +10546,8 @@ const BookChapterForm = ({ current , userInfo , setUserInfo , setShowModal , set
     };
     const send = async (event)=>{
         event.preventDefault();
-        event.target.disabled = true;
-        event.target.firstChild.data = 'Sending...';
+        event.target.lastElementChild.disabled = true;
+        event.target.lastElementChild.firstChild.data = 'Sending...';
         try {
             const newDocument = createDocumentObject();
             if (!current) {
@@ -10588,8 +10588,8 @@ const BookChapterForm = ({ current , userInfo , setUserInfo , setShowModal , set
                 });
             }
             document.body.removeEventListener('click', closeModal, false);
-            event.target.disabled = false;
-            event.target.firstChild.data = 'Submit';
+            event.target.lastElementChild.disabled = false;
+            event.target.lastElementChild.firstChild.data = 'Submit';
             closeModal(false);
         } catch (error) {
             console.error(error);
@@ -10937,8 +10937,8 @@ const ConferenceProceedingForm = ({ current , userInfo , setUserInfo , setShowMo
     };
     const send = async (event)=>{
         event.preventDefault();
-        event.target.disabled = true;
-        event.target.firstChild.data = 'Sending...';
+        event.target.lastElementChild.disabled = true;
+        event.target.lastElementChild.firstChild.data = 'Sending...';
         try {
             const newDocument = createDocumentObject();
             if (!current) {
@@ -10979,8 +10979,8 @@ const ConferenceProceedingForm = ({ current , userInfo , setUserInfo , setShowMo
                 });
             }
             document.body.removeEventListener('click', closeModal, false);
-            event.target.disabled = false;
-            event.target.firstChild.data = 'Submit';
+            event.target.lastElementChild.disabled = false;
+            event.target.lastElementChild.firstChild.data = 'Submit';
             closeModal(false);
         } catch (error) {
             console.error(error);
@@ -11284,8 +11284,8 @@ const ThesisForm = ({ current , userInfo , setUserInfo , setShowModal , setActiv
     };
     const send = async (event)=>{
         event.preventDefault();
-        event.target.disabled = true;
-        event.target.firstChild.data = 'Sending...';
+        event.target.lastElementChild.disabled = true;
+        event.target.lastElementChild.firstChild.data = 'Sending...';
         try {
             const newDocument = createDocumentObject();
             if (!current) {
@@ -11326,8 +11326,8 @@ const ThesisForm = ({ current , userInfo , setUserInfo , setShowModal , setActiv
                 });
             }
             document.body.removeEventListener('click', closeModal, false);
-            event.target.disabled = false;
-            event.target.firstChild.data = 'Submit';
+            event.target.lastElementChild.disabled = false;
+            event.target.lastElementChild.firstChild.data = 'Submit';
             closeModal(false);
         } catch (error) {
             console.error(error);
@@ -11521,8 +11521,11 @@ const ProfileDocuments = ({ userInfo , setUserInfo  })=>{
             doc: doc
         }));
     };
-    const deleteOneDocument = async (id)=>{
+    const deleteOneDocument = async (target, id)=>{
         if (confirm('Delete this document?')) {
+            target.parentElement.disabled = true;
+            target.classList.add('rotating');
+            target.firstElementChild.innerText = "autorenew";
             try {
                 await deleteDocument(id, userInfo.user);
                 const updatedDocuments = userInfo.documents.filter(({ _id  })=>_id !== id
@@ -11541,8 +11544,12 @@ const ProfileDocuments = ({ userInfo , setUserInfo  })=>{
             }
         }
     };
-    const deleteCategoryDocuments = async (category, categoryId)=>{
+    const deleteCategoryDocuments = async (target, category, categoryId)=>{
         if (confirm(`Delete category "${category}" and all its documents?`)) {
+            console.dir(target);
+            target.parentElement.disabled = true;
+            target.classList.add('rotating');
+            target.innerText = "autorenew";
             try {
                 const updatedDocuments = userInfo.documents.filter(({ category: currentCat  })=>currentCat !== category
                 );
@@ -11691,7 +11698,7 @@ const ProfileDocuments = ({ userInfo , setUserInfo  })=>{
             className: "material-icons"
         }, "add")), export_default1.createElement("button", {
             id: "delete-category",
-            onClick: ()=>deleteCategoryDocuments(category_name, category_id)
+            onClick: ({ target  })=>deleteCategoryDocuments(target, category_name, category_id)
             ,
             className: "btn waves-effect waves-light btn-floating red btn-small"
         }, export_default1.createElement("i", {
@@ -11736,7 +11743,7 @@ const ProfileDocuments = ({ userInfo , setUserInfo  })=>{
                 className: "profile-articles__buttons-group1"
             }, export_default1.createElement("button", {
                 id: "delete-document",
-                onClick: ()=>deleteOneDocument(doc._id)
+                onClick: ({ target  })=>deleteOneDocument(target, doc._id)
                 ,
                 className: "btn waves-effect waves-light btn-floating red btn-small"
             }, export_default1.createElement("i", {
