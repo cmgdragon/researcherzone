@@ -59,7 +59,7 @@ const ProfileDocuments = ({userInfo, setUserInfo}) => {
 
             target.parentElement.disabled = true;
             target.classList.add('rotating');
-            target.firstElementChild.innerText = "autorenew";
+            target.innerText = "autorenew";
 
             try {
                 await deleteDocument(id, userInfo.user);
