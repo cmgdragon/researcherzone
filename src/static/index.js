@@ -8987,6 +8987,7 @@ const SocialMediaForm = ({ userInfo , setShowModal , setUserInfo  })=>{
     };
     const send = async (event)=>{
         event.preventDefault();
+        event.stopPropagation();
         event.target.lastElementChild.disabled = true;
         event.target.lastElementChild.firstChild.data = 'Sending...';
         const fixURL = (url)=>{
@@ -9538,6 +9539,7 @@ const NewCategoryForm = ({ current , userInfo , setUserInfo , setShowModal , set
     };
     const send = async (event)=>{
         event.preventDefault();
+        event.stopPropagation();
         event.target.lastElementChild.disabled = true;
         event.target.lastElementChild.firstChild.data = 'Sending...';
         const category_name = [
@@ -9834,9 +9836,10 @@ const FreeDocumentForm = ({ current , userInfo , setUserInfo , setShowModal , se
     };
     const send = async (event)=>{
         event.preventDefault();
+        event.stopPropagation();
         if (CKEDITOR.instances.editor1.getData() === "") return;
-        event.target.disabled = true;
-        event.target.firstChild.data = 'Sending...';
+        event.target.lastElementChild.disabled = true;
+        event.target.lastElementChild.firstChild.data = 'Sending...';
         try {
             if (!current) {
                 const newDocument = {
@@ -9852,6 +9855,8 @@ const FreeDocumentForm = ({ current , userInfo , setUserInfo , setShowModal , se
                 };
                 const response = await addDocument(newDocument);
                 const { document_id  } = await response.json();
+                event.target.lastElementChild.disabled = false;
+                event.target.lastElementChild.firstChild.data = 'Submit';
                 setUserInfo({
                     user: {
                         ...userInfo.user
@@ -9892,6 +9897,9 @@ const FreeDocumentForm = ({ current , userInfo , setUserInfo , setShowModal , se
     };
     return export_default1.createElement("div", {
         className: "row"
+    }, export_default1.createElement("form", {
+        className: "col s12",
+        onSubmit: send
     }, export_default1.createElement("span", {
         className: "modal-label"
     }, current ? 'Edit ' : 'Add new ', "FreeDocument"), export_default1.createElement("button", {
@@ -9906,13 +9914,12 @@ const FreeDocumentForm = ({ current , userInfo , setUserInfo , setShowModal , se
         cols: "80"
     }), export_default1.createElement("button", {
         id: "send-form",
-        onClick: send,
         className: "btn waves-effect waves-light blue accent-4",
         type: "submit",
         name: "action"
     }, "Submit", export_default1.createElement("i", {
         className: "material-icons right"
-    }, "send")));
+    }, "send"))));
 };
 class Book {
     order;
@@ -9986,6 +9993,7 @@ const BookForm = ({ current , userInfo , setUserInfo , setShowModal , setActiveF
     };
     const send = async (event)=>{
         event.preventDefault();
+        event.stopPropagation();
         event.target.lastElementChild.disabled = true;
         event.target.lastElementChild.firstChild.data = 'Sending...';
         try {
@@ -10270,6 +10278,7 @@ const JournalArticleForm = ({ current , userInfo , setUserInfo , setShowModal , 
     };
     const send = async (event)=>{
         event.preventDefault();
+        event.stopPropagation();
         event.target.lastElementChild.disabled = true;
         event.target.lastElementChild.firstChild.data = 'Sending...';
         try {
@@ -10546,6 +10555,7 @@ const BookChapterForm = ({ current , userInfo , setUserInfo , setShowModal , set
     };
     const send = async (event)=>{
         event.preventDefault();
+        event.stopPropagation();
         event.target.lastElementChild.disabled = true;
         event.target.lastElementChild.firstChild.data = 'Sending...';
         try {
@@ -10937,6 +10947,7 @@ const ConferenceProceedingForm = ({ current , userInfo , setUserInfo , setShowMo
     };
     const send = async (event)=>{
         event.preventDefault();
+        event.stopPropagation();
         event.target.lastElementChild.disabled = true;
         event.target.lastElementChild.firstChild.data = 'Sending...';
         try {
@@ -11284,6 +11295,7 @@ const ThesisForm = ({ current , userInfo , setUserInfo , setShowModal , setActiv
     };
     const send = async (event)=>{
         event.preventDefault();
+        event.stopPropagation();
         event.target.lastElementChild.disabled = true;
         event.target.lastElementChild.firstChild.data = 'Sending...';
         try {
@@ -11525,7 +11537,7 @@ const ProfileDocuments = ({ userInfo , setUserInfo  })=>{
         if (confirm('Delete this document?')) {
             target.parentElement.disabled = true;
             target.classList.add('rotating');
-            target.firstElementChild.innerText = "autorenew";
+            target.innerText = "autorenew";
             try {
                 await deleteDocument(id, userInfo.user);
                 const updatedDocuments = userInfo.documents.filter(({ _id  })=>_id !== id

@@ -56,6 +56,7 @@ const ConferenceProceedingForm = ({current, userInfo, setUserInfo, setShowModal,
 
     const send = async event => {
         event.preventDefault();
+        event.stopPropagation();
         event.target.lastElementChild.disabled = true;
         event.target.lastElementChild.firstChild.data = 'Sending...';
 

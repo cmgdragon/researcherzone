@@ -28,9 +28,10 @@ const FreeDocumentForm = ({current, userInfo, setUserInfo, setShowModal, setActi
 
     const send = async event => {
         event.preventDefault();
+        event.stopPropagation();
         if (CKEDITOR.instances.editor1.getData() === "") return;
-        event.target.disabled = true;
-        event.target.firstChild.data = 'Sending...';
+        event.target.lastElementChild.disabled = true;
+        event.target.lastElementChild.firstChild.data = 'Sending...';
 
         try {
 
@@ -47,6 +48,8 @@ const FreeDocumentForm = ({current, userInfo, setUserInfo, setShowModal, setActi
 
                 const response = await addDocument(newDocument);
                 const { document_id } = await response.json();
+                event.target.lastElementChild.disabled = false;
+                event.target.lastElementChild.firstChild.data = 'Submit';
                 setUserInfo({ user: { ...userInfo.user }, documents: [...userInfo.documents, { ...newDocument, _id: document_id }] });
             } else {
 
@@ -71,13 +74,15 @@ const FreeDocumentForm = ({current, userInfo, setUserInfo, setShowModal, setActi
 
     return (
         <div className="row">
-            <span className="modal-label">{current ? 'Edit ' : 'Add new '}FreeDocument</span>
-            <button className="close-modal btn-floating red btn-small" onClick={closeModal}><i className="material-icons right">clear</i></button>
-            <textarea name="editor" id="editor1" rows="15" cols="80"></textarea>
-        <button id="send-form" onClick={send} className="btn waves-effect waves-light blue accent-4" type="submit" name="action"
-        >Submit
-            <i className="material-icons right">send</i>
-        </button>
+            <form className="col s12" onSubmit={send}>
+                <span className="modal-label">{current ? 'Edit ' : 'Add new '}FreeDocument</span>
+                <button className="close-modal btn-floating red btn-small" onClick={closeModal}><i className="material-icons right">clear</i></button>
+                <textarea name="editor" id="editor1" rows="15" cols="80"></textarea>
+            <button id="send-form" className="btn waves-effect waves-light blue accent-4" type="submit" name="action"
+            >Submit
+                <i className="material-icons right">send</i>
+            </button>
+        </form>
       </div>
     )
 }

@@ -19,7 +19,8 @@ const NewCategoryForm = ({current, userInfo, setUserInfo, setShowModal, setActiv
     }
 
     const send = async (event) => {
-        event.preventDefault();        
+        event.preventDefault();
+        event.stopPropagation();   
         event.target.lastElementChild.disabled = true;
         event.target.lastElementChild.firstChild.data = 'Sending...';
 
