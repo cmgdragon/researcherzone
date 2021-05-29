@@ -53,6 +53,7 @@ const login = async ({request, response}: Context) => {
 
     response.headers.set('Set-Cookie', cookie.serialize('token', token, {
       httpOnly: true,
+      secure: true,
       maxAge: 60 * 60 //* 24 * 7 // 1 week
     }))
     response.status = 200;
