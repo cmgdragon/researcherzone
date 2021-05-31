@@ -46,7 +46,7 @@ const ThesisForm = ({current, userInfo, setUserInfo, setShowModal, setActiveForm
         document.title = form.current.querySelector(`#title`).value ?? '';
         document.subtitle = form.current.querySelector(`#subtitle`).value ?? '';
         document.university = form.current.querySelector(`#university`).value ?? ''
-        document.university_place = form.current.querySelector(`#university_place`).value ?? ''
+        document.university_location = form.current.querySelector(`#university_location`).value ?? ''
         document.abstract = form.current.querySelector(`#abstract`).value ?? ''
         document.publication_year = +form.current.querySelector(`#publication_year`).value ?? 0;
         document.uri = form.current.querySelector(`#uri`).value ?? ''
@@ -126,18 +126,13 @@ const ThesisForm = ({current, userInfo, setUserInfo, setShowModal, setActiveForm
                 </div>
 
                 <div className="input-field col s12">
-                    <input id="university_place" type="text" defaultValue={current?.university_place} required />
-                    <label htmlFor="university_place" className="active" onClick={({target}) => target.previousElementSibling.focus()}>University place *</label>
+                    <input id="university_location" type="text" defaultValue={current?.university_location} required />
+                    <label htmlFor="university_location" className="active" onClick={({target}) => target.previousElementSibling.focus()}>University place *</label>
                 </div>
 
                 <div className="input-field col s12">
                     <textarea id="abstract" className="materialize-textarea" defaultValue={current?.abstract}></textarea>
                 <label htmlFor="abstract" className="active" onClick={({target}) => target.previousElementSibling.focus()}>Abstract</label>
-                </div>
-
-                <div className="input-field col s12">
-                    <input id="publication_place" type="text" defaultValue={current?.publication_place} required />
-                    <label htmlFor="publication_place" className="active" onClick={({target}) => target.previousElementSibling.focus()}>Publication Place *</label>
                 </div>
 
                 <div className="input-field col s12">
