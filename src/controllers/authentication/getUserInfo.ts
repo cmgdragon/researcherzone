@@ -7,8 +7,6 @@ import cookie from 'cookie';
 
 const getUserInfo = async context => {
 
-    const path = context.request.headers.get('pathname');
-
     const { token } = cookie.parse(context.request.headers.get('cookie') || '');
     const [ header, payload, signature ] : any = decode(token);
     try {
