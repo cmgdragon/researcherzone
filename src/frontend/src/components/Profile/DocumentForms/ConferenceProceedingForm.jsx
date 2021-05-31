@@ -121,11 +121,11 @@ const ConferenceProceedingForm = ({current, userInfo, setUserInfo, setShowModal,
                     return (
                         <div key={aut} data-authors>
                         <div className="input-field col s6">
-                            <input id={`aut-name-${aut}`} type="text" defaultValue={current?.authors[aut].name} required />
+                            <input id={`aut-name-${aut}`} type="text" defaultValue={current?.authors[aut]?.name} required />
                             <label htmlFor={`aut-name-${aut}`} className="active" onClick={({target}) => target.previousElementSibling.focus()}>Author name *</label>
                         </div>
                         <div className="input-field col s6">
-                            <input id={`aut-surname-${aut}`} type="text" defaultValue={current?.authors[aut].surname} required />
+                            <input id={`aut-surname-${aut}`} type="text" defaultValue={current?.authors[aut]?.surname} required />
                             <label htmlFor={`aut-surname-${aut}`} className="active" onClick={({target}) => target.previousElementSibling.focus()}>Author surname *</label>
                         </div>
                         { aut !== 0 ?
@@ -142,11 +142,11 @@ const ConferenceProceedingForm = ({current, userInfo, setUserInfo, setShowModal,
                     return (
                         <div key={ed} data-editors>
                         <div className="input-field col s6">
-                            <input id={`ed-name-${ed}`} type="text" defaultValue={current?.editors[ed].name} />
+                            <input id={`ed-name-${ed}`} type="text" defaultValue={current?.editors[ed]?.name} />
                             <label htmlFor={`ed-name-${ed}`} className="active" onClick={({target}) => target.previousElementSibling.focus()}>Editor name</label>
                         </div>
                         <div className="input-field col s6">
-                            <input id={`ed-surname-${ed}`} type="text" defaultValue={current?.editors[ed].surname} />
+                            <input id={`ed-surname-${ed}`} type="text" defaultValue={current?.editors[ed]?.surname} />
                             <label htmlFor={`ed-surname-${ed}`} className="active" onClick={({target}) => target.previousElementSibling.focus()}>Editor surname</label>
                         </div>
                             <a onClick={() => removeEditor(ed)} className="button-remove-modal waves-effect waves-light red btn-small"><i className="material-icons right">delete_forever</i></a>

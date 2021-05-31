@@ -111,11 +111,11 @@ const BookForm = ({current, userInfo, setUserInfo, setShowModal, setActiveForm, 
                     return (
                         <div key={aut} data-authors>
                         <div className="input-field col s6">
-                            <input id={`aut-name-${aut}`} type="text" defaultValue={current?.authors[aut].name} required />
+                            <input id={`aut-name-${aut}`} type="text" defaultValue={current?.authors[aut]?.name} required />
                             <label htmlFor={`aut-name-${aut}`} className="active" onClick={({target}) => target.previousElementSibling.focus()}>Author name *</label>
                         </div>
                         <div className="input-field col s6">
-                            <input id={`aut-surname-${aut}`} type="text" defaultValue={current?.authors[aut].surname} required />
+                            <input id={`aut-surname-${aut}`} type="text" defaultValue={current?.authors[aut]?.surname} required />
                             <label htmlFor={`aut-surname-${aut}`} className="active" onClick={({target}) => target.previousElementSibling.focus()}>Author surname *</label>
                         </div>
                         { aut !== 0 ?
