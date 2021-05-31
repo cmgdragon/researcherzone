@@ -3,8 +3,6 @@ import cookie from 'cookie';
 
 const verifyToken = async (context, next: any) => {
 
-    if( context.request.headers.get('pathname').includes('/user') ) return await next();
-
     try {
 
         const { token } = cookie.parse(context.request.headers.get('cookie') || '');
