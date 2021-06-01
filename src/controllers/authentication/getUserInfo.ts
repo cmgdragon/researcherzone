@@ -1,16 +1,15 @@
-import { Context } from "oak";
 import { decode } from 'djwt';
 import { findUserByEmail } from '~/controllers/database/users.ts';
 import { findDocuments } from '~/controllers/database/documents.ts';
-import { Bson } from 'deno-mongo';
 import cookie from 'cookie';
 
 const getUserInfo = async context => {
 
     const { token } = cookie.parse(context.request.headers.get('cookie') || '');
     const [ header, payload, signature ] : any = decode(token);
-    try {
 
+    try {
+        
         const user = await findUserByEmail(payload.iss.email);
         const documents = await findDocuments(payload.iss.email);
 

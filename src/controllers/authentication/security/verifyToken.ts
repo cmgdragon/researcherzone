@@ -4,7 +4,6 @@ import cookie from 'cookie';
 const verifyToken = async (context, next: any) => {
 
     try {
-
         const { token } = cookie.parse(context.request.headers.get('cookie') || '');
 
         if (!token) {

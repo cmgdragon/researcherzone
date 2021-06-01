@@ -24,7 +24,6 @@ const replaceSSRApp = (toString: string) => html.replace(
 );
 
 router.get('/', async (context: Context) => {
-
     try {
 
         const toStringApp = ReactDOMServer.renderToString(<App />);    
@@ -35,12 +34,11 @@ router.get('/', async (context: Context) => {
     }
 })
 
-router.get('/user/:id', async (context: Context) => {
+.get('/user/:id', async (context: Context) => {
 
     try {
 
         const userInfo = await getGuestInfo(context.request.url.pathname);
-
         const toStringProfile = ReactDOMServer.renderToString(<Profile userInfo={userInfo} />);    
         context.response.body = replaceSSRApp(toStringProfile);
 
@@ -48,7 +46,16 @@ router.get('/user/:id', async (context: Context) => {
         console.log(error)
     }
 
+})
 
+.get('/getguestinfo', async (context: Context) => {
+    try {
+        const userInfo = await getGuestInfo( context.request.headers.get('pathname'));
+        context.response.body = userInfo;
+
+    } catch (error) {
+        console.log(error)
+    }
 })
 
 .post('/login', login)

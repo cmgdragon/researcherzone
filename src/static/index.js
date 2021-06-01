@@ -6623,7 +6623,6 @@ const getUserInfo = async ()=>{
         const request = await fetch(`${'https://researcher.zone/'}getuserinfo`, {
             headers: {
                 'Content-Type': 'application/json',
-                'pathname': window.location.pathname,
                 'pragma': 'no-cache',
                 'cache-control': 'no-cache'
             }
@@ -10098,7 +10097,7 @@ const BookForm = ({ current , userInfo , setUserInfo , setShowModal , setActiveF
         }, export_default1.createElement("input", {
             id: `aut-name-${aut}`,
             type: "text",
-            defaultValue: current?.authors[aut].name,
+            defaultValue: current?.authors[aut]?.name,
             required: true
         }), export_default1.createElement("label", {
             htmlFor: `aut-name-${aut}`,
@@ -10109,7 +10108,7 @@ const BookForm = ({ current , userInfo , setUserInfo , setShowModal , setActiveF
         }, export_default1.createElement("input", {
             id: `aut-surname-${aut}`,
             type: "text",
-            defaultValue: current?.authors[aut].surname,
+            defaultValue: current?.authors[aut]?.surname,
             required: true
         }), export_default1.createElement("label", {
             htmlFor: `aut-surname-${aut}`,
@@ -10682,7 +10681,7 @@ const BookChapterForm = ({ current , userInfo , setUserInfo , setShowModal , set
         }, export_default1.createElement("input", {
             id: `aut-name-${aut}`,
             type: "text",
-            defaultValue: current?.authors[aut].name,
+            defaultValue: current?.authors[aut]?.name,
             required: true
         }), export_default1.createElement("label", {
             htmlFor: `aut-name-${aut}`,
@@ -10693,7 +10692,7 @@ const BookChapterForm = ({ current , userInfo , setUserInfo , setShowModal , set
         }, export_default1.createElement("input", {
             id: `aut-surname-${aut}`,
             type: "text",
-            defaultValue: current?.authors[aut].surname,
+            defaultValue: current?.authors[aut]?.surname,
             required: true
         }), export_default1.createElement("label", {
             htmlFor: `aut-surname-${aut}`,
@@ -10732,7 +10731,7 @@ const BookChapterForm = ({ current , userInfo , setUserInfo , setShowModal , set
         }, export_default1.createElement("input", {
             id: `ed-name-${ed}`,
             type: "text",
-            defaultValue: current?.editors[ed].name
+            defaultValue: current?.editors[ed]?.name
         }), export_default1.createElement("label", {
             htmlFor: `ed-name-${ed}`,
             className: "active",
@@ -10742,7 +10741,7 @@ const BookChapterForm = ({ current , userInfo , setUserInfo , setShowModal , set
         }, export_default1.createElement("input", {
             id: `ed-surname-${ed}`,
             type: "text",
-            defaultValue: current?.editors[ed].surname
+            defaultValue: current?.editors[ed]?.surname
         }), export_default1.createElement("label", {
             htmlFor: `ed-surname-${ed}`,
             className: "active",
@@ -11062,7 +11061,7 @@ const ConferenceProceedingForm = ({ current , userInfo , setUserInfo , setShowMo
         }, export_default1.createElement("input", {
             id: `aut-name-${aut}`,
             type: "text",
-            defaultValue: current?.authors[aut].name,
+            defaultValue: current?.authors[aut]?.name,
             required: true
         }), export_default1.createElement("label", {
             htmlFor: `aut-name-${aut}`,
@@ -11073,7 +11072,7 @@ const ConferenceProceedingForm = ({ current , userInfo , setUserInfo , setShowMo
         }, export_default1.createElement("input", {
             id: `aut-surname-${aut}`,
             type: "text",
-            defaultValue: current?.authors[aut].surname,
+            defaultValue: current?.authors[aut]?.surname,
             required: true
         }), export_default1.createElement("label", {
             htmlFor: `aut-surname-${aut}`,
@@ -11102,7 +11101,7 @@ const ConferenceProceedingForm = ({ current , userInfo , setUserInfo , setShowMo
         }, export_default1.createElement("input", {
             id: `ed-name-${ed}`,
             type: "text",
-            defaultValue: current?.editors[ed].name
+            defaultValue: current?.editors[ed]?.name
         }), export_default1.createElement("label", {
             htmlFor: `ed-name-${ed}`,
             className: "active",
@@ -11112,7 +11111,7 @@ const ConferenceProceedingForm = ({ current , userInfo , setUserInfo , setShowMo
         }, export_default1.createElement("input", {
             id: `ed-surname-${ed}`,
             type: "text",
-            defaultValue: current?.editors[ed].surname
+            defaultValue: current?.editors[ed]?.surname
         }), export_default1.createElement("label", {
             htmlFor: `ed-surname-${ed}`,
             className: "active",
@@ -11260,14 +11259,6 @@ const ThesisForm = ({ current , userInfo , setUserInfo , setShowModal , setActiv
             setActiveForm(undefined);
         }
     };
-    const getArticleOrder = (nodes)=>{
-        if (nodes.length === 0) return 1;
-        const orderList = [];
-        for (const node of nodes){
-            orderList.push(node.firstElementChild.getAttribute('data-article-order'));
-        }
-        return Math.max(...orderList) + 1;
-    };
     const createDocumentObject = ()=>{
         const document = new Thesis();
         if (!current) {
@@ -11287,7 +11278,7 @@ const ThesisForm = ({ current , userInfo , setUserInfo , setShowModal , setActiv
         document.title = form.current.querySelector(`#title`).value ?? '';
         document.subtitle = form.current.querySelector(`#subtitle`).value ?? '';
         document.university = form.current.querySelector(`#university`).value ?? '';
-        document.university_place = form.current.querySelector(`#university_place`).value ?? '';
+        document.university_location = form.current.querySelector(`#university_location`).value ?? '';
         document.abstract = form.current.querySelector(`#abstract`).value ?? '';
         document.publication_year = +form.current.querySelector(`#publication_year`).value ?? 0;
         document.uri = form.current.querySelector(`#uri`).value ?? '';
@@ -11418,12 +11409,12 @@ const ThesisForm = ({ current , userInfo , setUserInfo , setShowModal , setActiv
     }, "University *")), export_default1.createElement("div", {
         className: "input-field col s12"
     }, export_default1.createElement("input", {
-        id: "university_place",
+        id: "university_location",
         type: "text",
-        defaultValue: current?.university_place,
+        defaultValue: current?.university_location,
         required: true
     }), export_default1.createElement("label", {
-        htmlFor: "university_place",
+        htmlFor: "university_location",
         className: "active",
         onClick: ({ target  })=>target.previousElementSibling.focus()
     }, "University place *")), export_default1.createElement("div", {
@@ -11437,17 +11428,6 @@ const ThesisForm = ({ current , userInfo , setUserInfo , setShowModal , setActiv
         className: "active",
         onClick: ({ target  })=>target.previousElementSibling.focus()
     }, "Abstract")), export_default1.createElement("div", {
-        className: "input-field col s12"
-    }, export_default1.createElement("input", {
-        id: "publication_place",
-        type: "text",
-        defaultValue: current?.publication_place,
-        required: true
-    }), export_default1.createElement("label", {
-        htmlFor: "publication_place",
-        className: "active",
-        onClick: ({ target  })=>target.previousElementSibling.focus()
-    }, "Publication Place *")), export_default1.createElement("div", {
         className: "input-field col s12"
     }, export_default1.createElement("input", {
         id: "publication_year",
@@ -11821,4 +11801,30 @@ const App = ()=>{
         userInfo: userInfo
     }) : export_default1.createElement(Auth, null));
 };
-export_default3.hydrate(export_default1.createElement(UserInfoContext, null, export_default1.createElement(App, null)), document.getElementById('app'));
+const getGuestInfo = async ()=>{
+    try {
+        const request = await fetch(`${'https://researcher.zone/'}getguestinfo`, {
+            headers: {
+                'Content-Type': 'application/json',
+                'pathname': window.location.pathname,
+                'pragma': 'no-cache',
+                'cache-control': 'no-cache'
+            }
+        });
+        const guestInfo = await request.json();
+        return guestInfo;
+    } catch ({ message  }) {
+        console.error(message);
+    }
+};
+if (!window.location.pathname.includes('/user')) {
+    export_default3.hydrate(export_default1.createElement(UserInfoContext, null, export_default1.createElement(App, null)), document.getElementById('app'));
+} else {
+    document.getElementById('app').innerHTML = "Loading...";
+    (async ()=>{
+        const userInfo = await getGuestInfo();
+        export_default3.hydrate(export_default1.createElement(Profile, {
+            userInfo: userInfo
+        }), document.getElementById('app'));
+    })();
+}

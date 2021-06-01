@@ -18,15 +18,6 @@ const ThesisForm = ({current, userInfo, setUserInfo, setShowModal, setActiveForm
         }
     }
 
-    const getArticleOrder = nodes => {
-        if (nodes.length === 0) return 1;
-        const orderList = [];
-        for (const node of nodes) {
-            orderList.push(node.firstElementChild.getAttribute('data-article-order'));
-        }
-        return Math.max(...orderList) + 1;
-    }
-
     const createDocumentObject = () => {     
         const document = new Thesis();
         //common properties
