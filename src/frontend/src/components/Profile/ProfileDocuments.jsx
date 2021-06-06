@@ -54,6 +54,29 @@ const ProfileDocuments = ({userInfo, setUserInfo}) => {
         />);
     }
 
+    const changeVisibility = async (target, category_id, visible) => {
+        target.parentElement.disabled = true;
+        target.classList.add('rotating');
+        target.innerText = "autorenew";
+        try {
+            const updatedCategories = userInfo.user.categories.map(cat => {
+                if (cat.id === category_id) {
+                    return { ...cat, visible: !visible }
+                } else return cat;
+            });
+            const updatedUser = { ...userInfo.user, categories: updatedCategories };
+            await updateUser(updatedUser);
+            setUserInfo({ user: updatedUser, documents: userInfo.documents });
+            target.parentElement.disabled = false;
+            target.classList.remove('rotating');
+        } catch (error) {
+            console.error(error);
+            target.parentElement.disabled = false;
+            target.classList.remove('rotating');
+            target.innerText = `${visible ? 'visibility' : 'visibility_off'}`;
+        }
+    }
+
     const deleteOneDocument = async (target, id) => {
         if (confirm('Delete this document?')) {
 
@@ -70,6 +93,9 @@ const ProfileDocuments = ({userInfo, setUserInfo}) => {
                 setUserInfo({ user: userInfo.user, documents: updatedDocuments });
             } catch (error) {
                 console.error(error);
+                target.parentElement.disabled = false;
+                target.classList.remove('rotating');
+                target.innerText = "delete";
             }
         }
     }
@@ -77,7 +103,6 @@ const ProfileDocuments = ({userInfo, setUserInfo}) => {
     const deleteCategoryDocuments = async (target, category, categoryId) => {
         if (confirm(`Delete category "${category}" and all its documents?`)) {
 
-            console.dir(target)
             target.parentElement.disabled = true;
             target.classList.add('rotating');
             target.innerText = "autorenew";
@@ -93,6 +118,9 @@ const ProfileDocuments = ({userInfo, setUserInfo}) => {
                 setUserInfo({ user: updatedUser, documents: updatedDocuments });
             } catch (error) {
                 console.error(error);
+                target.parentElement.disabled = false;
+                target.classList.remove('rotating');
+                target.innerText = "delete";
             }
         }
     }
@@ -180,9 +208,10 @@ const ProfileDocuments = ({userInfo, setUserInfo}) => {
         <div className={'profile-articles__categories'}>
         {
             userInfo.user.categories.sort((a, b) => orderList(a, b))
-            .map(({id: category_id, category_name, order}, index) => {
+            .map(({id: category_id, category_name, order, visible}, index) => {
+             if (userInfo.isGuest && !visible) return;
              return (
-                 <div className={'profile-articles__category'} key={index} data-category={category_name} data-order={`order-${order}`}>
+                 <div className={`profile-articles__category ${visible ? '' : 'profile-articles__category-hidden'}`} key={index} data-category={category_name} data-order={`order-${order}`}>
                      <div className="profile-articles__category-header">
 
                         <div className="profile-articles__buttons-group1">
@@ -207,10 +236,13 @@ const ProfileDocuments = ({userInfo, setUserInfo}) => {
                         { !userInfo.isGuest ? <>  
                         <div className="profile-articles__buttons-group2">
                             <button className='btn-floating btn-small waves-effect waves-light blue dropdown-trigger' href='#' data-target={`dropdown${index}`}><i className="material-icons">add</i></button>
+                            <button id="view-category" onClick={({target}) => changeVisibility(target, category_id, visible)} className="btn waves-effect waves-light btn-floating blue btn-small">
+                                <i className="material-icons right">{`${visible ? 'visibility' : 'visibility_off'}`}</i>
+                            </button>
                             <button id="delete-category" onClick={({target}) => deleteCategoryDocuments(target, category_name, category_id)} className="btn waves-effect waves-light btn-floating red btn-small">
                                 <i className="material-icons right">delete</i>
                             </button>
-                            <button id="edit-document" onClick={() => addEditCategory({id: category_id, category_name, order})} className="profile-articles__edit-category btn waves-effect waves-light btn-floating blue btn-small">
+                            <button id="edit-category" onClick={() => addEditCategory({id: category_id, category_name, order})} className="profile-articles__edit-category btn waves-effect waves-light btn-floating blue btn-small">
                                 <i className="material-icons right">edit</i>
                             </button>
                         </div> </>

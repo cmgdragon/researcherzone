@@ -401,6 +401,9 @@ body.show-modal-body:before {
     font-size: 2rem;
     color: var(--text-blue-color);
 }
+.profile-articles__category-hidden {
+    opacity: .5;
+}
 .profile-article__badge {
     float: right;
     background-color: var(--text-blue-color);

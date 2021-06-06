@@ -8,7 +8,7 @@ class User {
     pwd: string;
     profile_slot_1: string = '';
     profile_slot_2: string = '';
-    categories: Array<{id: number, category: string, category_order: number}> = [];
+    categories: Array<{id: number, category: string, category_order: number, visible: boolean}> = [];
     image: any = '';
     optional_image: any = '';
     social_media: Array<{name: string, url: string}> = [];
