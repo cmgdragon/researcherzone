@@ -33,6 +33,7 @@ const NewCategoryForm = ({current, userInfo, setUserInfo, setShowModal, setActiv
               ...userInfo.user,
               categories: [...userInfo.user.categories, {
                   category_name: category_name,
+                  visible: true,
                   order: document.querySelectorAll('.profile-articles__category').length ?
                     Math.max( ...userInfo.user.categories.map(({id}) => id) )+1 : 1,
                   id: document.querySelectorAll('.profile-articles__category').length ?
