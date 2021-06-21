@@ -7,22 +7,15 @@ config({export: true, safe: true});
 
 const client = new MongoClient();
 
-await client.connect({
-  db: Deno.env.get('MONGODB_DATABASE'),
-  tls: true,
-  servers: [
-    { 
-      host: Deno.env.get('MONGODB_HOST'),
-      port: parseInt(Deno.env.get('MONGODB_PORT')),
-    },
-  ],
-  credential: {
-    username: Deno.env.get('MONGODB_USER'),
-    password: Deno.env.get('MONGODB_PASSWORD'),
-    db: Deno.env.get('MONGODB_DATABASE'),
-    mechanism: "SCRAM-SHA-1",
-}});
+const user = Deno.env.get('MONGODB_USER');
+const database = Deno.env.get('MONGODB_DATABASE');
+const pwd = Deno.env.get('MONGODB_PASSWORD');
+const host = Deno.env.get('MONGODB_HOST');
 
-const db = client.database(Deno.env.get('MONGODB_DATABASE'));
+await client.connect(
+  `mongodb+srv://${user}:${pwd}@${host}/${database}?retryWrites=true&w=majority&authMechanism=SCRAM-SHA-1&authSource=admin&replicaSet=xyz`
+);
+
+const db = client.database(database);
 export const db_users = db.collection<User>("users");
 export const db_documents = db.collection<any>("documents");

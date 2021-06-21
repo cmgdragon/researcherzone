@@ -5,7 +5,7 @@
     "react-dom": "https://esm.sh/react-dom@17.0.2",
     "oak": "https://deno.land/x/oak@v6.5.1/mod.ts",
     "react-dom/server": "https://esm.sh/react-dom@17.0.2/server",
-    "deno-mongo": "https://deno.land/x/mongo@v0.23.0/mod.ts",
+    "deno-mongo": "https://deno.land/x/mongo@v0.23.1/mod.ts",
     "dotenv": "https://deno.land/x/dotenv/mod.ts",
     "sha256": "https://deno.land/x/sha256@v1.0.2/mod.ts",
     "djwt": "https://deno.land/x/djwt@v2.2/mod.ts",
